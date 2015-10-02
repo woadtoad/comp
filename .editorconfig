@@ -1,0 +1,28 @@
+root = true
+
+# Unix line endings and UTF-8 for everyone
+# Also, whitespace trimming and final newline
+[*]
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Try not to edit libs or generated files
+[{libs/*, assets/entities/*}]
+end_of_line =
+trim_trailing_whitespace = false
+insert_final_newline = false
+
+[*.md]
+trim_trailing_whitespace = false
+
+# https://github.com/Olivine-Labs/lua-style-guide#whitespace
+# Also, reiterating the default config (for no reason)
+[*.lua]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
