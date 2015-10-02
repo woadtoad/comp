@@ -1,5 +1,5 @@
 local hxdx = require("hxdx")
 
 return hxdx.newWorld({
-  gravity_y = 300
+  gravity_y = 0
 })
