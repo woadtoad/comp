@@ -91,7 +91,7 @@ function _M:draw ()
 						math.rad(self.rot), -- rot
 						self.scale.x*self.flip, -- scale x
 						self.scale.y, -- scale y
-						-extra[1]+tempWidth-self.offset.x, --pivotx, needs to add in the trimming data here.
+						-extra[1]+tempWidth-self.offset.x, --pivotx,
 						-extra[2]+tempHeight-self.offset.y -- pivoty
 					)
 

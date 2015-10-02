@@ -8,7 +8,7 @@ Tile:include(require('stateful'))
 
 
 function Tile:initialize (x,y,i,v)
-  self.image = TexMateStatic(PROTOTYPEASSETS,"tileSnow.png",x,y,nil,nil,nil,nil,0.5)
+  self.image = TexMateStatic(PROTOTYPEASSETS,"tileSnow.png",x,y,nil,30,nil,nil,0.5,nil,"center")
 
   self.xcoor = i
   self.ycoor = v
@@ -17,6 +17,8 @@ function Tile:initialize (x,y,i,v)
   self.x = x
   self.y = y
 
+  self.collider = world:newPolygonCollider({10, 10, 10, 20, 20, 20, 20, 10})
+
 end
 
 
@@ -24,7 +26,7 @@ function Tile:draw()
   self.image:draw()
 
   love.graphics.setColor(0,0,0,255) --Add this line
-  love.graphics.print(self.xcoor..","..self.ycoor,self.x+20,self.y-60)
+  love.graphics.print(self.xcoor..","..self.ycoor,self.x,self.y)
   love.graphics.setColor(255,255,255,255) --Add this line
 
 end
