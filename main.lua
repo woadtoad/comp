@@ -47,6 +47,8 @@ SceneManager:init()
 -- Start the game in the menu
 SceneManager:gotoState(require('src.SCENES').MENU)
 
+local Camera = require('src.Camera')
+
 -- Start the game loops
 function love.load()
   UI.registerEvents()
@@ -58,13 +60,6 @@ end
 
 function love.draw()
   SceneManager:draw()
-
-  --check for joystick, debug.
-  local joysticks = love.joystick.getJoysticks()
-  for i, joystick in ipairs(joysticks) do
-    love.graphics.print(joystick:getName(), 300, i * 20)
-  end
-
 end
 
 function love.keypressed(key, isrepeat)
