@@ -49,14 +49,14 @@ SceneManager:init()
 -- Start the game in the menu
 SceneManager:gotoState(SCENES.GAME)
 
-local Camera = require('src.Camera')
+CAMERA = require('src.Camera')
 local input = require('src.Input')
 require('src.INPUTS')(input) -- Initialise bindings
 
 -- Start the game loops
 function love.load()
   UI.registerEvents()
-  Camera:setScale(DEBUG.ZOOM) -- TODO: fix
+  CAMERA:setScale(DEBUG.ZOOM) -- fixed!
 end
 
 function love.update(dt)
@@ -69,7 +69,7 @@ end
 function love.draw()
   -- We only want the camera to draw the Game-like scenes
   if SceneManager:current() == SCENES.GAME then
-    Camera:draw(
+    CAMERA:draw(
     function(l, t, w, h)
         SceneManager:draw()
       end

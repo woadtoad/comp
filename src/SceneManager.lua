@@ -17,7 +17,10 @@ end
 
 -- Gets a state from SceneManager, which is essentially a Scene
 function SceneManager:current()
-  return self.__stateStack[#self.__stateStack]
+  --return self.__stateStack[#self.__stateStack]
+   local info = self:getStateStackDebugInfo()
+
+   return info[1]
 end
 
 -- Requires all the files for the scenes
