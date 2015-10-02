@@ -1,5 +1,5 @@
 -- base class for pickup --
-local Pools = require("src.effectsPool")
+local Pools = require("src.Pool")
 local TexMate = require("texmate.TexMate")
 local world = require('src.world')
 local Pickup = class('Pickup')

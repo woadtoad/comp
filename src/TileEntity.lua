@@ -1,4 +1,4 @@
-local Pools = require("src.effectsPool")
+local Pools = require("src.Pool")
 local TexMate = require("texmate.TexMate")
 local world = require('src.world')
 local TexMateStatic = require("texmate.TexMateStatic")
@@ -8,6 +8,9 @@ Tile:include(require('stateful'))
 
 
 function Tile:initialize (x,y,i,v,scale)
+
+  self.health = 3
+
   self.scale = scale
   self.image = TexMateStatic(PROTOTYPEASSETS,"tileSnow.png",x,y,nil,24,nil,nil,self.scale,nil,"center")
 
@@ -26,6 +29,11 @@ function Tile:initialize (x,y,i,v,scale)
   self.collider.body:setPosition(x,y)
 end
 
+function Tile:damage(amt)
+  local damage = amt or 1
+
+
+end
 
 function Tile:draw()
   self.image:draw()

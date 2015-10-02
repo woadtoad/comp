@@ -1,4 +1,4 @@
-local Pools = require("src.effectsPool")
+local Pools = require("src.Pool")
 local world = require('src.world')
 local Tile = require('src.TileEntity')
 
