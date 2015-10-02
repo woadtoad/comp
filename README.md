@@ -1,7 +1,8 @@
 ![surfware xoxo](./assets//surfware.jpg)
 
 # Woad Toad™ Surfware™
-A games developments frameworks for Lua.
+
+Entry for the [48hr Game Competition!](http://48hr.making-games.net/)
 
 [![Slack Status](https://woadtoad.herokuapp.com/badge.svg)](https://woadtoad.herokuapp.com/)
 
