@@ -6,6 +6,7 @@ local Player = require('src.Player')
 local Tile = require('src.TileEntity')
 local ThePickup = require('src.Pickup')
 local TileSystem = require('src.TileSystem')
+local EffectSystem = require('src.EffectsPool')
 
 return function(GameScene)
   local updateList = {}
@@ -27,6 +28,7 @@ return function(GameScene)
 
     self.RockTest = ThePickup:new()
 
+    self.EffectTest = EffectSystem:new()
     --we'll just use a simple table to keep things updated
     table.insert(updateList,self.player)
     table.insert(updateList,self.TileTest)
