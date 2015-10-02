@@ -1,10 +1,13 @@
 local TexMate = require("texmate.TexMate")
+local Vector = require('hump.vector')
 local Input = require('src.Input')
 local world = require('src.world')
 
 local Player = class('Player')
 Player:include(require('stateful'))
+
 Player.static.BASE_SPEED = 30
+Player.static.BASE_VEC = Vector(0, 0)
 
 function Player:initialize()
   self.Health = 10
@@ -35,11 +38,11 @@ function Player:initialize()
   --make the sprite , args: atlas, animation dataformat, default animation.
   self.sprite = TexMate:new(PROTOTYPEASSETS,animlist,"Idle",nil,nil,0,-30)
 
-  self.collision = world:newCircleCollider(300, 300, 25, {collision_class = 'Player'})
-  self.collision.body:setFixedRotation(false)
-  self.collision.fixtures['main']:setRestitution(0.3)
-  self.collision.body:setLinearDamping(2)
-
+  self.collider = world:newCircleCollider(300, 300, 25, {collision_class = 'Player'})
+  self.collider.body:setFixedRotation(false)
+  self.collider.fixtures['main']:setRestitution(0.3)
+  self.collider.body:setLinearDamping(2)
+  self.collider.body:setFixedRotation(true)
   self.lastXDir = 0
 end
 
@@ -48,8 +51,8 @@ function Player:update(dt)
 
   self.sprite:update(dt)
 
-  self.sprite:changeLoc(self.collision.body:getX(),self.collision.body:getY())
-  self.sprite:changeRot(math.deg(self.collision.body:getAngle()))
+  self.sprite:changeLoc(self.collider.body:getX(),self.collider.body:getY())
+  self.sprite:changeRot(math.deg(self.collider.body:getAngle()))
 end
 
 function Player:draw()
@@ -69,6 +72,15 @@ function Player:input(input)
   end
 end
 
+  -- Grab something with an extendable fixture
+function Player:grab(vec)
+
+end
+
+  -- Throw/spit the projectile thing
+function Player:shoot(args)
+end
+
 function Player:move(dir, isY)
   local speed = Player.static.BASE_SPEED * dir
 
@@ -83,7 +95,7 @@ function Player:move(dir, isY)
 
   if dir > 0.3 or dir < -0.3 then
     self.sprite:changeAnim("Running", dir)
-    self.collision.body:applyLinearImpulse(x, y, self.collision.body:getX(), self.collision.body:getY())
+    self.collider.body:applyLinearImpulse(x, y, self.collider.body:getX(), self.collider.body:getY())
   end
 end
 
@@ -96,7 +108,7 @@ function Player:moveY(dir)
 end
 
 function Player:updateMovingAnimation()
-  local xvel, yvel = self.collision.body:getLinearVelocity()
+  local xvel, yvel = self.collider.body:getLinearVelocity()
 
   if xvel == 0 then
     xvel = self.lastXDir
@@ -110,5 +122,32 @@ function Player:updateMovingAnimation()
 
   self.lastXDir = xvel
 end
+
+-----------------------
+-- Running State
+
+-----------------------
+-- Accl State
+
+-----------------------
+-- Throwing State
+
+-----------------------
+-- Idle State
+
+-----------------------
+-- Slide State
+
+-----------------------
+-- Stunned State
+
+-----------------------
+-- Equipped && Equipping State
+
+-----------------------
+-- Falling State
+
+-----------------------
+-- Spawning State
 
 return Player
