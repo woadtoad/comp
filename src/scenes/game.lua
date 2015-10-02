@@ -26,6 +26,10 @@ return function(GameScene)
 
     self.TileTest = TileSystem:new()
 
+    self.TileTest.Tiles[10][10]:damage(1)
+    self.TileTest.Tiles[20][20]:damage(3)
+    self.TileTest.Tiles[30][20]:damage(2)
+
     self.RockTest = ThePickup:new()
 
     self.EffectTest = EffectSystem:new()

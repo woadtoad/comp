@@ -53,6 +53,10 @@ function _M:changeLoc (x,y)
 	self.y = y or self.y
 end
 
+function _M:changeImage (imageid)
+  self.image = imageid
+end
+
 function _M:changeRot(angle)
 	self.rot = angle
 end
