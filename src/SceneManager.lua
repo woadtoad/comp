@@ -17,7 +17,6 @@ end
 
 -- Gets a state from SceneManager, which is essentially a Scene
 function SceneManager:current()
-  --return self.__stateStack[#self.__stateStack]
    local info = self:getStateStackDebugInfo()
 
    return info[1]
@@ -27,13 +26,12 @@ end
 function SceneManager:init()
     -- Attach our scene logic
     for key,sceneName in pairs(SCENES) do
-      print('  Loading scene ' .. sceneName)
       require('src.scenes.' .. sceneName)(self:getScene(sceneName))
     end
 
     -- Initialize each scene
     for k,sceneName in pairs(SCENES) do
-      print('  ...initializing ' .. sceneName)
+      print('  Initializing ' .. sceneName .. '...')
       self:gotoState(sceneName)
       self:initialize()
     end
@@ -47,7 +45,6 @@ end
 -- Add out scenes states to the SceneManager,
 -- so they're avaiable ASAP
 for key,sceneName in pairs(SCENES) do
-  print('  Adding state for ' .. sceneName)
   SceneManager:addState(sceneName)
 end
 

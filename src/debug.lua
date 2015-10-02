@@ -29,5 +29,5 @@ for i,cliArg in ipairs(args) do
 end
 
 print('\nDebug\n------------\n')
-print('DEBUG.MODE: ' .. require('src.util').getkeyfromvalue(DEBUG.MODES, DEBUG.MODE))
-print('DEBUG.ZOOM: ' .. DEBUG.ZOOM .. '\n')
+print('  DEBUG.MODE: ' .. require('src.util').getkeyfromvalue(DEBUG.MODES, DEBUG.MODE))
+print('  DEBUG.ZOOM: ' .. DEBUG.ZOOM .. '\n')

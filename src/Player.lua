@@ -12,37 +12,49 @@ Player.static.BASE_VEC = Vector(0, 0)
 function Player:initialize()
   self.Health = 10
 
-  animlist = {
+  local playerAnims = {
     Idle = {
       framerate = 14,
       frames = {
-        "alienYellow.png"
+        'alienYellow.png'
       }
     },
 
     Running = {
       framerate = 14,
       frames = {
-        "alienGreen.png"
+        'alienGreen.png'
       }
     },
 
     Skidding = {
       framerate = 14,
       frames = {
-        "alienPink.png"
+        'alienPink.png'
+      }
+    }
+  }
+
+  local armAnims = {
+    Idle = {
+      framerate = 14,
+      frames = {
+        'flowerYellow.png'
       }
     }
   }
 
   --make the sprite , args: atlas, animation dataformat, default animation.
-  self.sprite = TexMate:new(PROTOTYPEASSETS,animlist,"Idle",nil,nil,0,-30)
+  self.sprite = TexMate:new(PROTOTYPEASSETS,playerAnims,"Idle",nil,nil,0,-30)
 
   self.collider = world:newCircleCollider(300, 300, 25, {collision_class = 'Player'})
   self.collider.body:setFixedRotation(false)
   self.collider.fixtures['main']:setRestitution(0.3)
   self.collider.body:setLinearDamping(2)
   self.collider.body:setFixedRotation(true)
+
+  self.armSprite = TexMate:new(PROTOTYPEASSETS,armAnims,"Idle",nil,nil,0,-30)
+
   self.lastXDir = 0
 end
 

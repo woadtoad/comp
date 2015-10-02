@@ -2,6 +2,7 @@ local SceneManager = require('src.SceneManager')
 local SCENES = require('src.SCENES')
 local hxdx = require("hxdx")
 local world = require('src.world')
+local Camera = require('src.Camera')
 local Player = require('src.Player')
 local Tile = require('src.TileEntity')
 local ThePickup = require('src.Pickup')
@@ -35,7 +36,7 @@ return function(GameScene)
 
     self.EffectTest:makeEffect("Explosion",0,-120,self.TileTest.Tiles[10][10]:getLoc())
 
-    CAMERA:setPosition(500, 500)
+    self:resetCameraPosition()
 
     --we'll just use a simple table to keep things updated
 
@@ -45,8 +46,6 @@ return function(GameScene)
   end
 
   function GameScene:update(dt)
-
-
     world:update(dt)
 
     --Iterate through the items for update
@@ -54,25 +53,44 @@ return function(GameScene)
       updateList[i]:update(dt)
     end
 
-
     self.EffectTest:update(dt)
   end
 
   function GameScene:draw()
+    Camera:draw(
+    function(l, t, w, h)
+      if DEBUG.MODE == DEBUG.MODES.SHOW_GAME or DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION then
+        --Iterate through the items for drawing
+          self:drawFromUpdateList()
+      end
 
+      if DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION or DEBUG.MODE == DEBUG.MODES.SHOW_ONLY_COLLISION then
+        self:drawDebugPoints()
 
-    if DEBUG.MODE == DEBUG.MODES.SHOW_GAME or DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION then
-      --Iterate through the items for drawing
-        self:drawFromUpdateList()
+        --Debug Drawing for physics
+        world:draw()
+      end
+      --need to put this in draw list.
+      self.EffectTest:draw()
+
     end
+    )
+  end
 
-    if DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION or DEBUG.MODE == DEBUG.MODES.SHOW_ONLY_COLLISION then
-      --Debug Drawing for physics
-      world:draw()
-    end
-    --need to put this in draw list.
-    self.EffectTest:draw()
+  function GameScene:drawDebugPoints()
+      local radius = 5
+      local segments = 10
 
+      -- RED == CORNERS
+      love.graphics.setColor(255, 80, 80)
+      love.graphics.circle('fill', 0, 0, radius, segments)
+      love.graphics.circle('fill', love.window.getWidth(), 0, radius, segments)
+      love.graphics.circle('fill', 0, love.window.getHeight(), radius, segments)
+      love.graphics.circle('fill', love.window.getWidth(), love.window.getHeight(), radius, segments)
+
+      -- BLUE == CENTER
+      love.graphics.setColor(80, 80, 255);
+      love.graphics.circle('fill', love.window.getWidth() / 2, love.window.getHeight() / 2, radius, segments)
   end
 
   function GameScene:keypressed(key, isrepeat)
@@ -88,6 +106,10 @@ return function(GameScene)
 
   function GameScene:input(input)
     self.player:input(input)
+  end
+
+  function GameScene:resetCameraPosition()
+    Camera:setPosition(love.window.getWidth() / 2, love.window.getHeight() / 2)
   end
 
   function GameScene:drawFromUpdateList()
