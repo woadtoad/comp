@@ -6,7 +6,7 @@ local Player = require('src.Player')
 local Tile = require('src.TileEntity')
 local ThePickup = require('src.Pickup')
 local TileSystem = require('src.TileSystem')
-local EffectSystem = require('src.EffectsPool')
+local Effects = require('src.Effects')
 
 return function(GameScene)
   local updateList = {}
@@ -17,9 +17,9 @@ return function(GameScene)
     world:collisionClassesSet()
 
     --level Collission
-    self.ground = world:newRectangleCollider(0, 750, 1024, 50, {body_type = 'static'})
-    self.lWall = world:newRectangleCollider(0, 0, 50, 800, {body_type = 'static'})
-    self.rWall = world:newRectangleCollider(976, 0, 50, 800, {body_type = 'static'})
+    --self.ground = world:newRectangleCollider(0, 750, 1024, 50, {body_type = 'static'})
+    --self.lWall = world:newRectangleCollider(0, 0, 50, 800, {body_type = 'static'})
+    --self.rWall = world:newRectangleCollider(976, 0, 50, 800, {body_type = 'static'})
 
     --instantiate a new player.
     self.player = Player:new()
@@ -32,7 +32,9 @@ return function(GameScene)
 
     self.RockTest = ThePickup:new()
 
-    self.EffectTest = EffectSystem:new()
+    self.EffectTest = Effects:new()
+
+    self.EffectTest:makeEffect("Explosion",100,100)
     --we'll just use a simple table to keep things updated
     table.insert(updateList,self.player)
     table.insert(updateList,self.TileTest)
@@ -41,6 +43,8 @@ return function(GameScene)
   end
 
   function GameScene:update(dt)
+
+    self.EffectTest:update(dt)
     world:update(dt)
 
     --Iterate through the items for update
@@ -51,6 +55,7 @@ return function(GameScene)
   end
 
   function GameScene:draw()
+    self.EffectTest:draw()
 
     if DEBUG.MODE == DEBUG.MODES.SHOW_GAME or DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION then
       --Iterate through the items for drawing

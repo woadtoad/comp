@@ -23,7 +23,7 @@ function TileSystem:initialize (x,y)
   end
 
   self.Tiles = {}
-  local scale = 0.4
+  local scale = 1
 
   for v=1,mapWidth do
     self.Tiles[v] = {}
@@ -56,6 +56,10 @@ end
 function TileSystem:update(dt)
 
 
+end
+
+function TileSystem:toWorld(x,y)
+  return self.Tiles[x][y]:getLoc()
 end
 
 return TileSystem

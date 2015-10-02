@@ -67,4 +67,8 @@ function Tile:update(dt)
 
 end
 
+function Tile:getLoc()
+  return self.x,self.y
+end
+
 return Tile
