@@ -35,6 +35,7 @@ class = require("middleclass")
 -- Following are suited to being globals
 UI = require("thranduil.ui")
 ATLAS = require("texmate.AtlasImporter").loadAtlasTexturePacker( "assets.entities.entitiesC", "assets/entities/entitiesC.png" )
+PROTOTYPEASSETS = require("texmate.AtlasImporter").loadAtlasTexturePacker( "assets.entities.TileAssets", "assets/entities/TileAssets.png" )
 
 -- Setup our UI framework with a offshelf theme
 UI.DefaultTheme = require("thranduil.Theme")
