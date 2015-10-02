@@ -7,13 +7,14 @@ TileSystem:include(require('stateful'))
 
 function TileSystem:initialize ()
   self.Tiles = {}
+  local scale = 0.5
 
   for v=1,10 do
     for i=1,10 do
       local offset = 0
-        if v % 2 == 0 then offset = 40 end
+        if v % 2 == 0 then offset = 65 end
         print(i,v)
-        table.insert(self.Tiles,Tile:new(66*i+offset,50*v,i,v))
+        table.insert(self.Tiles,Tile:new((132*scale)*i+offset*scale,(scale*100)*v,i,v,scale))
     end
   end
 

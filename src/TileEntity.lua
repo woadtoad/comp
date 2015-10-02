@@ -7,19 +7,23 @@ local Tile = class('Tile')
 Tile:include(require('stateful'))
 
 
-function Tile:initialize (x,y,i,v)
-  self.image = TexMateStatic(PROTOTYPEASSETS,"tileSnow.png",x,y,nil,30,nil,nil,0.5,nil,"center")
+function Tile:initialize (x,y,i,v,scale)
+  self.scale = scale
+  self.image = TexMateStatic(PROTOTYPEASSETS,"tileSnow.png",x,y,nil,24,nil,nil,self.scale,nil,"center")
 
   self.xcoor = i
   self.ycoor = v
-  self.xoffset = 65
-  self.yoffset = 64
+  self.xoffset = 65 *self.scale
+  self.yoffset = 64 *self.scale
   self.x = x
   self.y = y
 
-  self.collider = world:newPolygonCollider({10, 10, 10, 20, 20, 20, 20, 10})
-
-  self.collider.body:setPosition(200,200)
+  local ww = 65 * self.scale
+  local hh = 66 * self.scale
+  local hhh2 = 34 * self.scale
+  self.collider = world:newPolygonCollider({0, -hh, ww, -hhh2, ww, hhh2, 0, hh, -ww,hhh2,-ww,-hhh2},{body_type = 'static'})
+  self.collider.body:setActive(false)
+  self.collider.body:setPosition(x,y)
 end
 
 
