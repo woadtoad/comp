@@ -21,14 +21,14 @@ return function(GameScene)
     self.rWall = world:newRectangleCollider(976, 0, 50, 800, {body_type = 'static'})
 
     --instantiate a new player.
-    self.archer = Player:new()
+    self.player = Player:new()
 
     self.TileTest = TileSystem:new()
 
     self.RockTest = ThePickup:new()
 
     --we'll just use a simple table to keep things updated
-    table.insert(updateList,self.archer)
+    table.insert(updateList,self.player)
     table.insert(updateList,self.TileTest)
     table.insert(updateList, self.RockTest)
 
@@ -67,14 +67,10 @@ return function(GameScene)
       SceneManager:gotoState(SCENES.MENU)
     end
 
-    if key =="x" then
-      self.archer:speak()
-    end
+  end
 
-    if key =="z" then
-      self.archer:gotoState("Idle")
-    end
-
+  function GameScene:input(input)
+    self.player:input(input)
   end
 
   function GameScene:drawFromUpdateList()

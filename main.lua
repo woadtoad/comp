@@ -46,9 +46,11 @@ local SceneManager = require('src.SceneManager')
 SceneManager:init()
 
 -- Start the game in the menu
-SceneManager:gotoState(SCENES.MENU)
+SceneManager:gotoState(SCENES.GAME)
 
 local Camera = require('src.Camera')
+local input = require('src.Input')
+require('src.INPUTS')(input) -- Initialise bindings
 
 -- Start the game loops
 function love.load()
@@ -58,6 +60,9 @@ end
 
 function love.update(dt)
   SceneManager:update(dt)
+
+  -- Our input functions will handle boipushy events
+  SceneManager:input(input)
 end
 
 function love.draw()
