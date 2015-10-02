@@ -1,5 +1,5 @@
 local SceneManager = require('src.SceneManager')
-local SCENES = require('src.SCENES')
+local SCENES = require('src.config.SCENES')
 local hxdx = require("hxdx")
 local world = require('src.world')
 local Camera = require('src.Camera')

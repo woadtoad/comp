@@ -48,7 +48,7 @@ function TileSystem:initialize (x, y)
             istile
           )
         )
-
+      end
   end
 end
 
