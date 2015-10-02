@@ -16,15 +16,16 @@ function  Effects:initialize()
 
   self.Pool = Pools:new(TexMate,30,PROTOTYPEASSETS,self.arrowAnimList,"Explosion",nil,nil,0,-30)
 
-
 end
 
-function Effects:makeEffect(name,x,y)
+function Effects:makeEffect(name,pivotx,pivoty,x,y)
     effect = self.Pool:makeActive()
 
     effect.endCallback[name] = function() self.Pool:deactivate(effect.key) end
     effect:changeAnim(name)
-    effect:changeLoc()
+    effect.offset.x = pivotx or 0
+    effect.offset.y = pivoty or 0
+    effect:changeLoc(x,y)
 
 end
 

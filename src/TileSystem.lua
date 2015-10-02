@@ -1,7 +1,7 @@
 local Pools = require("src.Pool")
 local world = require('src.world')
 local Tile = require('src.TileEntity')
-local TileMap = require("assets.tileset2")
+local TileMap = require("assets.gameMap")
 
 local TileSystem = class('TileSystem')
 TileSystem:include(require('stateful'))
@@ -15,24 +15,35 @@ function TileSystem:initialize (x,y)
   for i=1,mapWidth do
     newTileMap[i] = {}
     for v=1,mapHeight do
+
+     --if i % 1 == 0 then table.remove(TileMap.layers[1].data,1) end
       table.insert(newTileMap[i], TileMap.layers[1].data[1])
 
       table.remove(TileMap.layers[1].data,1)
 
     end
+
   end
 
   self.Tiles = {}
-  local scale = 1
+  local scale = 0.4
 
-  for v=1,mapWidth do
-    self.Tiles[v] = {}
-    for i=1,mapHeight do
+  for i=1,mapWidth do
+    self.Tiles[i] = {}
+    for v=1,mapHeight do
       local offset = 0
-        if v % 2 == 0 then offset = 65 end
+          if i % 2 == 0 then offset = 65 end
+
           if newTileMap[i][v] == 1 then istile = true else istile = false end
 
-          table.insert(self.Tiles[v],Tile:new((132*scale)*i+offset*scale,(scale*100)*v,i,v,scale,istile))
+          table.insert(self.Tiles[i],Tile:new(( 132*scale)*v+offset*scale,
+                                                (scale*100)*i,
+                                                i,
+                                                v,
+                                                scale,
+                                                istile
+                                                )
+                        )
 
     end
   end

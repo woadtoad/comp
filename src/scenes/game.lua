@@ -27,14 +27,16 @@ return function(GameScene)
     self.TileTest = TileSystem:new()
 
     self.TileTest.Tiles[10][10]:damage(1)
-    self.TileTest.Tiles[20][20]:damage(3)
-    self.TileTest.Tiles[30][20]:damage(2)
+
 
     self.RockTest = ThePickup:new()
 
     self.EffectTest = Effects:new()
 
-    self.EffectTest:makeEffect("Explosion",100,100)
+    self.EffectTest:makeEffect("Explosion",0,-120,self.TileTest.Tiles[10][10]:getLoc())
+
+
+
     --we'll just use a simple table to keep things updated
     table.insert(updateList,self.player)
     table.insert(updateList,self.TileTest)
@@ -44,7 +46,7 @@ return function(GameScene)
 
   function GameScene:update(dt)
 
-    self.EffectTest:update(dt)
+
     world:update(dt)
 
     --Iterate through the items for update
@@ -52,10 +54,12 @@ return function(GameScene)
       updateList[i]:update(dt)
     end
 
+
+    self.EffectTest:update(dt)
   end
 
   function GameScene:draw()
-    self.EffectTest:draw()
+
 
     if DEBUG.MODE == DEBUG.MODES.SHOW_GAME or DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION then
       --Iterate through the items for drawing
@@ -66,6 +70,8 @@ return function(GameScene)
       --Debug Drawing for physics
       world:draw()
     end
+
+    self.EffectTest:draw()
 
   end
 

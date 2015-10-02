@@ -16,8 +16,8 @@ function Tile:initialize (x,y,i,v,scale,active)
     self.scale = scale
     self.image = TexMateStatic(PROTOTYPEASSETS,"tileSnow.png",x,y,nil,24,nil,nil,self.scale,nil,"center")
 
-    self.xcoor = i
-    self.ycoor = v
+    self.xcoor = v
+    self.ycoor = i
     self.xoffset = 65 *self.scale
     self.yoffset = 64 *self.scale
     self.x = x
@@ -56,7 +56,7 @@ function Tile:draw()
     self.image:draw()
 
     love.graphics.setColor(0,0,0,255) --Add this line
-    love.graphics.print(self.xcoor..","..self.ycoor,self.x,self.y)
+    love.graphics.print(self.xcoor..","..self.ycoor,self.x-20,self.y-20)
     love.graphics.setColor(255,255,255,255) --Add this line
 
   end
