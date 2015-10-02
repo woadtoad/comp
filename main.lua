@@ -40,18 +40,20 @@ PROTOTYPEASSETS = require("texmate.AtlasImporter").loadAtlasTexturePacker( "asse
 -- Setup our UI framework with a offshelf theme
 UI.DefaultTheme = require("thranduil.Theme")
 
+local SCENES = require('src.SCENES')
 -- Our singleton SceneManager bootstraps the scenes from ./src/scenes/
 local SceneManager = require('src.SceneManager')
 SceneManager:init()
 
 -- Start the game in the menu
-SceneManager:gotoState(require('src.SCENES').MENU)
+SceneManager:gotoState(SCENES.MENU)
 
 local Camera = require('src.Camera')
 
 -- Start the game loops
 function love.load()
   UI.registerEvents()
+  Camera:setScale(DEBUG.ZOOM) -- TODO: fix
 end
 
 function love.update(dt)
@@ -59,7 +61,16 @@ function love.update(dt)
 end
 
 function love.draw()
-  SceneManager:draw()
+  -- We only want the camera to draw the Game-like scenes
+  if SceneManager:current() == SCENES.GAME then
+    Camera:draw(
+    function(l, t, w, h)
+        SceneManager:draw()
+      end
+    )
+  else
+    SceneManager:draw()
+  end
 end
 
 function love.keypressed(key, isrepeat)

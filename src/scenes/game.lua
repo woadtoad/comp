@@ -10,8 +10,6 @@ return function(GameScene)
 
   function GameScene:initialize()
     --we are using box 2d in this example, and i am using a little library called hxcx which simplifies using box 2d a ton, but we still have access to the core mappings so it's a win win for us.
-    world = hxdx.newWorld({gravity_y = 70})
-
     world:addCollisionClass('Ghost')
     world:collisionClassesSet()
 
@@ -32,11 +30,6 @@ return function(GameScene)
   end
 
   function GameScene:update(dt)
-
-    if love.joystick.isDown then
-      print("controller")
-    end
-
     world:update(dt)
 
     --Iterate through the items for update
@@ -48,12 +41,14 @@ return function(GameScene)
 
   function GameScene:draw()
 
-    --Debug Drawing for physics
-    world:draw()
+    if DEBUG.MODE == DEBUG.MODES.SHOW_GAME or DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION then
+      --Iterate through the items for drawing
+        self:drawFromUpdateList()
+    end
 
-    --Iterate through the items for update
-    for i, v in pairs(updateList) do
-      updateList[i]:draw()
+    if DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION or DEBUG.MODE == DEBUG.MODES.SHOW_ONLY_COLLISION then
+      --Debug Drawing for physics
+      world:draw()
     end
 
   end
@@ -75,6 +70,13 @@ return function(GameScene)
       self.archer:gotoState("Idle")
     end
 
+  end
+
+  function GameScene:drawFromUpdateList()
+    --Iterate through the items for update
+    for i, v in pairs(updateList) do
+      updateList[i]:draw()
+    end
   end
 
 end

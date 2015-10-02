@@ -28,8 +28,6 @@ for i,cliArg in ipairs(args) do
   end
 end
 
-if DEBUG.MODE > DEBUG.MODES.SHOW_GAME then
-  print('\nDebug\n------------\n')
-  print('DEBUG.MODE: ' .. require('src.util').getkeyfromvalue(DEBUG.MODES, DEBUG.MODE))
-  print('DEBUG.ZOOM: ' .. DEBUG.ZOOM .. '\n')
-end
+print('\nDebug\n------------\n')
+print('DEBUG.MODE: ' .. require('src.util').getkeyfromvalue(DEBUG.MODES, DEBUG.MODE))
+print('DEBUG.ZOOM: ' .. DEBUG.ZOOM .. '\n')

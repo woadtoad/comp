@@ -8,6 +8,9 @@ package.path = './libs/?.lua;./libs/?/init.lua;./assets/entities/?.lua;' .. pack
 -- Checks before enabling debugging features
 require('src.debug')
 
+-- Setup seed for random functions
+math.randomseed(os.clock ())
+
 -- Prefilled love~
 function love.conf(t)
 

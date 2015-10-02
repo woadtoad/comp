@@ -15,6 +15,11 @@ function SceneManager:getScene(sceneName)
   return SceneManager.static.states[sceneName]
 end
 
+-- Gets a state from SceneManager, which is essentially a Scene
+function SceneManager:current()
+  return self.__stateStack[#self.__stateStack]
+end
+
 -- Requires all the files for the scenes
 function SceneManager:init()
     -- Attach our scene logic
