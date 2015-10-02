@@ -14,7 +14,7 @@ function Tile:initialize (x,y,i,v,scale,active)
     self.health = 3
 
     self.scale = scale
-    self.image = TexMateStatic(PROTOTYPEASSETS,"tileSnow.png",x,y,nil,24,nil,nil,self.scale,nil,"center")
+    self.image = TexMateStatic(TEAMASSETS,"icetile/TileState_0000",x,y,nil,10,nil,nil,self.scale,nil,"center")
 
     self.xcoor = v
     self.ycoor = i
@@ -24,8 +24,8 @@ function Tile:initialize (x,y,i,v,scale,active)
     self.y = y
 
     local ww = 65 * self.scale
-    local hh = 66 * self.scale
-    local hhh2 = 34 * self.scale
+    local hh = 70 * self.scale
+    local hhh2 = 32 * self.scale
     self.collider = world:newPolygonCollider({0, -hh, ww, -hhh2, ww, hhh2, 0, hh, -ww,hhh2,-ww,-hhh2},{body_type = 'static'})
     self.collider.body:setActive(false)
     self.collider.body:setPosition(x,y)
@@ -40,11 +40,11 @@ function Tile:damage(amt)
     self.active = true
 
     if damage == 3 then
-      self.image:changeImage("tileAutumn.png")
+      self.image:changeImage("icetile/TileState_0001")
     elseif damage == 2 then
-      self.image:changeImage("tileRock.png")
+      self.image:changeImage("icetile/TileState_0002")
     elseif damage == 1 then
-      self.image:changeImage("tileSand.png")
+      self.image:changeImage("icetile/TileState_0003")
     elseif damage == 0 then
       self.active = false
     end
@@ -56,7 +56,7 @@ function Tile:draw()
     self.image:draw()
 
     love.graphics.setColor(0,0,0,255) --Add this line
-    love.graphics.print(self.xcoor..","..self.ycoor,self.x-20,self.y-20)
+    --love.graphics.print(self.xcoor..","..self.ycoor,self.x-20,self.y-20)
     love.graphics.setColor(255,255,255,255) --Add this line
 
   end

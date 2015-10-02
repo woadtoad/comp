@@ -17,6 +17,8 @@ return function(GameScene)
     world:addCollisionClass('Ghost')
     world:collisionClassesSet()
 
+
+    love.graphics.setBackgroundColor( 100, 110, 200 )
     --level Collission
     --self.ground = world:newRectangleCollider(0, 750, 1024, 50, {body_type = 'static'})
     --self.lWall = world:newRectangleCollider(0, 0, 50, 800, {body_type = 'static'})
@@ -36,7 +38,9 @@ return function(GameScene)
 
     self.EffectTest:makeEffect("Explosion",0,-120,self.TileTest.Tiles[10][10]:getLoc())
 
+
     self:resetCameraPosition()
+
 
     --we'll just use a simple table to keep things updated
 

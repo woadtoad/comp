@@ -22,12 +22,13 @@ function TileSystem:initialize (x, y)
   end
 
   self.Tiles = {}
-  local scale = 0.4
+  local scale = 0.5
 
   for i=1, mapWidth do
     self.Tiles[i] = {}
     for v=1, mapHeight do
       local offset = 0
+
         if i % 2 == 0 then offset = 65 end
 
         if newTileMap[i][v] == 1 then
@@ -38,9 +39,9 @@ function TileSystem:initialize (x, y)
 
         table.insert(
           self.Tiles[i],
-          Tile:new(( 132*scale)*v+offset*scale,
+          Tile:new(( 128*scale)*v+offset*scale,
           (
-            scale*100)*i,
+            scale*110)*i,
             i,
             v,
             scale,
@@ -48,7 +49,6 @@ function TileSystem:initialize (x, y)
           )
         )
 
-    end
   end
 end
 
