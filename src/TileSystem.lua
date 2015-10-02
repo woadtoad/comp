@@ -7,55 +7,53 @@ local TileSystem = class('TileSystem')
 TileSystem:include(require('stateful'))
 
 
-function TileSystem:initialize (x,y)
+function TileSystem:initialize (x, y)
   local mapWidth = TileMap.width
   local mapHeight = TileMap.height
   local newTileMap = {}
   local istile = true
+
   for i=1,mapWidth do
     newTileMap[i] = {}
     for v=1,mapHeight do
-
-     --if i % 1 == 0 then table.remove(TileMap.layers[1].data,1) end
       table.insert(newTileMap[i], TileMap.layers[1].data[1])
-
       table.remove(TileMap.layers[1].data,1)
-
     end
-
   end
 
   self.Tiles = {}
   local scale = 0.4
 
-  for i=1,mapWidth do
+  for i=1, mapWidth do
     self.Tiles[i] = {}
-    for v=1,mapHeight do
+    for v=1, mapHeight do
       local offset = 0
-          if i % 2 == 0 then offset = 65 end
+        if i % 2 == 0 then offset = 65 end
 
-          if newTileMap[i][v] == 1 then istile = true else istile = false end
+        if newTileMap[i][v] == 1 then
+          istile = true
+        else
+          istile = false
+        end
 
-          table.insert(self.Tiles[i],Tile:new(( 132*scale)*v+offset*scale,
-                                                (scale*100)*i,
-                                                i,
-                                                v,
-                                                scale,
-                                                istile
-                                                )
-                        )
+        table.insert(
+          self.Tiles[i],
+          Tile:new(( 132*scale)*v+offset*scale,
+          (
+            scale*100)*i,
+            i,
+            v,
+            scale,
+            istile
+          )
+        )
 
     end
   end
 end
 
 function TileSystem:draw()
-  --Tiles need the table drawn backwards
-
-  -- for i=#self.Tiles, 1,-1 do
-  --  self.Tiles[i]:draw()
-  -- end
-
+  --Tiles need the table drawn backwards so that overlapping looks correct
   for i=1,#self.Tiles do
     for v=1,#self.Tiles[i] do
       self.Tiles[i][v]:draw()
@@ -65,8 +63,6 @@ function TileSystem:draw()
 end
 
 function TileSystem:update(dt)
-
-
 end
 
 function TileSystem:toWorld(x,y)
