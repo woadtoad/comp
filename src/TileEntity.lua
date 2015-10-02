@@ -19,6 +19,7 @@ function Tile:initialize (x,y,i,v)
 
   self.collider = world:newPolygonCollider({10, 10, 10, 20, 20, 20, 20, 10})
 
+  self.collider.body:setPosition(200,200)
 end
 
 
