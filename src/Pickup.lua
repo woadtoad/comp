@@ -7,3 +7,12 @@ local Pickup = class('Pickup')
 function Pickup:initialize()
   animlist = {}
 end
+
+function Pickup:update(dt)
+
+end
+
+function Pickup:draw()
+
+end
+
