@@ -3,6 +3,7 @@ local SCENES = require('src.SCENES')
 local hxdx = require("hxdx")
 local world = require('src.world')
 local Player = require('src.Player')
+local Tile = require('src.TileEntity')
 
 return function(GameScene)
   local updateList = {}
@@ -22,8 +23,12 @@ return function(GameScene)
     --instantiate a new player.
     self.archer = Player:new()
 
+    self.TileTest = Tile:new()
+
     --we'll just use a simple table to keep things updated
     table.insert(updateList,self.archer)
+    table.insert(updateList,self.TileTest)
+
   end
 
   function GameScene:update(dt)

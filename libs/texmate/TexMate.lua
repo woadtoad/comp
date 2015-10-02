@@ -55,7 +55,7 @@ function _M:frameCounter(name,rangefrom,rangeto,padding,extension)
     if extension then string = string .. extension end
     names[i] = name .. string
   end
-  print("output",unpack(names))
+--  print("output",unpack(names))
   return unpack(names)
 end
 
