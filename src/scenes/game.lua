@@ -5,6 +5,7 @@ local world = require('src.world')
 local Player = require('src.Player')
 local Tile = require('src.TileEntity')
 local ThePickup = require('src.Pickup')
+local TileSystem = require('src.TileSystem')
 
 return function(GameScene)
   local updateList = {}
@@ -22,7 +23,7 @@ return function(GameScene)
     --instantiate a new player.
     self.archer = Player:new()
 
-    self.TileTest = Tile:new()
+    self.TileTest = TileSystem:new()
 
     self.RockTest = ThePickup:new()
 
