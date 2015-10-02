@@ -8,15 +8,15 @@ Pickup:include(require('stateful'))
 
 function Pickup:initialize()
   self.frame = TexMateStatic(PROTOTYPEASSETS,"rockDirt.png")
-  self.collision = world:newRectangleCollider(300, 300, 50, 50, {collision_class = 'Player'})
+  self.collision = world:newCircleCollider(300, 300, 50)
   self.collision.body:setFixedRotation(false)
   self.collision.fixtures['main']:setRestitution(0.3)
   self.collision.body:applyLinearImpulse(100,0,self.collision.body:getX()-30,self.collision.body:getY()-30)
 end
 
 function Pickup:update(dt)
-
-  self.collision.body:applyLinearImpulse(500, 0)
+  self.frame:changeLoc(self.collision.body:getX(),self.collision.body:getY())
+  self.frame:changeRot(math.deg(self.collision.body:getAngle()))
 end
 
 function Pickup:draw()
