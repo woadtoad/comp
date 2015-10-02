@@ -40,6 +40,7 @@ PROTOTYPEASSETS = require('texmate.AtlasImporter').loadAtlasTexturePacker( 'asse
 
 -- Setup our UI framework with a offshelf theme
 UI.DefaultTheme = require('thranduil.Theme')
+CAMERA = require('src.Camera')
 
 local SCENES = require('src.SCENES')
 -- Our singleton SceneManager bootstraps the scenes from ./src/scenes/
@@ -49,7 +50,7 @@ SceneManager:init()
 -- Start the game in the menu
 SceneManager:gotoState(SCENES.GAME)
 
-CAMERA = require('src.Camera')
+
 local input = require('src.Input')
 require('src.INPUTS')(input) -- Initialise bindings
 

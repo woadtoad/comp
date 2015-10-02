@@ -35,13 +35,13 @@ return function(GameScene)
 
     self.EffectTest:makeEffect("Explosion",0,-120,self.TileTest.Tiles[10][10]:getLoc())
 
-
+    CAMERA:setPosition(500, 500)
 
     --we'll just use a simple table to keep things updated
-    table.insert(updateList,self.player)
+
     table.insert(updateList,self.TileTest)
     table.insert(updateList, self.RockTest)
-
+    table.insert(updateList,self.player)
   end
 
   function GameScene:update(dt)
@@ -70,7 +70,7 @@ return function(GameScene)
       --Debug Drawing for physics
       world:draw()
     end
-
+    --need to put this in draw list.
     self.EffectTest:draw()
 
   end
