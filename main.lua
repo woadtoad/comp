@@ -44,7 +44,7 @@ UI.DefaultTheme = require('thranduil.Theme')
 -- Initialises Camera
 local Camera = require('src.Camera')
 
-local SCENES = require('src.SCENES')
+local SCENES = require('src.config.SCENES')
 -- Our singleton SceneManager bootstraps the scenes from ./src/scenes/
 local SceneManager = require('src.SceneManager')
 SceneManager:init()
@@ -54,7 +54,7 @@ SceneManager:gotoState(SCENES.GAME)
 
 
 local input = require('src.Input')
-require('src.INPUTS')(input) -- Initialise bindings
+require('src.config.INPUTS')(input) -- Initialise bindings
 
 -- Start the game loops
 function love.load()

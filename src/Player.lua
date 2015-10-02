@@ -54,6 +54,7 @@ function Player:initialize()
   self.collider.body:setFixedRotation(true)
 
   self.armSprite = TexMate:new(PROTOTYPEASSETS,armAnims,"Idle",nil,nil,0,-30)
+  self.armCollider = world:newCircleCollider(300, 300, 25, {collision_class = 'Player'})
 
   self.lastXDir = 0
 end

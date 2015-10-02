@@ -1,4 +1,4 @@
-local SCENES = require('src.SCENES')
+local SCENES = require('src.config.SCENES')
 
 print('\nSceneManager\n------------\n')
 
