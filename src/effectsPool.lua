@@ -19,7 +19,7 @@ function Pool:makeActive(...)
   assert(self.inactiveItemList[1],"Pool too small")
 
   --checks for a method inside the class item and makes it active
-  if self.inactiveItemList[1].makeActive then self.inactiveItemList[1]:makeActive() end
+  if self.inactiveItemList[1].makeActive then self.inactiveItemList[1]:makeActive(...) end
 
   --pushes to the active list so we can pass through draw and update
   local key = self.inactiveItemList[1].key
