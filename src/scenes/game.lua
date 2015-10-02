@@ -4,6 +4,7 @@ local hxdx = require("hxdx")
 local world = require('src.world')
 local Player = require('src.Player')
 local Tile = require('src.TileEntity')
+local ThePickup = require('src.Pickup')
 
 return function(GameScene)
   local updateList = {}
@@ -23,9 +24,12 @@ return function(GameScene)
 
     self.TileTest = Tile:new()
 
+    self.RockTest = ThePickup:new()
+
     --we'll just use a simple table to keep things updated
     table.insert(updateList,self.archer)
     table.insert(updateList,self.TileTest)
+    table.insert(updateList, self.RockTest)
 
   end
 
