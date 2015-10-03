@@ -32,7 +32,7 @@ function Player:initialize(x, y, scale, id, facing)
   self.isFacingRight = facing or false
 
   self.radius = self.scale * Player.static.BASE_RADIUS
-  self.feetRadius = self.scale * (Player.static.BASE_RADIUS / 2)
+  self.feetRadius = self.scale * (Player.static.BASE_RADIUS / 4)
   self.spriteScale = self.scale / 1.4
 
   local playerAnims = {
@@ -99,7 +99,7 @@ function Player:initialize(x, y, scale, id, facing)
   }
 
   --make the sprite , args: atlas, animation dataformat, default animation.
-  self.sprite = TexMate:new(TEAMASSETS, playerAnims, "Idle" , nil, nil, 0, 30 * self.scale, nil, nil, self.spriteScale)
+  self.sprite = TexMate:new(TEAMASSETS, playerAnims, "Idle" , nil, nil, 0, 30 + self.scale, nil, nil, self.spriteScale)
 
   self.collider = world:newCircleCollider(x, y, self.radius, {collision_class = 'PlayerBody'})
   self.collider.parent = self
@@ -109,16 +109,25 @@ function Player:initialize(x, y, scale, id, facing)
 
   self.shadowSprite = TexMate:new(TEAMASSETS, playerShadow, "Idle" , nil, nil, 0, -(self.radius), nil, nil, self.spriteScale)
 
-  self.feetWidth = self.feetRadius * 3
+  self.feetWidth = self.feetRadius * 4
   self.feetHeight = self.feetRadius * 2
-  local feetX = x - (self.radius * 3 / 4)
-  local feetY = y
+  local feetX = x - self.feetWidth / 2
+  local feetY = y + self.feetHeight
   self.feet = world:newRectangleCollider(feetX, feetY, self.feetWidth, self.feetHeight, {collision_class = 'PlayerFeet'})
   self.feet.parent = self
   self.feetJoint = world:addJoint('RevoluteJoint', self.feet.body, self.collider.body, x, y, false)
   self.feet.body:setFixedRotation(true)
-  self.feet:addShape('left', 'CircleShape', -(self.radius / 1.5), 0, self.feetRadius)
-  self.feet:addShape('right', 'CircleShape', (self.radius / 1.5), 0, self.feetRadius)
+  self.feet:addShape('left', 'CircleShape', -(self.feetWidth / 2), 0, self.feetRadius)
+  self.feet:addShape('right', 'CircleShape', (self.feetWidth / 2), 0, self.feetRadius)
+
+  self.tailWidth = self.feetRadius / 2
+  self.tailHeight = self.tailWidth
+  local tailX = x - self.tailWidth / 2
+  local tailY = y + (self.feetRadius * 4) - self.tailWidth
+  self.tail = world:newRectangleCollider(tailX, tailY, self.tailWidth, self.tailHeight, {collision_class = 'PlayerTail'})
+  self.tail.parent = self
+  self.tailJoint = world:addJoint('RevoluteJoint', self.tail.body, self.feet.body, x, y, false)
+  self.tail.body:setFixedRotation(true)
 
   self.lastXDir = 0
   self.damagerTick = 0

@@ -263,8 +263,8 @@ end
 local Empty = Tile:addState('Empty')
 
 function Empty:updateStates(dt)
-  if self.collider:enter('PlayerFeet') then
-    local a, player = self.collider:enter('PlayerFeet')
+  if self.collider:enter('PlayerTail') then
+    local a, player = self.collider:enter('PlayerTail')
     player = player.parent
 
     if player:getStateStackDebugInfo()[1] ~= PLAYER_STATES.FALL then

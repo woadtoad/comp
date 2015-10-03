@@ -10,19 +10,10 @@ local COLLISION_CLASSES = {
     name = "PlayerFeet"
   },
 
-
-  -- Players Arm
   {
-    name = "ArmOut",
+    name = "PlayerTail",
     config = {
-      ignores = {'PlayerFeet'}
-    }
-  },
-
-  {
-    name = "ArmIn",
-    config = {
-      ignores = {'PlayerFeet'}
+      ignores = {"All"}
     }
   },
 
