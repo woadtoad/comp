@@ -21,10 +21,15 @@ Input.all_keys = {
 
 function Input.new()
     local self = {}
-
+    local controllerSupport = 4
     -- Previous and current key down states for all possible controllers
-    self.prev_state = {[1]={},[2]={},[3]={},[4]={}}
-    self.state = {[1]={},[2]={},[3]={},[4]={}}
+
+    self.prev_state = {}
+    self.state = {}
+    for i=1,controllerSupport do
+      table.insert(self.prev_state, i, {})
+      table.insert(self.state, i, {})
+    end
 
     -- self.binds[action] has a list of keys that correspond to this action
     self.binds = {}
@@ -141,7 +146,7 @@ function Input:update()
     for i, j in pairs(self.state) do
       self:pressed(nil, i)
       for e, f in pairs(self.state[i]) do
-        self.prev_state[i][e] = copy(self.state[i][e])
+        self.prev_state[i] = copy(self.state[i])
         self.state[i]['wheelup'] = false
         self.state[i]['wheeldown'] = false
       end

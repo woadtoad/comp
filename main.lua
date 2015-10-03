@@ -70,6 +70,7 @@ function love.update(dt)
 
   -- Our input functions will handle boipushy events
   SceneManager:input(input)
+  input:update()
 end
 
 function love.draw()
