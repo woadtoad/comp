@@ -11,7 +11,7 @@ function Tile:initialize (x,y,i,v,scale,active)
   self.active = active
   if active then
 
-    self.health = 3
+    self.health = 4
     self.regenRate = 1
 
     self.scale = scale
@@ -30,28 +30,15 @@ function Tile:initialize (x,y,i,v,scale,active)
     self.collider = world:newPolygonCollider({0, -hh, ww, -hhh2, ww, hhh2, 0, hh, -ww,hhh2,-ww,-hhh2},{body_type = 'static'})
     self.collider.body:setActive(false)
     self.collider.body:setPosition(x,y)
-
+    self:gotoState("Full")
   end
+
 end
 
 function Tile:damage(amt)
-  if self.active then
-    local damage = amt or 1
 
-    self.active = true
+    self.health  = self.health - 1
 
-    if damage == 3 then
-      self.image:changeImage("icetile2/TileState_0001")
-    elseif damage == 2 then
-      self.image:changeImage("icetile2/TileState_0002")
-    elseif damage == 1 then
-      self.image:changeImage("icetile2/TileState_0003")
-    elseif damage == 0 then
-      self.active = false
-
-
-    end
-  end
 end
 
 function Tile:regenHealth(dt)
@@ -85,26 +72,37 @@ end
 local Full = Tile:addState('Full')
 
 function Full:enteredState(dt)
+ -- print("full",self.health)
     self.image:changeImage("icetile2/TileState_0000")
 end
 
 function Full:update(dt)
 
+  if self.health < 4 then
+    self:gotoState("DamageOne")
+  end
+
 end
 
 ------------------------------------------------------------------------------
 
 ------------------------------------------------------------------------------
 
-local DamageOne = Tile:addState('DamageOne')
+local DamageOne = Tile:addState("DamageOne")
 
 function DamageOne:enteredState(dt)
-  print("Damage1")
+  print("DamageOne",self.health)
   self.image:changeImage("icetile2/TileState_0001")
 end
 
 function DamageOne:update(dt)
-  self:regenHealth()
+  self:regenHealth(dt)
+
+  if self.health <= 3 then
+    self:gotoState("DamageTwo")
+  elseif self.health >= 4 then
+    self:gotoState("Full")
+  end
 
 end
 
@@ -115,12 +113,17 @@ end
 local DamageTwo = Tile:addState('DamageTwo')
 
 function DamageTwo:enteredState(dt)
-  print("Damage2")
+  print("Damage2",self.health)
   self.image:changeImage("icetile2/TileState_0002")
 end
 
 function DamageTwo:update(dt)
-  self:regenHealth()
+  self:regenHealth(dt)
+  if self.health <= 2 then
+    self:gotoState("DamageThree")
+  elseif self.health >= 3 then
+    self:gotoState("DamageOne")
+  end
 
 end
 
@@ -131,13 +134,19 @@ end
 local DamageThree = Tile:addState('DamageThree')
 
 function DamageThree:enteredState(dt)
-  print("Damage3")
+  print("Damage3",self.health)
 
   self.image:changeImage("icetile2/TileState_0003")
 end
 
 function DamageThree:update(dt)
-  self:regenHealth()
+  self:regenHealth(dt)
+
+  if self.health <= 1 then
+    self:gotoState("Destroyed")
+  elseif self.health >= 2 then
+    self:gotoState("DamageTwo")
+  end
 
 end
 
@@ -153,6 +162,10 @@ function Destroyed:enteredState(dt)
 end
 
 function Destroyed:update(dt)
+
+end
+
+function Destroyed:draw()
 
 end
 

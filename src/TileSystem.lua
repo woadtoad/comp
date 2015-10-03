@@ -63,6 +63,12 @@ function TileSystem:draw()
 end
 
 function TileSystem:update(dt)
+
+  for i=1,#self.Tiles do
+    for v=1,#self.Tiles[i] do
+      self.Tiles[i][v]:update(dt)
+    end
+  end
 end
 
 function TileSystem:toWorld(x,y)
