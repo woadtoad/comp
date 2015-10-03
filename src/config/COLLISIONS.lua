@@ -28,6 +28,21 @@ local COLLISION_CLASSES = {
     }
   },
 
+  -- pickup and pickup base
+  {
+    name = "Pickup",
+    config = {
+      enter = {"Base"}
+    }
+  },
+
+  {
+    name = "Base",
+    config = {
+      enter = {"Pickup"}
+    }
+  },
+
   -- Tiles
 }
 

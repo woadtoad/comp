@@ -10,7 +10,7 @@ local isActive
 
 function Pickup:initialize()
   self.frame = TexMateStatic(PROTOTYPEASSETS,"rockDirt.png",0,0,65,123)
-  self.collider = world:newCircleCollider(300, 300, 50, {collision_class='Pickup'})
+  self.collider = world:newCircleCollider(300, 300, 50, {collision_class={'Pickup'}})
   self.collider.body:setFixedRotation(true)
   self.collider.fixtures['main']:setRestitution(0.3)
   self.collider.body:applyLinearImpulse(100,0,self.collider.body:getX()-30,self.collider.body:getY()-30)
@@ -22,10 +22,10 @@ function Pickup:update(dt)
   self.frame:changeRot(math.deg(self.collider.body:getAngle()))
  --[[ if self.collider:enter('Player') then
       --player collision logic here
-  end
-  if self.collider:enter('Goal') then
-      --goal collision logic here
   end]]--
+  if self.collider:enter('Base') then
+      print("base hit")
+  end
 end
 
 function Pickup:draw()

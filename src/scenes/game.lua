@@ -8,6 +8,7 @@ local Tile = require('src.TileEntity')
 local ThePickup = require('src.Pickup')
 local TileSystem = require('src.TileSystem')
 local Effects = require('src.Effects')
+local PlayerBase = require('src.PlayerBase')
 
 return function(GameScene)
   local updateList = {}
@@ -37,11 +38,14 @@ return function(GameScene)
 
     self.EffectTest:makeEffect("Explosion",0,-120,self.TileTest.Tiles[10][10]:getLoc())
 
+    self.BaseTest = PlayerBase:new(100,100,1,100)
+
     self:resetCameraPosition()
     --we'll just use a simple table to keep things updated
 
     table.insert(updateList,self.TileTest)
     table.insert(updateList, self.RockTest)
+    table.insert(updateList, self.BaseTest)
     for i,player in ipairs(self.players) do
       table.insert(updateList, player)
     end

@@ -1,4 +1,6 @@
 
+local world = require('src.world')
+local world = require('src.world')
 toad = [[
 
                                  ,▄▄▄▄▄,
