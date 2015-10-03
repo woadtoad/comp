@@ -6,6 +6,7 @@ local TileMap = require("assets.gameMap5")
 local TileSystem = class('TileSystem')
 TileSystem:include(require('stateful'))
 
+local viableTable = {}
 
 function TileSystem:initialize (x, y)
   local mapWidth = TileMap.width
@@ -46,6 +47,11 @@ function TileSystem:initialize (x, y)
             istile,newTileMap[i][v]
           )
         )
+
+        if newTileMap[i][v] == 1 then
+          table.insert(viableTable,{i,v})
+          print(i,v,"is viable")
+        end
       end
   end
 end
@@ -67,6 +73,11 @@ function TileSystem:update(dt)
       self.Tiles[i][v]:update(dt)
     end
   end
+end
+
+--for muzza
+function TileSystem:viableBuffet()
+  return viableTable
 end
 
 function TileSystem:toWorld(x,y)

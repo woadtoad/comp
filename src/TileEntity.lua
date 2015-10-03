@@ -16,6 +16,7 @@ Tile.static.TILE_TYPES = {
 function Tile:initialize (x,y,i,v,scale,active,typetile)
   if not active then return end
 
+
   self.active = active
   self.resetTime = 3
   self.type = typetile
