@@ -10,9 +10,10 @@ Player.static.BASE_SPEED = 30
 Player.static.BASE_VEC = Vector(0, 0)
 Player.static.BASE_RADIUS = 25
 
-function Player:initialize(x, y, scale)
+function Player:initialize(x, y, scale, id)
   self.Health = 10
   self.scale = scale or 1
+  self.id = id or 1
 
   self.radius = self.scale * Player.static.BASE_RADIUS
   self.feetRadius = self.scale * (Player.static.BASE_RADIUS / 2)
@@ -92,8 +93,8 @@ function Player:draw()
 end
 
 function Player:input(input)
-  local xDir = input:down(INPUTS.MOVEX)
-  local yDir = input:down(INPUTS.MOVEY)
+  local xDir = input:down(INPUTS.MOVEX, self.id)
+  local yDir = input:down(INPUTS.MOVEY, self.id)
 
   if xDir then
     self:moveX(xDir)
