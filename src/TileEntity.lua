@@ -14,8 +14,32 @@ function Tile:initialize (x,y,i,v,scale,active)
     self.health = 4
     self.regenRate = 1
 
+    local anims = {}
+
+    anims["IdleState"] = {
+      framerate = 4,
+      frames = {"icetile2/TileState_0000","icetile2/TileRipple_0000"}
+    }
+
+    anims["DamageOne"] = {
+      framerate = 8,
+      frames = {"icetile2/TileState_0001"}
+    }
+
+    anims["DamageTwo"] = {
+      framerate = 8,
+      frames = {"icetile2/TileState_0002"}
+    }
+
+    anims["DamageThree"] = {
+      framerate = 8,
+      frames = {"icetile2/TileState_0003"}
+    }
+
     self.scale = scale
-    self.image = TexMateStatic(TEAMASSETS,"icetile2/TileState_0000",x,y,nil,10,nil,nil,self.scale,nil,"center")
+    self.sprite = TexMate(TEAMASSETS,anims,"IdleState",x,y,nil,10,nil,nil,self.scale)
+    --(Atlas, animlist, defaultanim, x, y, pivotx, pivoty, rot, flip, scale)
+
 
     self.xcoor = v
     self.ycoor = i
@@ -47,7 +71,7 @@ end
 
 function Tile:draw()
   if self.active then
-    self.image:draw()
+    self.sprite:draw()
 
     if DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION or DEBUG.MODE == DEBUG.MODES.SHOW_ONLY_COLLISION then
       love.graphics.setColor(0,0,0,255) --Add this line
@@ -73,11 +97,11 @@ local Full = Tile:addState('Full')
 
 function Full:enteredState(dt)
  -- print("full",self.health)
-    self.image:changeImage("icetile2/TileState_0000")
+    self.sprite:changeAnim("IdleState")
 end
 
 function Full:update(dt)
-
+  self.sprite:update(dt)
   if self.health < 4 then
     self:gotoState("DamageOne")
   end
@@ -92,10 +116,11 @@ local DamageOne = Tile:addState("DamageOne")
 
 function DamageOne:enteredState(dt)
   print("DamageOne",self.health)
-  self.image:changeImage("icetile2/TileState_0001")
+  self.sprite:changeAnim("DamageOne")
 end
 
 function DamageOne:update(dt)
+  self.sprite:update(dt)
   self:regenHealth(dt)
 
   if self.health <= 3 then
@@ -114,10 +139,11 @@ local DamageTwo = Tile:addState('DamageTwo')
 
 function DamageTwo:enteredState(dt)
   print("Damage2",self.health)
-  self.image:changeImage("icetile2/TileState_0002")
+  self.sprite:changeAnim("DamageTwo")
 end
 
 function DamageTwo:update(dt)
+  self.sprite:update(dt)
   self:regenHealth(dt)
   if self.health <= 2 then
     self:gotoState("DamageThree")
@@ -136,10 +162,11 @@ local DamageThree = Tile:addState('DamageThree')
 function DamageThree:enteredState(dt)
   print("Damage3",self.health)
 
-  self.image:changeImage("icetile2/TileState_0003")
+  self.sprite:changeAnim("DamageThree")
 end
 
 function DamageThree:update(dt)
+    self.sprite:update(dt)
   self:regenHealth(dt)
 
   if self.health <= 1 then
@@ -159,6 +186,8 @@ local Destroyed = Tile:addState('Destroyed')
 
 function Destroyed:enteredState(dt)
   print("dest")
+
+
 end
 
 function Destroyed:update(dt)
