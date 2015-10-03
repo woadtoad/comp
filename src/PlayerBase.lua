@@ -3,7 +3,7 @@ local world = require('src.world')
 
 local theX, theY, theRadius, player
 
-function PlayerBase:initialize(x,y,playerId, radius)
+function PlayerBase:initialize(x,y,playerId,radius)
   theX = x
   theY = y
   theRadius = radius
@@ -26,11 +26,11 @@ function PlayerBase:update(dt)
   end]]
 end
 
-function PlayerBase:GetCurrentPoints()
+function PlayerBase:getCurrentPoints()
   return currentPoints
 end
 
-function PlayerBase:GetCurrentPlayer()
+function PlayerBase:getCurrentPlayer()
   return player
 end
 

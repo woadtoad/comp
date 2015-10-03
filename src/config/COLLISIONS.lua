@@ -30,7 +30,7 @@ local COLLISION_CLASSES = {
   {
     name = "Pickup",
     config = {
-      ignores = { 'All' }
+      --ignores = { 'All' }
     }
   },
 

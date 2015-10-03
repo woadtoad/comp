@@ -40,7 +40,7 @@ return function(GameScene)
 
     self.EffectTest:makeEffect("Explosion",0,-120,self.TileTest.Tiles[10][10]:getLoc())
 
-    self.BaseTest = PlayerBase:new(100,100,1,100)
+    self.Bases = {PlayerBase:new(400,100,1,100),PlayerBase:new(100,400,2,100),PlayerBase:new(400,400,3,100),PlayerBase:new(100,100,4,100)}
 
     self:resetCameraPosition()
 
@@ -56,6 +56,10 @@ return function(GameScene)
     table.insert(updateList, self.RockTest)
     table.insert(updateList, self.RockTest2)
     table.insert(updateList, self.BaseTest)
+    for i, base in ipairs(self.Bases) do
+      table.insert(updateList, base)
+      print("player"..base:getCurrentPlayer())
+    end
     for i,player in ipairs(self.players) do
       table.insert(updateList, player)
     end
