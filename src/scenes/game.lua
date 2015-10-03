@@ -268,6 +268,7 @@ return function(GameScene)
       self.theTile.y = self.viableTiles[self.theRandom][2]
       table.insert(self.pickupPool, ThePickup:new(self.theTile.x,self.theTile.y))
       table.insert(self.updateList,self.pickupPool[#self.pickupPool])
+      table.insert(self.drawList,self.pickupPool[#self.pickupPool])
       self.thePickupTimer = love.math.random(3, 20)
     end
   end
