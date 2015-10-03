@@ -15,7 +15,7 @@ function round(num, idp)
 
 end
 
-function _M:initialize (Atlas,animlist,defaultanim,x,y,pivotx,pivoty,rot,flip,scale)
+function _M:initialize (Atlas, animlist, defaultanim, x, y, pivotx, pivoty, rot, flip, scale)
 
   if flip == true then flip = -1 elseif flip == false then flip = 1 end
 

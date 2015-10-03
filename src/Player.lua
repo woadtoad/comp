@@ -16,26 +16,28 @@ function Player:initialize(x, y, scale)
 
   self.radius = self.scale * Player.static.BASE_RADIUS
   self.feetRadius = self.scale * (Player.static.BASE_RADIUS / 2)
+  self.armRadius = self.scale * (Player.static.BASE_RADIUS / 2.5)
+  self.spriteScale = self.scale / 1.4
 
   local playerAnims = {
     Idle = {
       framerate = 14,
       frames = {
-        'smallRockGrass.png'
+        'mockup_toad_new/ToadIdle_0000'
       }
     },
 
     Running = {
       framerate = 14,
       frames = {
-        'alienGreen.png'
+        'mockup_toad_new/ToadIdle_0000'
       }
     },
 
     Skidding = {
       framerate = 14,
       frames = {
-        'alienPink.png'
+        'mockup_toad_new/ToadIdle_0000'
       }
     }
   }
@@ -50,20 +52,27 @@ function Player:initialize(x, y, scale)
   }
 
   --make the sprite , args: atlas, animation dataformat, default animation.
-  self.sprite = TexMate:new(PROTOTYPEASSETS,playerAnims,"Idle",nil,nil,0,0)
+  self.sprite = TexMate:new(TEAMASSETS, playerAnims, "Idle" , nil, nil, 0, -10 * self.scale, nil, nil, self.spriteScale)
 
   self.collider = world:newCircleCollider(x, y, self.radius, {collision_class = 'PlayerBody'})
   self.collider.fixtures['main']:setRestitution(0.3)
   self.collider.body:setLinearDamping(2)
   self.collider.body:setFixedRotation(true)
 
-  self.feet = world:newCircleCollider(x, y + (self.radius / 2 + self.radius / 4), self.feetRadius, {collision_class = 'PlayerFeet'})
-  self.feet.body:setFixedRotation(true)
-
+  -- Add feet to player via fixed joint
+  local feetXSize = self.feetRadius * 3
+  local feetYSize = self.feetRadius * 2
+  local feetX = x - (self.radius * 3 / 4)
+  local feetY = y
+  self.feet = world:newRectangleCollider(feetX, feetY, feetXSize, feetYSize, {collision_class = 'PlayerFeet'})
   self.joint = world:addJoint('RevoluteJoint', self.feet.body, self.collider.body, x, y, false)
+  self.feet.body:setFixedRotation(true)
+  self.feet:addShape('left', 'CircleShape', -(self.radius / 1.5), 0, self.feetRadius)
+  self.feet:addShape('right', 'CircleShape', (self.radius / 1.5), 0, self.feetRadius)
 
   -- Add arm to Player
-  self.armSprite = TexMate:new(PROTOTYPEASSETS,armAnims,"Idle",nil,nil,0,-30)
+  self.arm = world:newCircleCollider(x, y, self.armRadius, {collision_class = 'ArmIn'})
+  self.armSprite = TexMate:new(PROTOTYPEASSETS,armAnims,"Idle",nil,nil,0,0)
 
   self.lastXDir = 0
 end
@@ -72,11 +81,10 @@ function Player:update(dt)
   self:updateMovingAnimation()
 
   self.sprite:update(dt)
-
   self.sprite:changeLoc(self.collider.body:getX(),self.collider.body:getY())
 
-  -- self.armSprite:changeLoc(self.fixtures['feet'].body:getX(),self.fixtures['feet'].body:getY())
-  -- self.sprite:changeRot(math.deg(self.fixtures['feet'].body:getAngle()))
+  self.armSprite:changeLoc(self.arm.body:getX(),self.arm.body:getY())
+  self.sprite:changeRot(math.deg(self.arm.body:getAngle()))
 end
 
 function Player:draw()
@@ -106,7 +114,7 @@ function Player:shoot(args)
 end
 
 function Player:move(dir, isY)
-  local speed = Player.static.BASE_SPEED * dir
+  local speed = Player.static.BASE_SPEED * dir * self.scale
 
   local x = 0
   local y = 0

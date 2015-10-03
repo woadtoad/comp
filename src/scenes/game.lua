@@ -21,7 +21,11 @@ return function(GameScene)
     love.graphics.setBackgroundColor( 100, 110, 200 )
 
     --instantiate a new player.
-    self.player = Player:new(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+    self.player = Player:new(
+    love.graphics.getWidth() / 2,
+    love.graphics.getHeight() / 2,
+    1
+    )
 
     self.TileTest = TileSystem:new()
 

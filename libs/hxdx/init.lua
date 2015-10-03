@@ -1,16 +1,16 @@
-local path = ... .. '.' local hx = {} hx.Math = require(path .. 'mlib.mlib') 
+local path = ... .. '.' local hx = {} hx.Math = require(path .. 'mlib.mlib')
 
---- @class World 
--- @description A World contains the [box2d world](https://www.love2d.org/wiki/World) as well as state for handling collision classes, methods for changing box2d world settings as well as methods for the creation of Colliders and Effectors.  
-local World = {} 
-World.__index = World 
+--- @class World
+-- @description A World contains the [box2d world](https://www.love2d.org/wiki/World) as well as state for handling collision classes, methods for changing box2d world settings as well as methods for the creation of Colliders and Effectors.
+local World = {}
+World.__index = World
 
---- Creates a new World 
--- @luastart 
+--- Creates a new World
+-- @luastart
 -- @code physics_world = hx.newWorld({gravity_y = 20})
--- @luaend 
+-- @luaend
 -- @arg {table=} settings - Table with optional settings for the world:
--- @setting {number=0} gravity_x - The world's x gravity component 
+-- @setting {number=0} gravity_x - The world's x gravity component
 -- @setting {number=0} gravity_y - The world's y gravity component
 -- @setting {boolean=true} allow_sleeping - If the world's bodies are allowed to sleep
 -- @setting {boolean=false} explicit_collision_events - If the collision classes added to this world will automatically generate collision events for all other collision classes they collide with or if this has to be specified manually
@@ -41,7 +41,7 @@ function World.new(hx, settings)
     self.query_debug_draw = {}
 
     love.physics.setMeter(32)
-    self.box2d_world = love.physics.newWorld(settings.gravity_x or 0, settings.gravity_y or 0, settings.allow_sleeping) 
+    self.box2d_world = love.physics.newWorld(settings.gravity_x or 0, settings.gravity_y or 0, settings.allow_sleeping)
 
     return setmetatable(self, World)
 end
@@ -79,8 +79,9 @@ function World:draw()
 
             elseif fixture:getShape():type() == 'CircleShape' then
                 local x, y = body:getPosition()
+                local xOffset, yOffset = fixture:getShape():getPoint()
                 local r = fixture:getShape():getRadius()
-                love.graphics.circle('line', x, y, r, 360)
+                love.graphics.circle('line', x + xOffset, y + yOffset, r, 360)
             end
         end
     end
@@ -122,16 +123,16 @@ end
 --- Adds a new collision class to the world. Collision classes are attached to colliders and define collider behavior in terms of which ones will be physically ignored and which ones will generate collision events between each other. All collision classes must be added before any collider is created. If `world.explicit_collision_events` is set to false (the default setting) then `enter`, `exit`, `pre` and `post` settings don't need to be specified (those events will be generated automatically for all existing collision classes).
 -- @luastart
 -- @code physics_world:addCollisionClass('Player', {
--- @code                                 ignores = {'NPC', 'Enemy'}, 
--- @code                                 enter = {'LevelTransitionArea'}, 
+-- @code                                 ignores = {'NPC', 'Enemy'},
+-- @code                                 enter = {'LevelTransitionArea'},
 -- @code                                 exit = {'Projectile'}})
 -- @luaend
 -- @arg {string} collision_class_name - The unique name of the collision class
 -- @arg {table} collision_class - The collision class. This table can contain:
 -- @setting {table[string]=} ignores - The collision classes that will be physically ignored
--- @setting {table[string]=} enter - The collision classes that will generate collision events when they enter contact 
--- @setting {table[string]=} exit - The collision classes that will generate collision events when they exit contact 
--- @setting {table[string]=} pre - The collision classes that will generate collision events right before collision response is applied 
+-- @setting {table[string]=} enter - The collision classes that will generate collision events when they enter contact
+-- @setting {table[string]=} exit - The collision classes that will generate collision events when they exit contact
+-- @setting {table[string]=} pre - The collision classes that will generate collision events right before collision response is applied
 -- @setting {table[string]=} post - The collision classes that will generate collision events right after collision response is applied
 function World:addCollisionClass(collision_class_name, collision_class)
     if self.collision_classes[collision_class_name] then error('Collision class ' .. collision_class_name .. ' already exists.') end
@@ -376,7 +377,7 @@ function World.collisionOnEnter(fixture_a, fixture_b, contact)
                 if collIf(collision.type1, collision.type2, a, b) then
                     a, b = collEnsure(collision.type1, a, collision.type2, b)
                     table.insert(a.collision_events[collision.type2], {collision_type = 'enter', collider_1 = a, collider_2 = b, contact = contact})
-                    if collision.type1 == collision.type2 then 
+                    if collision.type1 == collision.type2 then
                         table.insert(b.collision_events[collision.type1], {collision_type = 'enter', collider_1 = b, collider_2 = a, contact = contact})
                     end
                 end
@@ -389,7 +390,7 @@ function World.collisionOnEnter(fixture_a, fixture_b, contact)
                 if collIf(collision.type1, collision.type2, a, b) then
                     a, b = collEnsure(collision.type1, a, collision.type2, b)
                     table.insert(a.collision_events[collision.type2], {collision_type = 'enter', collider_1 = a, collider_2 = b, contact = contact})
-                    if collision.type1 == collision.type2 then 
+                    if collision.type1 == collision.type2 then
                         table.insert(b.collision_events[collision.type1], {collision_type = 'enter', collider_1 = b, collider_2 = a, contact = contact})
                     end
                 end
@@ -408,7 +409,7 @@ function World.collisionOnExit(fixture_a, fixture_b, contact)
                 if collIf(collision.type1, collision.type2, a, b) then
                     a, b = collEnsure(collision.type1, a, collision.type2, b)
                     table.insert(a.collision_events[collision.type2], {collision_type = 'exit', collider_1 = a, collider_2 = b, contact = contact})
-                    if collision.type1 == collision.type2 then 
+                    if collision.type1 == collision.type2 then
                         table.insert(b.collision_events[collision.type1], {collision_type = 'exit', collider_1 = b, collider_2 = a, contact = contact})
                     end
                 end
@@ -421,7 +422,7 @@ function World.collisionOnExit(fixture_a, fixture_b, contact)
                 if collIf(collision.type1, collision.type2, a, b) then
                     a, b = collEnsure(collision.type1, a, collision.type2, b)
                     table.insert(a.collision_events[collision.type2], {collision_type = 'exit', collider_1 = a, collider_2 = b, contact = contact})
-                    if collision.type1 == collision.type2 then 
+                    if collision.type1 == collision.type2 then
                         table.insert(b.collision_events[collision.type1], {collision_type = 'exit', collider_1 = b, collider_2 = a, contact = contact})
                     end
                 end
@@ -440,7 +441,7 @@ function World.collisionPre(fixture_a, fixture_b, contact)
                 if collIf(collision.type1, collision.type2, a, b) then
                     a, b = collEnsure(collision.type1, a, collision.type2, b)
                     a:preSolve(b, contact)
-                    if collision.type1 == collision.type2 then 
+                    if collision.type1 == collision.type2 then
                         b:preSolve(a, contact)
                     end
                 end
@@ -453,7 +454,7 @@ function World.collisionPre(fixture_a, fixture_b, contact)
                 if collIf(collision.type1, collision.type2, a, b) then
                     a, b = collEnsure(collision.type1, a, collision.type2, b)
                     a:preSolve(b, contact)
-                    if collision.type1 == collision.type2 then 
+                    if collision.type1 == collision.type2 then
                         b:preSolve(a, contact)
                     end
                 end
@@ -472,7 +473,7 @@ function World.collisionPost(fixture_a, fixture_b, contact, ni1, ti1, ni2, ti2)
                 if collIf(collision.type1, collision.type2, a, b) then
                     a, b = collEnsure(collision.type1, a, collision.type2, b)
                     a:postSolve(b, contact, ni1, ti1, ni2, ti2)
-                    if collision.type1 == collision.type2 then 
+                    if collision.type1 == collision.type2 then
                         b:postSolve(a, contact, ni1, ti1, ni2, ti2)
                     end
                 end
@@ -485,7 +486,7 @@ function World.collisionPost(fixture_a, fixture_b, contact, ni1, ti1, ni2, ti2)
                 if collIf(collision.type1, collision.type2, a, b) then
                     a, b = collEnsure(collision.type1, a, collision.type2, b)
                     a:postSolve(b, contact, ni1, ti1, ni2, ti2)
-                    if collision.type1 == collision.type2 then 
+                    if collision.type1 == collision.type2 then
                         b:postSolve(a, contact, ni1, ti1, ni2, ti2)
                     end
                 end
@@ -532,7 +533,7 @@ end
 -- @arg {number} x - The initial x position of the rectangle (left-top)
 -- @arg {number} y - The initial y position of the rectangle (left-top)
 -- @arg {number} w - The width of the rectangle
--- @arg {number} h - The height of the rectangle 
+-- @arg {number} h - The height of the rectangle
 -- @arg {number} corner_cut_size - The corner cut size
 -- @arg {table=} settings - A table with additional and optional settings. This table can contain:
 -- @setting {BodyType='dynamic'} body_type - The body type, can be 'static', 'dynamic' or 'kinematic'
@@ -605,7 +606,7 @@ function World:collisionClassInCollisionClassesList(collision_class, collision_c
         if collision_classes.except then
             for _, except in ipairs(collision_classes.except) do
                 for i, class in ipairs(all_collision_classes) do
-                    if class == except then 
+                    if class == except then
                         table.remove(all_collision_classes, i)
                         break
                     end
@@ -635,8 +636,8 @@ end
 function World:queryCircleArea(x, y, radius, collision_class_names)
     if not collision_class_names then collision_class_names = {'All'} end
     if not self.debug_drawing_disabled then table.insert(self.query_debug_draw, {type = 'circle', x = x, y = y, r = radius, frames = self.draw_query_for_n_frames}) end
-    
-    local colliders = self:queryBoundingBox(x-radius, y-radius, x+radius, y+radius) 
+
+    local colliders = self:queryBoundingBox(x-radius, y-radius, x+radius, y+radius)
     local outs = {}
     for _, collider in ipairs(colliders) do
         if self:collisionClassInCollisionClassesList(collider.collision_class, collision_class_names) then
@@ -667,7 +668,7 @@ function World:queryRectangleArea(x, y, w, h, collision_class_names)
     if not collision_class_names then collision_class_names = {'All'} end
     if not self.debug_drawing_disabled then table.insert(self.query_debug_draw, {type = 'rectangle', x = x, y = y, w = w, h = h, frames = self.draw_query_for_n_frames}) end
 
-    local colliders = self:queryBoundingBox(x, y, x+w, y+h) 
+    local colliders = self:queryBoundingBox(x, y, x+w, y+h)
     local outs = {}
     for _, collider in ipairs(colliders) do
         if self:collisionClassInCollisionClassesList(collider.collision_class, collision_class_names) then
@@ -756,7 +757,7 @@ function World:addJoint(joint_type, ...)
     return joint
 end
 
---- Removes a joint from the world 
+--- Removes a joint from the world
 -- @arg {Joint} joint - The joint to be removed
 function World:removeJoint(joint)
     joint:destroy()
@@ -773,7 +774,7 @@ function World:destroy()
     self.box2d_world = nil
 end
 
---- @class Collider 
+--- @class Collider
 -- @description A collider is a box2d physics object (body + shape + fixture) that has a collision class and that can generate collision events.
 local Collider = {}
 Collider.__index = Collider
@@ -847,7 +848,7 @@ function Collider.new(world, collider_type, ...)
     self.shapes['main'] = shape
     self.fixtures['main'] = fixture
     self.sensors['main'] = sensor
-    
+
     self.preSolve = function() end
     self.postSolve = function() end
 
@@ -923,7 +924,7 @@ function Collider:exit(other_collision_class_name)
     end
 end
 
---- Sets the preSolve callback. Unlike with `:enter` or `:exit` that can be delayed and checked after the physics simulation is done for this frame, 
+--- Sets the preSolve callback. Unlike with `:enter` or `:exit` that can be delayed and checked after the physics simulation is done for this frame,
 -- both preSolve and postSolve must be callbacks that are resolved immediately, since they may change how the rest of the simulation plays out on this frame.
 -- @luastart
 -- @code collider:setPreSolve(function(collider_1, collider_2, contact)
@@ -935,7 +936,7 @@ function Collider:setPreSolve(callback)
     self.preSolve = callback
 end
 
---- Sets the postSolve callback. Unlike with `:enter` or `:exit` that can be delayed and checked after the physics simulation is done for this frame, 
+--- Sets the postSolve callback. Unlike with `:enter` or `:exit` that can be delayed and checked after the physics simulation is done for this frame,
 -- both preSolve and postSolve must be callbacks that are resolved immediately, since they may change how the rest of the simulation plays out on this frame.
 -- @luastart
 -- @code collider:setPostSolve(function(collider_1, collider_2, contact, ni1, ti1, ni2, ti2)
