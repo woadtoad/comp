@@ -60,11 +60,6 @@ function Tile:initialize (x,y,i,v,scale,active)
                 }
     }
 
-
-
-
-
-
     self.scale = scale
     self.sprite = TexMate(TEAMASSETS,anims,"IdleState",x,y,nil,10,nil,nil,self.scale)
     --(Atlas, animlist, defaultanim, x, y, pivotx, pivoty, rot, flip, scale)
@@ -88,9 +83,19 @@ function Tile:initialize (x,y,i,v,scale,active)
     local ww = 65 * self.scale
     local hh = 70 * self.scale
     local hhh2 = 32 * self.scale
-    self.collider = world:newPolygonCollider({0, -hh, ww, -hhh2, ww, hhh2, 0, hh, -ww,hhh2,-ww,-hhh2},{body_type = 'static'})
+    self.collider = world:newPolygonCollider(
+      {0, -hh, ww, -hhh2, ww, hhh2, 0, hh, -ww,hhh2,-ww,-hhh2},
+      {
+        collision_class = 'Tile',
+        body_type = 'static'
+      }
+    )
     self.collider.body:setActive(false)
     self.collider.body:setPosition(x,y)
+    self.collider.parent = self
+
+    self.players = {}
+
     self:gotoState("Spawn")
   end
 

@@ -9,7 +9,6 @@ Player:include(require('stateful'))
 Player.static.BASE_SPEED = 30
 Player.static.BASE_VEC = Vector(0, 0)
 Player.static.BASE_RADIUS = 25
-Player.static.BASIS_ARM_LENGTH = 60
 
 local STATE = {
   RUN = 'run',
@@ -29,7 +28,6 @@ function Player:initialize(x, y, scale, id)
 
   self.radius = self.scale * Player.static.BASE_RADIUS
   self.feetRadius = self.scale * (Player.static.BASE_RADIUS / 2)
-  self.armRadius = self.scale * (Player.static.BASE_RADIUS / 2.5)
   self.spriteScale = self.scale / 1.4
 
   local playerAnims = {
@@ -64,15 +62,6 @@ function Player:initialize(x, y, scale, id)
     }
   }
 
-  local armAnims = {
-    Idle = {
-      framerate = 14,
-      frames = {
-        'flowerYellow.png'
-      }
-    }
-  }
-
   --make the sprite , args: atlas, animation dataformat, default animation.
   self.sprite = TexMate:new(TEAMASSETS, playerAnims, "Idle" , nil, nil, 0, -10 * self.scale, nil, nil, self.spriteScale)
 
@@ -83,62 +72,37 @@ function Player:initialize(x, y, scale, id)
 
   self.shadowSprite = TexMate:new(TEAMASSETS, playerShadow, "Idle" , nil, nil, 0, -(self.radius), nil, nil, self.spriteScale)
 
-  local feetXSize = self.feetRadius * 3
-  local feetYSize = self.feetRadius * 2
+  self.feetWidth = self.feetRadius * 3
+  self.feetHeight = self.feetRadius * 2
   local feetX = x - (self.radius * 3 / 4)
   local feetY = y
-  self.feet = world:newRectangleCollider(feetX, feetY, feetXSize, feetYSize, {collision_class = 'PlayerFeet'})
+  self.feet = world:newRectangleCollider(feetX, feetY, self.feetWidth, self.feetHeight, {collision_class = 'PlayerFeet'})
   self.feetJoint = world:addJoint('RevoluteJoint', self.feet.body, self.collider.body, x, y, false)
   self.feet.body:setFixedRotation(true)
   self.feet:addShape('left', 'CircleShape', -(self.radius / 1.5), 0, self.feetRadius)
   self.feet:addShape('right', 'CircleShape', (self.radius / 1.5), 0, self.feetRadius)
 
-  -- Add arm to Player
-  local armX = x
-  local armY = y
-  self.arm = world:newCircleCollider(x, y, self.armRadius, {collision_class = 'ArmIn'})
-  self.arm.body:setLinearDamping(0)
-  self.arm.body:setInertia(0)
-  self.arm.body:resetMassData(0)
-  self.arm.fixtures['main']:setDensity(0)
-
-  self.armSprite = TexMate:new(PROTOTYPEASSETS,armAnims,"Idle",nil,nil,0,0)
-  self.armJoint = world:addJoint('RopeJoint', self.collider.body, self.arm.body, armX, armY, armX, armY, Player.static.BASIS_ARM_LENGTH * self.scale, false)
-
-  self.isGrabbing = false
   self.lastXDir = 0
+  self.damagerTick = 0
+  self.damagerAmount = 1
 end
 
 function Player:update(dt)
   self:updateMovingAnimation()
-
-  -- Bring in the arm if you aren't grabbing
-  -- if self.isGrabbing then
-  --   self.arm.fixtures['main']:setDensity(100)
-  -- else
-  --   self.arm.fixtures['main']:setDensity(0)
-  --   local x, y = self.collider.body:getPosition();
-  --   self.arm.body:applyForce(
-  --     x + 1000,
-  --     y + 1000)
-  -- end
 
   self:updateSprites(dt)
 end
 
 function Player:updateSprites(dt)
   self.shadowSprite:update(dt)
-  self.armSprite:update(dt)
   self.sprite:update(dt)
 
   self.shadowSprite:changeLoc(self.feet.body:getX(),self.feet.body:getY())
   self.sprite:changeLoc(self.collider.body:getX(),self.collider.body:getY())
-  self.armSprite:changeLoc(self.arm.body:getX(),self.arm.body:getY())
 end
 
 function Player:draw()
   self.shadowSprite:draw()
-  self.armSprite:draw()
   self.sprite:draw()
 end
 
@@ -172,14 +136,6 @@ function Player:input(input)
       self:gotoState(STATE.SLIDE)
     end
   end
-end
-
-  -- Grab something with an extendable fixture
-function Player:grab(vec)
-end
-
-  -- Throw/spit the projectile thing
-function Player:shoot(args)
 end
 
 function Player:move(xd, yd)
