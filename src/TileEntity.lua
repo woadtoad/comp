@@ -15,16 +15,8 @@ Tile.static.TILE_TYPES = {
   STONES = 2
 }
 
-<<<<<<< HEAD
-function Tile:initialize (x,y,i,v,scale,active,typetile)
-  if not active then return end
-
-
-  self.active = active
-=======
 function Tile:initialize (x,y,i,v,scale,filled,typetile)
   self.filled = filled
->>>>>>> Player now bloats immensilly doddle when falling from the island
   self.resetTime = 3
   self.type = typetile
   if filled == false then
