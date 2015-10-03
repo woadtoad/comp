@@ -208,7 +208,6 @@ return function(GameScene)
       self.theTile = {}
       self.theTile.x = self.viableTiles[self.theRandom][1]
       self.theTile.y = self.viableTiles[self.theRandom][2]
-      print(self.theTile)
       table.insert(self.pickupPool, ThePickup:new(self.theTile.x,self.theTile.y))
       table.insert(updateList,self.pickupPool[#self.pickupPool])
       print ('DROPPIN PICKUP')
