@@ -117,7 +117,7 @@ function _M:update (dt)
 
 	--Active is whether we want the sprite to animate or not. We increment an iterator using delta time to keep things frame rate independent
 	if self.active == true then
-
+    assert(self.animlist,"Anim Missing")
 		self.iterator = self.iterator + (self.animlist[self.activeAnim].framerate * dt)
 
 		if self.iterator > #self.animlist[self.activeAnim].frames then
