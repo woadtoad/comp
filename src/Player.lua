@@ -43,7 +43,7 @@ function Player:initialize(x, y, scale, id)
     Running = {
       framerate = 14,
       frames = {
-        'mockup_toad_new/ToadIdle_0000'
+        "toad_animations/Run_0000","toad_animations/Run_0001","toad_animations/Run_0002"
       }
     },
 
@@ -52,7 +52,38 @@ function Player:initialize(x, y, scale, id)
       frames = {
         'mockup_toad_new/ToadIdle_0000'
       }
-    }
+    },
+
+    Jumping = {
+      framerate = 14,
+      frames = {
+        "toad_animations/Jump_0000","toad_animations/Jump_0001","toad_animations/Jump_0002","toad_animations/Jump_0003"
+      }
+    },
+    FatRun = {
+      framerate = 14,
+      frames = {
+        TexMate:frameCounter("toad_animations/Fat_Run_",0,16,4)
+      }
+    },
+    FatIdle = {
+      framerate = 14,
+      frames = {"toad_animations/Fat_0003"
+
+      }
+    },
+    FatSpawn = {
+      framerate = 14,
+      frames = {"toad_animations/Fat_0000","toad_animations/Fat_0001","toad_animations/Fat_0002","toad_animations/Fat_0003",
+
+      }
+    },
+    eat = {
+      framerate = 14,
+      frames = {"toad_animations/Eat_0000","toad_animations/Eat_0001","toad_animations/Eat_0002","toad_animations/Eat_0003",
+
+      }
+    },
   }
 
   local playerShadow = {
