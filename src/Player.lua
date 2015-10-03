@@ -12,6 +12,12 @@ Player.static.BASE_RADIUS = 25
 Player.static.BASIS_ARM_LENGTH = 60
 
 function Player:initialize(x, y, scale, id)
+  print('    Player '..id)
+  print('      scale: '..scale)
+  print('          x: '..x)
+  print('          y: '..y)
+  print('')
+
   self.Health = 10
   self.scale = scale or 1
   self.id = id or 1
@@ -93,6 +99,12 @@ end
 
 function Player:draw()
   self.sprite:draw()
+
+  if DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION or DEBUG.MODE == DEBUG.MODES.SHOW_ONLY_COLLISION then
+    local x, y = self.collider.body:getPosition()
+    love.graphics.setColor(255, 255, 255, 100)
+    love.graphics.print('player '..self.id, x, y-(50 * self.scale))
+  end
 end
 
 function Player:input(input)

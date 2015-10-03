@@ -103,8 +103,9 @@ function Input:down(action, id)
         if (love.keyboard.isDown(key) or love.mouse.isDown(key_to_button[key] or 0)) then
             return true
         end
+
         -- Supports multiple gamepads
-        if self.joysticks[id] then
+        if self.joysticks[id]:getID() == id then
             if axis_to_button[key] then
                 return self.state[id][key]
             elseif gamepad_to_button[key] then
