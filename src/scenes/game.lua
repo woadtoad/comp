@@ -80,6 +80,10 @@ return function(GameScene)
       --need to put this in draw list.
       self.EffectTest:draw()
 
+
+      if love.joystick.getJoystickCount() < 1 then
+        love.graphics.printf('NO PLAYERS DETECTED', w / 2 - 50, 50, 100, 'center')
+      end
     end
     )
   end

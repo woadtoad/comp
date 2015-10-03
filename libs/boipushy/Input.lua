@@ -1,4 +1,7 @@
 local input_path = (...):match('(.-)[^%.]+$') .. '.'
+
+local DEFAULT_ID = 1
+
 local Input = {}
 Input.__index = Input
 
@@ -63,7 +66,7 @@ end
 
 -- pass the action and the id to see if a key is pressed
 function Input:pressed(action, id)
-    id = id or 1
+    id = id or DEFAULT_ID
     if action then
         for _, key in ipairs(self.binds[action]) do
             if self.state[id][key] and not self.prev_state[id][key] then
@@ -83,8 +86,8 @@ function Input:pressed(action, id)
 end
 
 -- pass action and id to see if a key is released
-function Input:released(action, id)
-  id = id or 1
+function Input:released(action)
+    id = DEFAULT_ID
     for _, key in ipairs(self.binds[action]) do
         if self.prev_state[id][key] and not self.state[id][key] then
             return true
@@ -103,7 +106,7 @@ local axis_to_button = {leftx = 'leftx', lefty = 'lefty', rightx = 'rightx', rig
 
 -- pass the id and the action you would like to check
 function Input:down(action, id)
-  id = id or 1
+    id = id or DEFAULT_ID
     for _, key in ipairs(self.binds[action]) do
         if (love.keyboard.isDown(key) or love.mouse.isDown(key_to_button[key] or 0)) then
             return true
@@ -144,23 +147,23 @@ end
 
 function Input:update()
     for i, j in pairs(self.state) do
-      self:pressed(nil, i)
-      for e, f in pairs(self.state[i]) do
-        self.prev_state[i] = copy(self.state[i])
-        self.state[i]['wheelup'] = false
-        self.state[i]['wheeldown'] = false
-      end
+        self:pressed(nil, i)
+        for e, f in pairs(self.state[i]) do
+            self.prev_state[i] = copy(self.state[i])
+            self.state[i]['wheelup'] = false
+            self.state[i]['wheeldown'] = false
+        end
     end
 end
 
-function Input:keypressed(key, id)
-  id = id or 1
-  self.state[id][key] = true
+function Input:keypressed(key)
+    id = DEFAULT_ID
+    self.state[id][key] = true
 end
 
-function Input:keyreleased(key, id)
-  id = id or 1
-  self.state[id][key] = false
+function Input:keyreleased(key)
+    id = DEFAULT_ID
+    self.state[id][key] = false
 end
 
 local button_to_key = nil
@@ -168,18 +171,18 @@ if love_version == '0.9.1' or love_version == '0.9.2' then
     button_to_key = {l = 'mouse1', r = 'mouse2', m = 'mouse3', wu = 'wheelup', wd = 'wheeldown', x1 = 'mouse4', x2 = 'mouse5'}
 else button_to_key = {[1] = 'mouse1', [2] = 'mouse2', [3] = 'mouse3', [4] = 'mouse4', [5] = 'mouse5'} end
 
-function Input:mousepressed(x, y, button, id)
-  id = id or 1
-  self.state[id][button_to_key[button]] = true
+function Input:mousepressed(x, y, button)
+    id = DEFAULT_ID
+    self.state[id][button_to_key[button]] = true
 end
 
-function Input:mousereleased(x, y, button, id)
-  id = id or 1
-  self.state[id][button_to_key[button]] = false
+function Input:mousereleased(x, y, button)
+    id = DEFAULT_ID
+    self.state[id][button_to_key[button]] = false
 end
 
-function Input:wheelmoved(x, y, id)
-  id = id or 1
+function Input:wheelmoved(x, y)
+    id = DEFAULT_ID
     if y > 0 then self.state[id]['wheelup'] = true
     elseif y < 0 then self.state[id]['wheeldown'] = true end
 end
@@ -188,20 +191,20 @@ local button_to_gamepad = {a = 'fdown', y = 'fup', x = 'fleft', b = 'fright', ba
                            leftstick = 'leftstick', rightstick = 'rightstick', leftshoulder = 'l1', rightshoulder = 'r1',
                            dpup = 'dpup', dpdown = 'dpdown', dpleft = 'dpleft', dpright = 'dpright'}
 
-function Input:gamepadpressed(joystick, button, id)
-  id = id or 1
+function Input:gamepadpressed(joystick, button)
+    id = joystick:getID()
     self.state[id][button_to_gamepad[button]] = true
 end
 
-function Input:gamepadreleased(joystick, button, id)
-  id = id or 1
+function Input:gamepadreleased(joystick, button)
+    id = joystick:getID()
     self.state[id][button_to_gamepad[button]] = false
 end
 
 local button_to_axis = {leftx = 'leftx', lefty = 'lefty', rightx = 'rightx', righty = 'righty', triggerleft = 'l2', triggerright = 'r2'}
 
-function Input:gamepadaxis(joystick, axis, newvalue, id)
-  id = id or 1
+function Input:gamepadaxis(joystick, axis, newvalue)
+    id = joystick:getID()
     self.state[id][button_to_axis[axis]] = newvalue
 end
 
