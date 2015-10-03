@@ -17,7 +17,10 @@ return function(GameScene)
   function GameScene:initialize()
     love.graphics.setBackgroundColor( 100, 110, 200 )
 
-    --instantiate a new player.
+    self.timer = 0
+    self.maxTime = 5
+
+    --instantiate a new player and their bases.
     self.Bases = {}
     self.players = {}
     for i,joystick in ipairs(love.joystick.getJoysticks()) do
@@ -69,6 +72,11 @@ return function(GameScene)
   end
 
   function GameScene:update(dt)
+    self.timer = self.timer + dt
+    if self.timer >= self.maxTime then
+      --logic here
+      print ("time up LEL")
+    end
     world:update(dt)
 
     --Iterate through the items for update
@@ -101,6 +109,10 @@ return function(GameScene)
       world:draw()
 
       self:drawDebugPoints()
+
+      --draw the timer
+      love.graphics.setColor(255, 255, 255, 100)
+      love.graphics.printf('Time: '..string.format("%.0f",self.timer), 650, 50, 50, 'center')
 
       for k,player in pairs(self.players) do
         player:ddraw()
