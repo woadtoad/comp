@@ -81,7 +81,7 @@ function Player:initialize(x, y, scale, id)
   self.collider.body:setLinearDamping(2)
   self.collider.body:setFixedRotation(true)
 
-  self.shadowSprite = TexMate:new(TEAMASSETS, playerShadow, "Idle" , nil, nil, 0, 0, nil, nil, self.spriteScale)
+  self.shadowSprite = TexMate:new(TEAMASSETS, playerShadow, "Idle" , nil, nil, 0, -(self.radius), nil, nil, self.spriteScale)
 
   local feetXSize = self.feetRadius * 3
   local feetYSize = self.feetRadius * 2
