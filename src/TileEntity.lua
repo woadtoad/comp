@@ -1,6 +1,7 @@
 local Pools = require("src.Pool")
 local TexMate = require("texmate.TexMate")
 local world = require('src.world')
+local Camera = require('src.Camera')
 local TexMateStatic = require("texmate.TexMateStatic")
 
 local Tile = class('Tile')
@@ -365,6 +366,7 @@ end
 local Destroyed = Tile:addState('Destroyed')
 
 function Destroyed:enteredState(dt)
+  Camera:shaker(2,0.3)
   self.sprite:changeAnim("Destroy")
   self.resetTimer = self.resetTime
 end
