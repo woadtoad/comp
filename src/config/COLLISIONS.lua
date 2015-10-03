@@ -3,13 +3,11 @@ local COLLISION_CLASSES = {
 
   -- Player
   {
-    name = "PlayerBody",
-    config = {}
+    name = "PlayerBody"
   },
 
   {
-    name = "PlayerFeet",
-    config = {}
+    name = "PlayerFeet"
   },
 
 
@@ -32,7 +30,7 @@ local COLLISION_CLASSES = {
   {
     name = "Pickup",
     config = {
-      enter = {"Base"}
+      ignores = { 'All' }
     }
   },
 
@@ -40,7 +38,6 @@ local COLLISION_CLASSES = {
     name = "Base",
     config = {
       ignores = {"All"},
-      enter = {"Pickup"}
     }
   },
 
@@ -50,7 +47,7 @@ local COLLISION_CLASSES = {
 return function(world)
 
   for i,collision in ipairs(COLLISION_CLASSES) do
-    world:addCollisionClass(collision.name, collision.config)
+    world:addCollisionClass(collision.name, collision.config or nil)
   end
 
 end

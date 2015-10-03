@@ -1,6 +1,4 @@
 
-local world = require('src.world')
-local world = require('src.world')
 toad = [[
 
                                  ,▄▄▄▄▄,
@@ -69,8 +67,10 @@ end
 
 function love.update(dt)
   -- Our input functions will handle boipushy events
-  SceneManager:input(input)
-  input:update()
+  if love.joystick.getJoystickCount() > 0 then
+    SceneManager:input(input)
+    input:update()
+  end
 
   SceneManager:update(dt)
 end
