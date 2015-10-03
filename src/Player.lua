@@ -66,7 +66,31 @@ function Player:initialize(x, y, scale, id, facing)
     FatRun = {
       framerate = 14,
       frames = {
-        TexMate:frameCounter("toad_animations/Fat_Run_",0,16,4)
+        TexMate:frameCounter("toad_animations/Fat_Run_",0,4,4)
+      }
+    },
+    FatJump = {
+      framerate = 14,
+      frames = {
+        TexMate:frameCounter("toad_animations/Fat_Jump_",0,4,4)
+      }
+    },
+    Spit = {
+      framerate = 14,
+      frames = {
+        TexMate:frameCounter("toad_animations/Spit_",0,2,4)
+      }
+    },
+    Eat = {
+      framerate = 14,
+      frames = {
+        TexMate:frameCounter("toad_animations/Eat_",0,3,4)
+      }
+    },
+    Stun = {
+      framerate = 14,
+      frames = {
+        TexMate:frameCounter("toad_animations/Spin_",0,12,4)
       }
     },
     FatIdle = {
@@ -75,9 +99,27 @@ function Player:initialize(x, y, scale, id, facing)
 
       }
     },
+    FatLand = {
+      framerate = 14,
+      frames = {TexMate:frameCounter("toad_animations/Fat_Land_",0,10,4)
+
+      }
+    },
+    RunLand = {
+      framerate = 14,
+      frames = {TexMate:frameCounter("toad_animations/Run_Land_",0,1,4)
+
+      }
+    },
     FatSpawn = {
       framerate = 14,
       frames = {"toad_animations/Fat_0000","toad_animations/Fat_0001","toad_animations/Fat_0002","toad_animations/Fat_0003",
+
+      }
+    },
+    Fall = {
+      framerate = 14,
+      frames = {TexMate:frameCounter("toad_animations/Fall_",0,3,4)
 
       }
     },
@@ -270,7 +312,7 @@ end
 local FallingPlayer = Player:addState(STATE.FALL)
 function FallingPlayer:enteredState()
   print('Player fell!')
-  -- self.sprite:changeAnim('FatIdle')
+  --self.sprite:changeAnim('Fall')
   -- self.collider.body:setLinearDamping(10)
   -- self.canControl = false
 end
