@@ -21,17 +21,20 @@ return function(GameScene)
     love.graphics.setBackgroundColor( 100, 110, 200 )
 
     --instantiate a new player.
-    self.player = Player:new(
-    love.graphics.getWidth() / 2,
-    love.graphics.getHeight() / 2,
-    1
-    )
+    self.players = {}
+    for i,joystick in ipairs(love.joystick.getJoysticks()) do
+      local id = joystick:getID()
+      local player = Player:new(
+      love.graphics.getWidth() / 2,
+      love.graphics.getHeight() / 2,
+      1,
+      id
+      )
+
+      table.insert(self.players, player)
+    end
 
     self.TileTest = TileSystem:new()
-
-
-
-
 
     self.RockTest = ThePickup:new()
 
@@ -39,16 +42,14 @@ return function(GameScene)
 
     self.EffectTest:makeEffect("Explosion",0,-120,self.TileTest.Tiles[10][10]:getLoc())
 
-
-
     self:resetCameraPosition()
-
-
     --we'll just use a simple table to keep things updated
 
     table.insert(updateList,self.TileTest)
     table.insert(updateList, self.RockTest)
-    table.insert(updateList,self.player)
+    for i,player in ipairs(self.players) do
+      table.insert(updateList, player)
+    end
   end
 
   function GameScene:update(dt)
@@ -115,7 +116,9 @@ return function(GameScene)
   end
 
   function GameScene:input(input)
-    self.player:input(input)
+    for i,player in ipairs(self.players) do
+      player:input(input)
+    end
   end
 
   function GameScene:resetCameraPosition()
