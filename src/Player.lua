@@ -11,6 +11,11 @@ Player.static.BASE_VEC = Vector(0, 0)
 Player.static.BASE_RADIUS = 25
 Player.static.BASIS_ARM_LENGTH = 60
 
+local STATE = {
+  RUN = 'run',
+  SLIDE = 'slide',
+}
+
 function Player:initialize(x, y, scale, id)
   print('    Player '..id)
   print('      scale: '..scale)
@@ -189,18 +194,23 @@ end
 
 -----------------------
 -- Running State
+local RunningPlayer = Player:addState(STATE.RUN)
+function RunningPlayer:enteredState()
+  self.collider.body:setLinearDamping(0.3)
+end
 
 -----------------------
--- Accl State
+-- Slide State
+local SlidingPlayer = Player:addState(STATE.SLIDE)
+function SlidingPlayer:enteredState()
+  self.collider.body:setLinearDamping(10)
+end
 
 -----------------------
 -- Throwing State
 
 -----------------------
 -- Idle State
-
------------------------
--- Slide State
 
 -----------------------
 -- Stunned State
