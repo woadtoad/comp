@@ -36,6 +36,16 @@ function Tile:initialize (x,y,i,v,scale,active,typetile)
     frames = {"stonetile2/TileStone_0000"}
   }
 
+  anims["Stone2"] = {
+    framerate = 8,
+    frames = {"stonetile2/TileStone_0001"}
+  }
+
+  anims["Stone3"] = {
+    framerate = 8,
+    frames = {"stonetile2/TileStone_0002"}
+  }
+
   anims["IdleState"] = {
     framerate = 4,
     frames = {"icetile2/TileState_0000","icetile2/TileRipple_0000","icetile2/TileRipple_0001","icetile2/TileRipple_0002"}
@@ -224,7 +234,7 @@ end
 local Stone = Tile:addState('Stone')
 
 function Stone:enteredState(dt)
-    self.sprite:changeAnim("Stone1")
+    self.sprite:changeAnim("Stone"..math.random(1,3))
 end
 
 function Stone:updateStates(dt)
