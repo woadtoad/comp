@@ -53,12 +53,15 @@ SceneManager:init()
 SceneManager:gotoState(SCENES.GAME)
 
 
-local input = require('src.Input')
-require('src.config.INPUTS')(input) -- Initialise bindings
+local input = nil
 
 -- Start the game loops
 function love.load()
   UI.registerEvents()
+
+  input = require('src.Input')
+  require('src.config.INPUTS')(input) -- Initialise bindings
+
   Camera:setScale(DEBUG.ZOOM)
 end
 
