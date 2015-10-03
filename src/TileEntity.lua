@@ -95,6 +95,7 @@ function Tile:initialize (x,y,i,v,scale,active)
     self.collider.parent = self
 
     self.players = {}
+    self.damageCheckTick = 0
 
     self:gotoState("Spawn")
   end
@@ -141,11 +142,12 @@ function Tile:update(dt)
       local a, poppingPlayer = self.collider:exit('PlayerFeet')
       poppingPlayer = poppingPlayer.parent
 
-      if self.players[poppingPlayer.id] ~= nil then
+      if self.players[poppingPlayer.id] then
         self:removePlayerAsDamager(poppingPlayer)
       end
     end
 
+    self:updatePlayerTicks(dt)
     self:applyPlayerDamages(dt)
 
     self:updateStates(dt)
@@ -154,10 +156,10 @@ function Tile:update(dt)
 end
 
 function Tile:addPlayerAsDamager(player)
-  self.players[player.id] = {
+  table.insert(self.players, player.id, {
     player = player,
     tick = 0
-  }
+  })
   if player.instantDamage then
     self:damage(player.damageWeight)
   end
@@ -169,14 +171,23 @@ function Tile:removePlayerAsDamager(player)
   table.remove(self.players, player.id)
 end
 
-function Tile:applyPlayerDamages(dt)
-  for i,conf in ipairs(self.players) do
+function Tile:updatePlayerTicks(dt)
+  for id,conf in pairs(self.players) do
     conf.tick = conf.tick + dt
+  end
+end
 
-    if conf.tick > Tile.static.PLAYER_DAMAGE_INTERVAL then
-      conf.tick = 0
+function Tile:applyPlayerDamages(dt)
+  self.damageCheckTick = self.damageCheckTick + dt
+  if self.damageCheckTick > 0.01 then -- 10ms
+    self.damageCheckTick = 0
 
-      self:damage(conf.player.damageWeight)
+    for id,conf in pairs(self.players) do
+      if conf.tick > Tile.static.PLAYER_DAMAGE_INTERVAL then
+        conf.tick = 0
+
+        self:damage(conf.player.damageWeight)
+      end
     end
   end
 end

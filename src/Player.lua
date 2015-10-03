@@ -9,10 +9,12 @@ Player:include(require('stateful'))
 Player.static.BASE_SPEED = 30
 Player.static.BASE_VEC = Vector(0, 0)
 Player.static.BASE_RADIUS = 25
+Player.static.RUNNING_FPS = 12
 
 local STATE = {
   RUN = 'run',
   SLIDE = 'slide',
+  JUMP = 'jump',
 }
 
 function Player:initialize(x, y, scale, id, facing)
@@ -40,7 +42,7 @@ function Player:initialize(x, y, scale, id, facing)
     },
 
     Running = {
-      framerate = 14,
+      framerate = Player.static.RUNNING_FPS,
       frames = {
         "toad_animations/Run_0000","toad_animations/Run_0001","toad_animations/Run_0002"
       }
@@ -95,7 +97,7 @@ function Player:initialize(x, y, scale, id, facing)
   }
 
   --make the sprite , args: atlas, animation dataformat, default animation.
-  self.sprite = TexMate:new(TEAMASSETS, playerAnims, "Idle" , nil, nil, 0, -10 * self.scale, nil, nil, self.spriteScale)
+  self.sprite = TexMate:new(TEAMASSETS, playerAnims, "Idle" , nil, nil, 0, 30 * self.scale, nil, nil, self.spriteScale)
 
   self.collider = world:newCircleCollider(x, y, self.radius, {collision_class = 'PlayerBody'})
   self.collider.parent = self
@@ -119,10 +121,12 @@ function Player:initialize(x, y, scale, id, facing)
   self.lastXDir = 0
   self.damagerTick = 0
   self.damagerAmount = 1
+  self.effort = 1
 end
 
 function Player:update(dt)
   self:updateSprites(dt)
+  self:updateStates(dt)
 end
 
 function Player:updateSprites(dt)
@@ -136,17 +140,24 @@ end
 function Player:draw()
   self.shadowSprite:draw()
   self.sprite:draw(self.isFacingRight)
+  self:drawStates(dt)
+end
+
+function Player:updateStates()
+end
+
+function Player:drawStates()
 end
 
 function Player:ddraw()
   -- Print player name
   local x, y = self.collider.body:getPosition()
   love.graphics.setColor(255, 255, 255, 100)
-  love.graphics.printf('player '..self.id, x - (self.radius / 2 * self.scale), y-(50 * self.scale), 20, 'center')
+  love.graphics.printf('player '..self.id, x - (self.radius * self.scale), y-(50 * self.scale), self.radius * 2, 'center')
 
   -- Print player state
   love.graphics.setColor(220, 20, 20, 180)
-  love.graphics.printf(self:getStateStackDebugInfo()[1], x - (self.radius / 2 * self.scale), y-(60 * self.scale), 20, 'center')
+  love.graphics.printf(self:getStateStackDebugInfo()[1], x - (self.radius * self.scale), y-(60 * self.scale), self.radius * 2, 'center')
 end
 
 function Player:input(input)
@@ -154,6 +165,7 @@ function Player:input(input)
   local yDir = input:down(INPUTS.MOVEY, self.id)
 
   self.isRunningForwards = false
+  self.effort = 1
 
   if xDir or yDir then
     self:move(xDir or 0, yDir or 0)
@@ -168,6 +180,13 @@ function Player:input(input)
       self:gotoState(STATE.SLIDE)
     end
   end
+
+  if self.effort > 1.3 then
+    self.effort = 1.3
+  end
+  self.sprite.animlist['Running'].framerate = Player.static.RUNNING_FPS * (self.effort)
+
+  -- print(self.sprite.animlist['Running'].framerate)
 end
 
 function Player:move(xd, yd)
@@ -187,6 +206,7 @@ function Player:move(xd, yd)
     local angleMod = 20
     self.isRunningForwards = angle < (90 - angleMod) or angle > (90 * 3 + angleMod)
     self.isFacingRight = xd > 0
+    self.effort = angle / 360 + 1
 
     local x = Player.static.BASE_SPEED * xd * self.scale
     local y = Player.static.BASE_SPEED * yd * self.scale
@@ -199,16 +219,29 @@ end
 -- Running State
 local RunningPlayer = Player:addState(STATE.RUN)
 function RunningPlayer:enteredState()
-  -- TODO: Change animation
+  self.sprite:changeAnim('Running')
   self.collider.body:setLinearDamping(0.3)
+end
+
+function RunningPlayer:updateStates(dt)
 end
 
 -----------------------
 -- Slide State
 local SlidingPlayer = Player:addState(STATE.SLIDE)
 function SlidingPlayer:enteredState()
-  -- TODO: Change animation
+  -- TODO: remove this when not using running anim
+  self.sprite.animlist['Running'].framerate = Player.static.RUNNING_FPS
+  self.sprite:changeAnim('Running')
   self.collider.body:setLinearDamping(6)
+end
+
+-----------------------
+-- Jumping State
+local JumpingPlayer = Player:addState(STATE.JUMP)
+function JumpingPlayer:enteredState()
+  self.sprite:changeAnim('Jumping')
+  self.collider.body:setLinearDamping(0.2)
 end
 
 -----------------------

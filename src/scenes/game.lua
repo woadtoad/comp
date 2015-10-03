@@ -75,7 +75,6 @@ return function(GameScene)
     self.timer = self.timer + dt
     if self.timer >= self.maxTime then
       --logic here
-      print ("time up LEL")
     end
     world:update(dt)
 
