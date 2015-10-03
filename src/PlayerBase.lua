@@ -1,13 +1,13 @@
 local PlayerBase = class('PlayerBase')
 local world = require('src.world')
 
-local theX, theY, theRadius, player
+local theX,theY,theRadius,player
 
 function PlayerBase:initialize(x,y,playerId,radius)
-  theX = x
-  theY = y
-  theRadius = radius
-  player = playerId
+  self.theX = x
+  self.theY = y
+  self.theRadius = radius
+  self.player = playerId
   self.collider = world:newCircleCollider(x,y,radius,{collision_class='Base'})
   --self.collider.body:setActive(false)
   currentPoints = 0
@@ -20,7 +20,7 @@ function PlayerBase:update(dt)
   if self.collider:exit('Pickup') then
     currentPoints = currentPoints - 1
   end
- --[[colliders = world:queryCircleArea(theX, theY, theRadius,{'Pickup'})
+ --[[colliders = world:queryCircleArea(self.theX, self.theY, self.theRadius,{'Pickup'})
  for i,v in pairs(colliders) do
     print("hehe")
   end]]
@@ -31,7 +31,7 @@ function PlayerBase:getCurrentPoints()
 end
 
 function PlayerBase:getCurrentPlayer()
-  return player
+  return self.player
 end
 
 function PlayerBase:draw()

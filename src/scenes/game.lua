@@ -18,6 +18,7 @@ return function(GameScene)
     love.graphics.setBackgroundColor( 100, 110, 200 )
 
     --instantiate a new player.
+    self.Bases = {}
     self.players = {}
     for i,joystick in ipairs(love.joystick.getJoysticks()) do
       local id = joystick:getID()
@@ -29,6 +30,10 @@ return function(GameScene)
       )
 
       table.insert(self.players, player)
+
+      -- generate a base for each player
+      local base = PlayerBase:new((100*id),100,id,100)
+      table.insert(self.Bases, base)
     end
 
     self.TileTest = TileSystem:new()
@@ -39,8 +44,6 @@ return function(GameScene)
     self.EffectTest = Effects:new()
 
     self.EffectTest:makeEffect("Explosion",0,-120,self.TileTest.Tiles[10][10]:getLoc())
-
-    self.Bases = {PlayerBase:new(400,100,1,100),PlayerBase:new(100,400,2,100),PlayerBase:new(400,400,3,100),PlayerBase:new(100,100,4,100)}
 
     self:resetCameraPosition()
 
