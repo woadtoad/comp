@@ -6,6 +6,7 @@ local TexMateStatic = require("texmate.TexMateStatic")
 local Tile = class('Tile')
 Tile:include(require('stateful'))
 
+Tile.static.PLAYER_DAMAGE_INTERVAL = 0.25
 
 function Tile:initialize (x,y,i,v,scale,active)
   self.active = active
@@ -86,11 +87,10 @@ function Tile:initialize (x,y,i,v,scale,active)
     self.collider = world:newPolygonCollider(
       {0, -hh, ww, -hhh2, ww, hhh2, 0, hh, -ww,hhh2,-ww,-hhh2},
       {
+        body_type = 'static',
         collision_class = 'Tile',
-        body_type = 'static'
       }
     )
-    self.collider.body:setActive(false)
     self.collider.body:setPosition(x,y)
     self.collider.parent = self
 
@@ -105,6 +105,9 @@ function Tile:damage(amt)
 
     self.health  = self.health - 1
 
+end
+
+function Tile:updateStates()
 end
 
 function Tile:regenHealth(dt)
@@ -124,7 +127,58 @@ function Tile:draw()
 end
 
 function Tile:update(dt)
+  if self.active then
+    if self.collider:enter('PlayerFeet') then
+      local a, pushingPlayer = self.collider:enter('PlayerFeet')
+      pushingPlayer = pushingPlayer.parent
 
+      if self.players[pushingPlayer.id] == nil then
+        self:addPlayerAsDamager(pushingPlayer)
+      end
+    end
+
+    if self.collider:exit('PlayerFeet') then
+      local a, poppingPlayer = self.collider:exit('PlayerFeet')
+      poppingPlayer = poppingPlayer.parent
+
+      if self.players[poppingPlayer.id] ~= nil then
+        self:removePlayerAsDamager(poppingPlayer)
+      end
+    end
+
+    self:applyPlayerDamages(dt)
+
+    self:updateStates(dt)
+  end
+
+end
+
+function Tile:addPlayerAsDamager(player)
+  self.players[player.id] = {
+    player = player,
+    tick = 0
+  }
+  if player.instantDamage then
+    self:damage(player.damageWeight)
+  end
+end
+
+function Tile:removePlayerAsDamager(player)
+  self.players[player.id]['player'] = nil
+  self.players[player.id]['tick'] = nil
+  table.remove(self.players, player.id)
+end
+
+function Tile:applyPlayerDamages(dt)
+  for i,conf in ipairs(self.players) do
+    conf.tick = conf.tick + dt
+
+    if conf.tick > Tile.static.PLAYER_DAMAGE_INTERVAL then
+      conf.tick = 0
+
+      self:damage(conf.player.damageWeight)
+    end
+  end
 end
 
 function Tile:getLoc()
@@ -138,15 +192,12 @@ end
 local Spawn = Tile:addState('Spawn')
 
 function Spawn:enteredState(dt)
- -- print("Spawn",self.health)
 
     self.sprite:changeAnim("Spawn")
 end
 
-function Spawn:update(dt)
+function Spawn:updateStates(dt)
   self.sprite:update(dt)
-
-
 end
 
 ------------------------------------------------------------------------------
@@ -156,12 +207,11 @@ end
 local Full = Tile:addState('Full')
 
 function Full:enteredState(dt)
- -- print("full",self.health)
     self.health = 4
     self.sprite:changeAnim("IdleState")
 end
 
-function Full:update(dt)
+function Full:updateStates(dt)
   self.sprite:update(dt)
   if self.health < 4 then
     self:gotoState("DamageOne")
@@ -176,12 +226,11 @@ end
 local DamageOne = Tile:addState("DamageOne")
 
 function DamageOne:enteredState(dt)
-  print("DamageOne",self.health)
   self.health = 3
   self.sprite:changeAnim("DamageOne")
 end
 
-function DamageOne:update(dt)
+function DamageOne:updateStates(dt)
   self.sprite:update(dt)
   self:regenHealth(dt)
 
@@ -201,11 +250,10 @@ local DamageTwo = Tile:addState('DamageTwo')
 
 function DamageTwo:enteredState(dt)
   self.health = 2
-  print("Damage2",self.health)
   self.sprite:changeAnim("DamageTwo")
 end
 
-function DamageTwo:update(dt)
+function DamageTwo:updateStates(dt)
   self.sprite:update(dt)
   self:regenHealth(dt)
   if self.health <= 2 then
@@ -224,12 +272,11 @@ local DamageThree = Tile:addState('DamageThree')
 
 function DamageThree:enteredState(dt)
   self.health = 1
-  print("Damage3",self.health)
 
   self.sprite:changeAnim("DamageThree")
 end
 
-function DamageThree:update(dt)
+function DamageThree:updateStates(dt)
     self.sprite:update(dt)
   self:regenHealth(dt)
 
@@ -249,12 +296,11 @@ end
 local Destroyed = Tile:addState('Destroyed')
 
 function Destroyed:enteredState(dt)
-  print("dest")
   self.sprite:changeAnim("Destroy")
   self.resetTimer = self.resetTime
 end
 
-function Destroyed:update(dt)
+function Destroyed:updateStates(dt)
     self.sprite:update(dt)
     self.resetTimer =  self.resetTimer - 1 * dt
 

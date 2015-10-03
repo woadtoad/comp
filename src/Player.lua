@@ -98,6 +98,7 @@ function Player:initialize(x, y, scale, id, facing)
   self.sprite = TexMate:new(TEAMASSETS, playerAnims, "Idle" , nil, nil, 0, -10 * self.scale, nil, nil, self.spriteScale)
 
   self.collider = world:newCircleCollider(x, y, self.radius, {collision_class = 'PlayerBody'})
+  self.collider.parent = self
   self.collider.fixtures['main']:setRestitution(0.3)
   self.collider.body:setLinearDamping(1.5)
   self.collider.body:setFixedRotation(true)
@@ -109,6 +110,7 @@ function Player:initialize(x, y, scale, id, facing)
   local feetX = x - (self.radius * 3 / 4)
   local feetY = y
   self.feet = world:newRectangleCollider(feetX, feetY, self.feetWidth, self.feetHeight, {collision_class = 'PlayerFeet'})
+  self.feet.parent = self
   self.feetJoint = world:addJoint('RevoluteJoint', self.feet.body, self.collider.body, x, y, false)
   self.feet.body:setFixedRotation(true)
   self.feet:addShape('left', 'CircleShape', -(self.radius / 1.5), 0, self.feetRadius)
