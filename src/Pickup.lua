@@ -23,6 +23,7 @@ function Pickup:initialize(x,y)
   self.food = love.math.random(1,3)
   self.collider = world:newCircleCollider(x, y, 15, {collision_class='Pickup'})
   self.collider.body:setFixedRotation(true)
+  self.collider.body:setLinearDamping(1.5)
   self.collider.fixtures['main']:setRestitution(0.3)
   isActive = true
 end
