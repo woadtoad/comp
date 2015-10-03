@@ -42,6 +42,12 @@ local COLLISION_CLASSES = {
   },
 
   -- Tiles
+  {
+    name = "Tile",
+    config = {
+      ignores = {"All"},
+    }
+  },
 }
 
 return function(world)

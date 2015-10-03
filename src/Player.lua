@@ -9,14 +9,13 @@ Player:include(require('stateful'))
 Player.static.BASE_SPEED = 30
 Player.static.BASE_VEC = Vector(0, 0)
 Player.static.BASE_RADIUS = 25
-Player.static.BASIS_ARM_LENGTH = 60
 
 local STATE = {
   RUN = 'run',
   SLIDE = 'slide',
 }
 
-function Player:initialize(x, y, scale, id)
+function Player:initialize(x, y, scale, id, facing)
   print('    Player '..id)
   print('      scale: '..scale)
   print('          x: '..x)
@@ -26,10 +25,10 @@ function Player:initialize(x, y, scale, id)
   self.Health = 10
   self.scale = scale or 1
   self.id = id or 1
+  self.isFacingRight = facing or false
 
   self.radius = self.scale * Player.static.BASE_RADIUS
   self.feetRadius = self.scale * (Player.static.BASE_RADIUS / 2)
-  self.armRadius = self.scale * (Player.static.BASE_RADIUS / 2.5)
   self.spriteScale = self.scale / 1.4
 
   local playerAnims = {
@@ -95,77 +94,46 @@ function Player:initialize(x, y, scale, id)
     }
   }
 
-  local armAnims = {
-    Idle = {
-      framerate = 14,
-      frames = {
-        'flowerYellow.png'
-      }
-    }
-  }
-
   --make the sprite , args: atlas, animation dataformat, default animation.
   self.sprite = TexMate:new(TEAMASSETS, playerAnims, "Idle" , nil, nil, 0, -10 * self.scale, nil, nil, self.spriteScale)
 
   self.collider = world:newCircleCollider(x, y, self.radius, {collision_class = 'PlayerBody'})
   self.collider.fixtures['main']:setRestitution(0.3)
-  self.collider.body:setLinearDamping(2)
+  self.collider.body:setLinearDamping(1.5)
   self.collider.body:setFixedRotation(true)
 
   self.shadowSprite = TexMate:new(TEAMASSETS, playerShadow, "Idle" , nil, nil, 0, -(self.radius), nil, nil, self.spriteScale)
 
-  local feetXSize = self.feetRadius * 3
-  local feetYSize = self.feetRadius * 2
+  self.feetWidth = self.feetRadius * 3
+  self.feetHeight = self.feetRadius * 2
   local feetX = x - (self.radius * 3 / 4)
   local feetY = y
-  self.feet = world:newRectangleCollider(feetX, feetY, feetXSize, feetYSize, {collision_class = 'PlayerFeet'})
+  self.feet = world:newRectangleCollider(feetX, feetY, self.feetWidth, self.feetHeight, {collision_class = 'PlayerFeet'})
   self.feetJoint = world:addJoint('RevoluteJoint', self.feet.body, self.collider.body, x, y, false)
   self.feet.body:setFixedRotation(true)
   self.feet:addShape('left', 'CircleShape', -(self.radius / 1.5), 0, self.feetRadius)
   self.feet:addShape('right', 'CircleShape', (self.radius / 1.5), 0, self.feetRadius)
 
-  -- Add arm to Player
-  local armX = x
-  local armY = y
-  self.arm = world:newCircleCollider(x, y, self.armRadius, {collision_class = 'ArmIn'})
-  self.armSprite = TexMate:new(PROTOTYPEASSETS,armAnims,"Idle",nil,nil,0,0)
-  self.armJoint = world:addJoint('RopeJoint', self.collider.body, self.arm.body, armX, armY, armX, armY, Player.static.BASIS_ARM_LENGTH * self.scale, false)
-
-  self.isGrabbing = false
   self.lastXDir = 0
+  self.damagerTick = 0
+  self.damagerAmount = 1
 end
 
 function Player:update(dt)
-  self:updateMovingAnimation()
-
-  -- Bring in the arm if you aren't grabbing
-  -- if self.isGrabbing then
-  --   self.arm.fixtures['main']:setDensity(100)
-  -- else
-  --   self.arm.fixtures['main']:setDensity(0)
-  --   local x, y = self.collider.body:getPosition();
-  --   self.arm.body:applyForce(
-  --     x + 1000,
-  --     y + 1000)
-  -- end
-
   self:updateSprites(dt)
 end
 
 function Player:updateSprites(dt)
   self.shadowSprite:update(dt)
-  self.armSprite:update(dt)
   self.sprite:update(dt)
 
   self.shadowSprite:changeLoc(self.feet.body:getX(),self.feet.body:getY())
   self.sprite:changeLoc(self.collider.body:getX(),self.collider.body:getY())
-  self.armSprite:changeLoc(self.arm.body:getX(),self.arm.body:getY())
 end
 
 function Player:draw()
   self.shadowSprite:draw()
-  self.armSprite:draw()
-  self.sprite:draw()
+  self.sprite:draw(self.isFacingRight)
 end
 
 function Player:ddraw()
@@ -183,78 +151,53 @@ function Player:input(input)
   local xDir = input:down(INPUTS.MOVEX, self.id)
   local yDir = input:down(INPUTS.MOVEY, self.id)
 
-  self.moving = false
+  self.isRunningForwards = false
 
-  if xDir then
-    self:moveX(xDir)
+  if xDir or yDir then
+    self:move(xDir or 0, yDir or 0)
   end
 
-  if yDir then
-    self:moveY(yDir)
-  end
-
-  if self.moving then
-    self:gotoState(STATE.RUN)
+  if self.isRunningForwards then
+    if self:getStateStackDebugInfo()[1] ~= STATE.RUN then
+      self:gotoState(STATE.RUN)
+    end
   else
-    self:gotoState(STATE.SLIDE)
+    if self:getStateStackDebugInfo()[1] ~= STATE.SLIDE then
+      self:gotoState(STATE.SLIDE)
+    end
   end
 end
 
-  -- Grab something with an extendable fixture
-function Player:grab(vec)
-end
+function Player:move(xd, yd)
+  if (xd > 0.3 or xd < -0.3) or(yd > 0.3 or yd < -0.3)  then
+    -- Establish the fact our player is making the Player
+    -- run forwards
+    local bodyVel = Vector(self.collider.body:getLinearVelocity())
+    bodyVel = bodyVel:normalized()
+    local pushingVel = Vector(xd, yd)
+    pushingVel = pushingVel:normalized()
+    local absAngle = pushingVel:angleTo(bodyVel)
+    local angle = math.deg(absAngle)
+    if angle < 0 then
+      angle = angle * -1
+    end
 
-  -- Throw/spit the projectile thing
-function Player:shoot(args)
-end
+    local angleMod = 20
+    self.isRunningForwards = angle < (90 - angleMod) or angle > (90 * 3 + angleMod)
+    self.isFacingRight = xd > 0
 
-function Player:move(dir, isY)
-  local speed = Player.static.BASE_SPEED * dir * self.scale
+    local x = Player.static.BASE_SPEED * xd * self.scale
+    local y = Player.static.BASE_SPEED * yd * self.scale
 
-  local x = 0
-  local y = 0
-
-  if isY then
-    y = speed
-  else
-    x = speed
-  end
-
-  if dir > 0.3 or dir < -0.3 then
-    self.moving = true
-    self.sprite:changeAnim("Running", dir)
     self.collider.body:applyLinearImpulse(x, y, self.collider.body:getX(), self.collider.body:getY())
   end
-end
-
-function Player:moveX(dir)
-  self:move(dir, false)
-end
-
-function Player:moveY(dir)
-  self:move(dir, true)
-end
-
-function Player:updateMovingAnimation()
-  local xvel, yvel = self.collider.body:getLinearVelocity()
-
-  if xvel == 0 then
-    xvel = self.lastXDir
-  end
-
-  if xvel > 10 or xvel < -10 then
-    self.sprite:changeAnim("Skidding", xvel)
-  else
-    self.sprite:changeAnim("Idle", xvel)
-  end
-
-  self.lastXDir = xvel
 end
 
 -----------------------
 -- Running State
 local RunningPlayer = Player:addState(STATE.RUN)
 function RunningPlayer:enteredState()
+  -- TODO: Change animation
   self.collider.body:setLinearDamping(0.3)
 end
 
@@ -262,6 +205,7 @@ end
 -- Slide State
 local SlidingPlayer = Player:addState(STATE.SLIDE)
 function SlidingPlayer:enteredState()
+  -- TODO: Change animation
   self.collider.body:setLinearDamping(6)
 end
 
