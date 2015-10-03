@@ -46,7 +46,7 @@ return function(GameScene)
 
     camerac = CameraController:new()
 
-    --camerac:moveTo(1000,1000,1,10)
+    camerac:moveTo(love.window.getWidth() / 2, love.window.getHeight() / 2,1,1)
 
 
     --we'll just use a simple table to keep things updated

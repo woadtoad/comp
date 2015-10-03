@@ -6,7 +6,7 @@ function camerac:initialize ()
   self.shakertime = 1
   self.togoal = 1
   self.togoalshaker = 1
-  self.initialShakex, self.intialShakey = Camera:getPosition()
+  self.initialx, self.intialy = Camera:getPosition()
 end
 
 function camerac:moveTo(x,y,scale,time)
@@ -29,6 +29,7 @@ end
 
 function camerac:update(dt)
   local randx,randy = 0,0
+
 
   if self.togoalshaker < 1 then
      self.togoalshaker = self.togoalshaker + self.shakertime * dt
@@ -55,7 +56,7 @@ function camerac:update(dt)
   end
 
 
-   Camera:setPosition(animposx+randx,animposy+randy)
+  Camera:setPosition(animposx+randx,animposy+randy)
 
 
 end
