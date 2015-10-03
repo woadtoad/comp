@@ -261,9 +261,9 @@ end
 local FallingPlayer = Player:addState(STATE.FALL)
 function FallingPlayer:enteredState()
   print('Player fell!')
-  self.sprite:changeAnim('FatIdle')
-  self.collider.body:setLinearDamping(10)
-  self.canControl = false
+  -- self.sprite:changeAnim('FatIdle')
+  -- self.collider.body:setLinearDamping(10)
+  -- self.canControl = false
 end
 
 -----------------------
