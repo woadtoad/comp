@@ -8,143 +8,117 @@ local Tile = class('Tile')
 Tile:include(require('stateful'))
 
 Tile.static.PLAYER_DAMAGE_INTERVAL = 0.25
+Tile.static.TILE_TYPES = {
+  ICE = 1,
+  STONES = 2
+}
 
 function Tile:initialize (x,y,i,v,scale,active,typetile)
+  if not active then return end
+
   self.active = active
   self.resetTime = 3
   self.type = typetile
-  if active and typetile == 1 then
 
-    self.health = 4
-    self.regenRate = 1
+  self.health = 4
+  self.regenRate = 1
 
-    local anims = {}
+  local anims = {}
 
-    anims["Spawn"] = {
-      framerate = 8,
-      frames = {TexMate:frameCounter("icetile2/TileRespawn_",0,10,4)}
-    }
+  anims["Spawn"] = {
+    framerate = 8,
+    frames = {TexMate:frameCounter("icetile2/TileRespawn_",0,10,4)}
+  }
 
-    anims["Stone1"] = {
-      framerate = 8,
-      frames = {"stonetile2/TileStone_0000"}
-    }
+  anims["Stone1"] = {
+    framerate = 8,
+    frames = {"stonetile2/TileStone_0000"}
+  }
 
-    anims["IdleState"] = {
-      framerate = 4,
-      frames = {"icetile2/TileState_0000","icetile2/TileRipple_0000","icetile2/TileRipple_0001","icetile2/TileRipple_0002"}
-    }
+  anims["IdleState"] = {
+    framerate = 4,
+    frames = {"icetile2/TileState_0000","icetile2/TileRipple_0000","icetile2/TileRipple_0001","icetile2/TileRipple_0002"}
+  }
 
-    anims["DamageOne"] = {
-      framerate = 8,
-      frames = {"icetile2/TileState_0001"}
-    }
+  anims["DamageOne"] = {
+    framerate = 8,
+    frames = {"icetile2/TileState_0001"}
+  }
 
-    anims["DamageTwo"] = {
-      framerate = 8,
-      frames = {"icetile2/TileState_0002"}
-    }
+  anims["DamageTwo"] = {
+    framerate = 8,
+    frames = {"icetile2/TileState_0002"}
+  }
 
-    anims["DamageThree"] = {
-      framerate = 8,
-      frames = {"icetile2/TileState_0003"}
-    }
+  anims["DamageThree"] = {
+    framerate = 8,
+    frames = {"icetile2/TileState_0003"}
+  }
 
-    anims["Destroy"] = {
-      framerate = 8,
-      frames = {"icetile2/TileBreak_0000",
-                "icetile2/TileBreak_0001",
-                "icetile2/TileBreak_0002",
-                "icetile2/TileBreak_0003",
-                "icetile2/TileBreak_0004",
-                "icetile2/TileBreak_0005",
-                }
-    }
+  anims["Destroy"] = {
+    framerate = 8,
+    frames = {"icetile2/TileBreak_0000",
+              "icetile2/TileBreak_0001",
+              "icetile2/TileBreak_0002",
+              "icetile2/TileBreak_0003",
+              "icetile2/TileBreak_0004",
+              "icetile2/TileBreak_0005",
+              }
+  }
 
-    anims["Blank"] = {
-      framerate = 8,
-      frames = {"icetile2/Blank_0000"
-                }
-    }
+  anims["Blank"] = {
+    framerate = 8,
+    frames = {"icetile2/Blank_0000"
+              }
+  }
 
-    self.scale = scale
-    self.sprite = TexMate(TEAMASSETS,anims,"IdleState",x,y,nil,10,nil,nil,self.scale)
-    --(Atlas, animlist, defaultanim, x, y, pivotx, pivoty, rot, flip, scale)
+  local spriteYOffset = 10
+  if self.type >= Tile.static.TILE_TYPES.STONES then
+    spriteYOffset = -10
+  end
+  self.scale = scale
+  self.sprite = TexMate(TEAMASSETS,anims,"IdleState",x,y,nil,spriteYOffset,nil,nil,self.scale)
+  --(Atlas, animlist, defaultanim, x, y, pivotx, pivoty, rot, flip, scale)
 
-    self.sprite.endCallback["Destroy"] = function()
-      self.sprite:changeAnim("Blank")
-    end
-
-    self.sprite.endCallback["Spawn"] = function()
-      self:gotoState("Full")
-    end
-
-
-    self.xcoor = v
-    self.ycoor = i
-    self.xoffset = 65 *self.scale
-    self.yoffset = 64 *self.scale
-    self.x = x
-    self.y = y
-
-    local ww = 65 * self.scale
-    local hh = 70 * self.scale
-    local hhh2 = 32 * self.scale
-    self.collider = world:newPolygonCollider(
-      {0, -hh, ww, -hhh2, ww, hhh2, 0, hh, -ww,hhh2,-ww,-hhh2},
-      {
-        body_type = 'static',
-        collision_class = 'Tile',
-      }
-    )
-    self.collider.body:setPosition(x,y)
-    self.collider.parent = self
-
-    self.players = {}
-    self.damageCheckTick = 0
-
-    self:gotoState("Spawn")
-
-  elseif active and typetile >= 2 then
-
-
-
-    local anims = {}
-
-    anims["Stone1"] = {
-      framerate = 8,
-      frames = {"stonetile2/TileStone_0000"}
-    }
-
-    self.scale = scale
-    self.sprite = TexMate(TEAMASSETS,anims,"Stone1",x,y,nil,-20,nil,nil,self.scale)
-
-    self.xcoor = v
-    self.ycoor = i
-    self.xoffset = 65 *self.scale
-    self.yoffset = 64 *self.scale
-    self.x = x
-    self.y = y
-
-    local ww = 65 * self.scale
-    local hh = 70 * self.scale
-    local hhh2 = 32 * self.scale
-    self.collider = world:newPolygonCollider(
-      {0, -hh, ww, -hhh2, ww, hhh2, 0, hh, -ww,hhh2,-ww,-hhh2},
-      {
-        body_type = 'static',
-        collision_class = 'Tile',
-      }
-    )
-    self.collider.body:setPosition(x,y)
-    self.collider.parent = self
-
-    self.players = {}
-
-    self:gotoState("Stone")
-
+  self.sprite.endCallback["Destroy"] = function()
+    self.sprite:changeAnim("Blank")
   end
 
+  self.sprite.endCallback["Spawn"] = function()
+    self:gotoState("Full")
+  end
+
+
+  self.xcoor = v
+  self.ycoor = i
+  self.xoffset = 65 *self.scale
+  self.yoffset = 64 *self.scale
+  self.x = x
+  self.y = y
+
+  local ww = 65 * self.scale
+  local hh = 70 * self.scale
+  local hhh2 = 32 * self.scale
+  self.collider = world:newPolygonCollider(
+    {0, -hh, ww, -hhh2, ww, hhh2, 0, hh, -ww,hhh2,-ww,-hhh2},
+    {
+      body_type = 'static',
+      collision_class = 'Tile',
+    }
+  )
+  self.collider.body:setPosition(x,y)
+  self.collider.parent = self
+
+  self.players = {}
+  self.damageCheckTick = 0
+
+  if self.type == Tile.static.TILE_TYPES.ICE then
+    self:gotoState("Spawn")
+  end
+
+  if self.type >= Tile.static.TILE_TYPES.STONES then
+    self:gotoState("Stone")
+  end
 end
 
 function Tile:damage(amt)
