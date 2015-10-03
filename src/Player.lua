@@ -92,15 +92,15 @@ function Player:update(dt)
   self:updateMovingAnimation()
 
   -- Bring in the arm if you aren't grabbing
-  if self.isGrabbing then
-    self.arm.fixtures['main']:setDensity(100)
-  else
-    self.arm.fixtures['main']:setDensity(0)
-    local x, y = self.collider.body:getPosition();
-    self.arm.body:applyForce(
-      x + 1000,
-      y + 1000)
-  end
+  -- if self.isGrabbing then
+  --   self.arm.fixtures['main']:setDensity(100)
+  -- else
+  --   self.arm.fixtures['main']:setDensity(0)
+  --   local x, y = self.collider.body:getPosition();
+  --   self.arm.body:applyForce(
+  --     x + 1000,
+  --     y + 1000)
+  -- end
 
   self:updateSprites(dt)
 end
