@@ -106,7 +106,7 @@ function Input:down(action, id)
         -- Supports multiple gamepads
         if self.joysticks[id] then
             if axis_to_button[key] then
-                return self.state[key]
+                return self.state[id][key]
             elseif gamepad_to_button[key] then
                 if self.joysticks[id]:isGamepadDown(gamepad_to_button[key]) then
                     return true
