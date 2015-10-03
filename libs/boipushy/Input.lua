@@ -140,9 +140,11 @@ end
 function Input:update()
     self:pressed()
     for i, j in pairs(self.state) do
-      self.prev_state[i] = copy(self.state[i])
-      self.state[i]['wheelup'] = false
-      self.state[i]['wheeldown'] = false
+      for e, f in pairs(self.state[i]) do
+        self.prev_state[i][e] = copy(self.state[i][e])
+        self.state[i]['wheelup'] = false
+        self.state[i]['wheeldown'] = false
+      end
     end
 end
 
