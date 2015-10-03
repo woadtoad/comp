@@ -1,6 +1,6 @@
 local Pools = require("src.Pool")
 local TexMate = require("texmate.TexMate")
-local world = require('src.world')
+local WorldManager = require('src.WorldManager')
 local PLAYER_STATES = require('src.Player').static.STATES
 local Camera = require('src.Camera')
 local TexMateStatic = require("texmate.TexMateStatic")
@@ -128,7 +128,7 @@ function Tile:initialize (x,y,i,v,scale,filled,typetile)
   local ww = 65 * self.scale
   local hh = 70 * self.scale
   local hhh2 = 32 * self.scale
-  self.collider = world:newPolygonCollider(
+  self.collider = WorldManager.world:newPolygonCollider(
     {0, -hh, ww, -hhh2, ww, hhh2, 0, hh, -ww,hhh2,-ww,-hhh2},
     {
       body_type = 'static',

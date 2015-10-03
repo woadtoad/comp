@@ -1,4 +1,3 @@
-local world = require('src.world')
 local Vector = require('hump.vector')
 
 local Arm = class('Arm')

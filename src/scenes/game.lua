@@ -1,7 +1,7 @@
 local SceneManager = require('src.SceneManager')
 local SCENES = require('src.config.SCENES')
 local hxdx = require("hxdx")
-local world = require('src.world')
+local WorldManager = require('src.WorldManager')
 local Camera = require('src.Camera')
 local Player = require('src.Player')
 local Tile = require('src.TileEntity')
@@ -11,16 +11,57 @@ local Effects = require('src.Effects')
 local PlayerBase = require('src.PlayerBase')
 
 return function(GameScene)
-  local updateList = {}
 
   function GameScene:initialize()
-    love.graphics.setBackgroundColor( 100, 110, 200 )
+    print('  GameScene:initialize')
+    if self.initialized then
+      return
+    end
 
+    love.graphics.setBackgroundColor( 100, 110, 200 )
+    self.initialized = true
+  end
+
+  function GameScene:enteredState()
+    print('  GameScene:enteredState')
+    self:initialize()
+    self:reset()
+  end
+
+  function GameScene:exitedState()
+    print('  GameScene:exitedState')
+    self:destroy()
+    -- self:reset()
+  end
+
+  function GameScene:pausedState()
+    print('  GameScene:pausedState')
+    self:pause()
+  end
+
+  function GameScene:continuedState()
+    print('  GameScene:continuedState')
+    self:destroy()
+    self:reset()
+  end
+
+  function GameScene:pause()
+    self.paused = true
+  end
+
+  function GameScene:reset()
+    -- DIRTY reset for the game.
+    -- TODO: make sure GC cleans up all the games objects
+    self.updateList = {}
+    self.drawList = {}
+
+    self.paused = false
     self.timer = 0
     self.maxTime = 60
     self.thePickupTimer = 2
 
-    self.Bases = {}
+    --instantiate a new player and their bases.
+    self.bases = {}
     self.players = {}
 
     self.TileTest = TileSystem:new()
@@ -39,11 +80,12 @@ return function(GameScene)
 
       -- generate a base for each player
       local base = PlayerBase:new(
-      self.spawnTiles[id][1],
-      self.spawnTiles[id][2],
-      id,
-      100)
-      table.insert(self.Bases, base)
+        self.spawnTiles[id][1],
+        self.spawnTiles[id][2],
+        id,
+        100
+      )
+      table.insert(self.bases, base)
     end
 
     -- create a pool of pickups
@@ -51,48 +93,58 @@ return function(GameScene)
 
     self.EffectTest = Effects:new()
 
-
     self:resetCameraPosition()
-
     Camera:moveTo(love.window.getWidth() / 2+50, love.window.getHeight() / 2+350,1,1)
 
-    --we'll just use a simple table to keep things updated
-
-    table.insert(updateList,Camera)
-    table.insert(updateList,self.TileTest)
-    table.insert(updateList, self.BaseTest)
-    for i, base in ipairs(self.Bases) do
-      table.insert(updateList, base)
-      print("player"..base:getCurrentPlayer())
+    -- UPDATE list
+    table.insert(self.updateList,Camera)
+    table.insert(self.updateList,self.TileTest)
+    table.insert(self.updateList, self.BaseTest)
+    for i, base in ipairs(self.bases) do
+      table.insert(self.updateList, base)
     end
     for i,player in ipairs(self.players) do
-      table.insert(updateList, player)
+      table.insert(self.updateList, player)
+    end
+
+    -- DRAW list
+    table.insert(self.drawList,Camera)
+    table.insert(self.drawList,self.TileTest)
+    table.insert(self.drawList, self.BaseTest)
+    for i, base in ipairs(self.bases) do
+      table.insert(self.drawList, base)
+    end
+    for i,player in ipairs(self.players) do
+      table.insert(self.drawList, player)
     end
   end
 
   function GameScene:update(dt)
-    -- ************** TIMER STUFF ***************
-    self.timer = self.timer + dt
-    if self.timer >= self.maxTime then
-      --logic here
-    end
-    self:updatePickupTimer(dt)
-    --------- end timer stuff --------------
-    world:update(dt)
+    if not self.paused then
+      -- ************** TIMER STUFF ***************
+      self.timer = self.timer + dt
+      if self.timer >= self.maxTime then
+        --logic here
+      end
+      self:updatePickupTimer(dt)
+      --------- end timer stuff --------------
+      WorldManager.world:update(dt)
 
-    --Iterate through the items for update
-    for i, v in pairs(updateList) do
-      updateList[i]:update(dt)
-    end
+      --Iterate through the items for update
+      for i, v in pairs(self.updateList) do
+        self.updateList[i]:update(dt)
+      end
 
-    self.EffectTest:update(dt)
+      self.EffectTest:update(dt)
+    end
   end
 
   function GameScene:draw()
     Camera.parent:draw(
     function(l, t, w, h)
-      self:drawFromUpdateList()
-
+      for i, v in pairs(self.drawList) do
+        self.drawList[i]:draw()
+      end
       --need to put this in draw list.
       self.EffectTest:draw()
 
@@ -107,7 +159,7 @@ return function(GameScene)
     Camera.parent:draw(
     function(l, t, w, h)
       --Debug Drawing for physics
-      world:draw()
+      WorldManager.world:draw()
 
       self:drawDebugPoints()
 
@@ -191,17 +243,18 @@ return function(GameScene)
         DEBUG.MODE = MODES
       end
     end
+
+    -- Reload the game scene!
+    if input:pressed(INPUTS.RELOAD) then
+      DEBUG.MODE = DEBUG.MODES.SHOW_GAME
+      DEBUG.ZOOM = 1
+
+      self:gotoState(SCENES.GAME)
+    end
   end
 
   function GameScene:resetCameraPosition()
     Camera.parent:setPosition(love.window.getWidth() / 2, love.window.getHeight() / 2)
-  end
-
-  function GameScene:drawFromUpdateList()
-    --Iterate through the items for update
-    for i, v in pairs(updateList) do
-      updateList[i]:draw()
-    end
   end
 
   function GameScene:updatePickupTimer(dt)
@@ -214,9 +267,13 @@ return function(GameScene)
       self.theTile.x = self.viableTiles[self.theRandom][1]
       self.theTile.y = self.viableTiles[self.theRandom][2]
       table.insert(self.pickupPool, ThePickup:new(self.theTile.x,self.theTile.y))
-      table.insert(updateList,self.pickupPool[#self.pickupPool])
+      table.insert(self.updateList,self.pickupPool[#self.pickupPool])
       self.thePickupTimer = love.math.random(3, 20)
     end
+  end
+
+  function GameScene:destroy()
+    WorldManager:reset()
   end
 
 end

@@ -1,7 +1,7 @@
 -- base class for pickup --
 local Pools = require("src.Pool")
 local TexMate = require("texmate.TexMate")
-local world = require('src.world')
+local WorldManager = require('src.WorldManager')
 local Pickup = class('Pickup')
 local TexMateStatic = require("texmate.TexMateStatic")
 Pickup:include(require('stateful'))
@@ -21,7 +21,7 @@ function Pickup:initialize(x,y)
                 TexMateStatic(TEAMASSETS,"food/Item_0002",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale)}
   self.shadow = TexMateStatic(TEAMASSETS,"mockup_toad_new/Shadow_0000",0,0,shadowOffsetX,shadowOffsetY,0,false,foodScale,foodScale)
   self.food = love.math.random(1,3)
-  self.collider = world:newCircleCollider(x, y, 15, {collision_class='Pickup'})
+  self.collider = WorldManager.world:newCircleCollider(x, y, 15, {collision_class='Pickup'})
   self.collider.body:setFixedRotation(true)
   self.collider.body:setLinearDamping(1.5)
   self.collider.fixtures['main']:setRestitution(0.3)

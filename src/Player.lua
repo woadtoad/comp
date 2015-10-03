@@ -1,7 +1,7 @@
 local TexMate = require("texmate.TexMate")
 local Vector = require('hump.vector')
 local Input = require('src.Input')
-local world = require('src.world')
+local WorldManager = require('src.WorldManager')
 
 local Player = class('Player')
 Player:include(require('stateful'))
@@ -143,7 +143,7 @@ function Player:initialize(x, y, scale, id, facing)
   --make the sprite , args: atlas, animation dataformat, default animation.
   self.sprite = TexMate:new(TEAMASSETS, playerAnims, "Idle" , nil, nil, 0, 30 + self.scale, nil, nil, self.spriteScale)
 
-  self.collider = world:newCircleCollider(x, y, self.radius, {collision_class = 'PlayerBody'})
+  self.collider = WorldManager.world:newCircleCollider(x, y, self.radius, {collision_class = 'PlayerBody'})
   self.collider.parent = self
   self.collider.fixtures['main']:setRestitution(0.3)
   self.collider.body:setLinearDamping(1.5)
@@ -155,9 +155,9 @@ function Player:initialize(x, y, scale, id, facing)
   self.feetHeight = self.feetRadius * 2
   local feetX = x - self.feetWidth / 2
   local feetY = y + self.feetHeight
-  self.feet = world:newRectangleCollider(feetX, feetY, self.feetWidth, self.feetHeight, {collision_class = 'PlayerFeet'})
+  self.feet = WorldManager.world:newRectangleCollider(feetX, feetY, self.feetWidth, self.feetHeight, {collision_class = 'PlayerFeet'})
   self.feet.parent = self
-  self.feetJoint = world:addJoint('RevoluteJoint', self.feet.body, self.collider.body, x, y, false)
+  self.feetJoint = WorldManager.world:addJoint('RevoluteJoint', self.feet.body, self.collider.body, x, y, false)
   self.feet.body:setFixedRotation(true)
   self.feet:addShape('left', 'CircleShape', -(self.feetWidth / 2), 0, self.feetRadius)
   self.feet:addShape('right', 'CircleShape', (self.feetWidth / 2), 0, self.feetRadius)
@@ -166,9 +166,9 @@ function Player:initialize(x, y, scale, id, facing)
   self.tailHeight = self.tailWidth
   local tailX = x - self.tailWidth / 2
   local tailY = y + (self.feetRadius * 4) - self.tailWidth
-  self.tail = world:newRectangleCollider(tailX, tailY, self.tailWidth, self.tailHeight, {collision_class = 'PlayerTail'})
+  self.tail = WorldManager.world:newRectangleCollider(tailX, tailY, self.tailWidth, self.tailHeight, {collision_class = 'PlayerTail'})
   self.tail.parent = self
-  self.tailJoint = world:addJoint('RevoluteJoint', self.tail.body, self.feet.body, x, y, false)
+  self.tailJoint = WorldManager.world:addJoint('RevoluteJoint', self.tail.body, self.feet.body, x, y, false)
   self.tail.body:setFixedRotation(true)
 
   self.lastXDir = 0

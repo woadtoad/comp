@@ -26,15 +26,10 @@ end
 function SceneManager:init()
     -- Attach our scene logic
     for key,sceneName in pairs(SCENES) do
+      print('  Initializing ' .. sceneName .. '...')
       require('src.scenes.' .. sceneName)(self:getScene(sceneName))
     end
 
-    -- Initialize each scene
-    for k,sceneName in pairs(SCENES) do
-      print('  Initializing ' .. sceneName .. '...')
-      self:gotoState(sceneName)
-      self:initialize()
-    end
     self:popAllStates()
 end
 
