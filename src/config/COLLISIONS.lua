@@ -6,8 +6,8 @@ local COLLISION_CLASSES = {
   PlayerFeet = {},
 
   -- Players Arm
-  ArmOn = {},
-  ArmOff = {},
+  ArmOut = {},
+  ArmIn = {},
 
   -- Tiles
 }

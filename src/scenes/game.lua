@@ -19,13 +19,9 @@ return function(GameScene)
 
 
     love.graphics.setBackgroundColor( 100, 110, 200 )
-    --level Collission
-    --self.ground = world:newRectangleCollider(0, 750, 1024, 50, {body_type = 'static'})
-    --self.lWall = world:newRectangleCollider(0, 0, 50, 800, {body_type = 'static'})
-    --self.rWall = world:newRectangleCollider(976, 0, 50, 800, {body_type = 'static'})
 
     --instantiate a new player.
-    self.player = Player:new()
+    self.player = Player:new(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
 
     self.TileTest = TileSystem:new()
 

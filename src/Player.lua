@@ -8,15 +8,20 @@ Player:include(require('stateful'))
 
 Player.static.BASE_SPEED = 30
 Player.static.BASE_VEC = Vector(0, 0)
+Player.static.BASE_RADIUS = 25
 
-function Player:initialize()
+function Player:initialize(x, y, scale)
   self.Health = 10
+  self.scale = scale or 1
+
+  self.radius = self.scale * Player.static.BASE_RADIUS
+  self.feetRadius = self.scale * (Player.static.BASE_RADIUS / 2)
 
   local playerAnims = {
     Idle = {
       framerate = 14,
       frames = {
-        'alienYellow.png'
+        'smallRockGrass.png'
       }
     },
 
@@ -45,16 +50,20 @@ function Player:initialize()
   }
 
   --make the sprite , args: atlas, animation dataformat, default animation.
-  self.sprite = TexMate:new(PROTOTYPEASSETS,playerAnims,"Idle",nil,nil,0,-30)
+  self.sprite = TexMate:new(PROTOTYPEASSETS,playerAnims,"Idle",nil,nil,0,0)
 
-  self.collider = world:newCircleCollider(300, 300, 25, {collision_class = 'Player'})
-  self.collider.body:setFixedRotation(false)
+  self.collider = world:newCircleCollider(x, y, self.radius, {collision_class = 'PlayerBody'})
   self.collider.fixtures['main']:setRestitution(0.3)
   self.collider.body:setLinearDamping(2)
   self.collider.body:setFixedRotation(true)
 
+  self.feet = world:newCircleCollider(x, y + (self.radius / 2 + self.radius / 4), self.feetRadius, {collision_class = 'PlayerFeet'})
+  self.feet.body:setFixedRotation(true)
+
+  self.joint = world:addJoint('RevoluteJoint', self.feet.body, self.collider.body, x, y, false)
+
+  -- Add arm to Player
   self.armSprite = TexMate:new(PROTOTYPEASSETS,armAnims,"Idle",nil,nil,0,-30)
-  self.armCollider = world:newCircleCollider(300, 300, 25, {collision_class = 'Player'})
 
   self.lastXDir = 0
 end
@@ -65,7 +74,9 @@ function Player:update(dt)
   self.sprite:update(dt)
 
   self.sprite:changeLoc(self.collider.body:getX(),self.collider.body:getY())
-  self.sprite:changeRot(math.deg(self.collider.body:getAngle()))
+
+  -- self.armSprite:changeLoc(self.fixtures['feet'].body:getX(),self.fixtures['feet'].body:getY())
+  -- self.sprite:changeRot(math.deg(self.fixtures['feet'].body:getAngle()))
 end
 
 function Player:draw()
