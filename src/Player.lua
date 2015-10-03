@@ -189,6 +189,15 @@ function Player:input(input)
   -- print(self.sprite.animlist['Running'].framerate)
 end
 
+function Player:isMoving()
+  local vec = Vector(self.collider.body:getLinearVelocity())
+  if (vec.x > 0.02 or vec.x < -0.02) or (vec.y > 0.02 or vec.y < -0.02)  then
+    return true
+  else
+    return false
+  end
+end
+
 function Player:move(xd, yd)
   if (xd > 0.3 or xd < -0.3) or(yd > 0.3 or yd < -0.3)  then
     -- Establish the fact our player is making the Player

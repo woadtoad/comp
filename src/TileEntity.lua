@@ -186,7 +186,9 @@ function Tile:applyPlayerDamages(dt)
       if conf.tick > Tile.static.PLAYER_DAMAGE_INTERVAL then
         conf.tick = 0
 
-        self:damage(conf.player.damageWeight)
+        -- if conf.player:isMoving() then
+          self:damage(conf.player.damageWeight)
+        -- end
       end
     end
   end
