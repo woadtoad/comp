@@ -25,6 +25,12 @@ function Camera:moveTo(x,y,scale,time)
 
 end
 
+function Camera:setScale(scale)
+  self.parent:setScale(scale)
+
+end
+
+
 function Camera:shaker (magnitude,time)
   --magnitude is how much is shakes
   self.shakermag = magnitude

@@ -1,7 +1,7 @@
 local Pools = require("src.Pool")
 local world = require('src.world')
 local Tile = require('src.TileEntity')
-local TileMap = require("assets.gameMap5")
+local TileMap = require("assets.gameMap6")
 
 local TileSystem = class('TileSystem')
 TileSystem:include(require('stateful'))
