@@ -140,9 +140,16 @@ function _M:update (dt)
 
 end
 
-function _M:draw ()
+function _M:draw (isFlipped)
 
-
+  local flipped = self.flip
+  if isFlipped ~= nil then
+    if isFlipped then
+      flipped = 1
+    else
+      flipped = -1
+    end
+  end
 
 	--Reset graphics colour back to white
 	love.graphics.setColor(255,255,255,255)
@@ -167,7 +174,7 @@ function _M:draw ()
 						self.x, --x
 						self.y, --y
 						math.rad(self.rot), -- rot
-						self.scale.x*self.flip, -- scale x
+						self.scale.x*flipped, -- scale x
 						self.scale.y, -- scale y
 						-extra[1]+tempWidth-self.offset.x, --pivotx, needs to add in the trimming data here.
 						-extra[2]+tempHeight-self.offset.y -- pivoty

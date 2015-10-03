@@ -15,7 +15,7 @@ local STATE = {
   SLIDE = 'slide',
 }
 
-function Player:initialize(x, y, scale, id)
+function Player:initialize(x, y, scale, id, facing)
   print('    Player '..id)
   print('      scale: '..scale)
   print('          x: '..x)
@@ -25,6 +25,7 @@ function Player:initialize(x, y, scale, id)
   self.Health = 10
   self.scale = scale or 1
   self.id = id or 1
+  self.isFacingRight = facing or false
 
   self.radius = self.scale * Player.static.BASE_RADIUS
   self.feetRadius = self.scale * (Player.static.BASE_RADIUS / 2)
@@ -88,8 +89,6 @@ function Player:initialize(x, y, scale, id)
 end
 
 function Player:update(dt)
-  self:updateMovingAnimation()
-
   self:updateSprites(dt)
 end
 
@@ -103,7 +102,7 @@ end
 
 function Player:draw()
   self.shadowSprite:draw()
-  self.sprite:draw()
+  self.sprite:draw(self.isFacingRight)
 end
 
 function Player:ddraw()
@@ -146,51 +145,28 @@ function Player:move(xd, yd)
     bodyVel = bodyVel:normalized()
     local pushingVel = Vector(xd, yd)
     pushingVel = pushingVel:normalized()
-    local angle = math.deg(pushingVel:angleTo(bodyVel))
+    local absAngle = pushingVel:angleTo(bodyVel)
+    local angle = math.deg(absAngle)
     if angle < 0 then
       angle = angle * -1
     end
 
     local angleMod = 20
     self.isRunningForwards = angle < (90 - angleMod) or angle > (90 * 3 + angleMod)
-    -- print("self.isRunningForwards->", self.isRunningForwards)
+    self.isFacingRight = xd > 0
 
     local x = Player.static.BASE_SPEED * xd * self.scale
     local y = Player.static.BASE_SPEED * yd * self.scale
 
-    self.sprite:changeAnim("Running", dir)
     self.collider.body:applyLinearImpulse(x, y, self.collider.body:getX(), self.collider.body:getY())
   end
-end
-
-function Player:moveX(dir)
-  self:move(dir, false)
-end
-
-function Player:moveY(dir)
-  self:move(dir, true)
-end
-
-function Player:updateMovingAnimation()
-  local xvel, yvel = self.collider.body:getLinearVelocity()
-
-  if xvel == 0 then
-    xvel = self.lastXDir
-  end
-
-  if xvel > 10 or xvel < -10 then
-    self.sprite:changeAnim("Skidding", xvel)
-  else
-    self.sprite:changeAnim("Idle", xvel)
-  end
-
-  self.lastXDir = xvel
 end
 
 -----------------------
 -- Running State
 local RunningPlayer = Player:addState(STATE.RUN)
 function RunningPlayer:enteredState()
+  -- TODO: Change animation
   self.collider.body:setLinearDamping(0.3)
 end
 
@@ -198,6 +174,7 @@ end
 -- Slide State
 local SlidingPlayer = Player:addState(STATE.SLIDE)
 function SlidingPlayer:enteredState()
+  -- TODO: Change animation
   self.collider.body:setLinearDamping(6)
 end
 
