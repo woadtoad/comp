@@ -39,6 +39,7 @@ local COLLISION_CLASSES = {
   {
     name = "Base",
     config = {
+      ignores = {"All"},
       enter = {"Pickup"}
     }
   },

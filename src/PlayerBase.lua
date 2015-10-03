@@ -13,18 +13,22 @@ function PlayerBase:initialize(x,y,playerId, radius)
 end
 
 function PlayerBase:update(dt)
+  print(currentPoints)
   if self.collider:enter('Pickup') then
     currentPoints = currentPoints + 1
-    print(currentPoints)
   end
   if self.collider:exit('Pickup') then
     currentPoints = currentPoints - 1
     print(currentPoints)
   end
- colliders = world:queryCircleArea(theX, theY, theRadius,{'Pickup'})
+ --[[colliders = world:queryCircleArea(theX, theY, theRadius,{'Pickup'})
  for i,v in pairs(colliders) do
     print("hehe")
-  end
+  end]]
+end
+
+function PlayerBase:GetCurrentPoints()
+  return currentPoints
 end
 
 function PlayerBase:draw()

@@ -34,6 +34,7 @@ return function(GameScene)
     self.TileTest = TileSystem:new()
 
     self.RockTest = ThePickup:new()
+    self.RockTest2 = ThePickup:new(500,500)
 
     self.EffectTest = Effects:new()
 
@@ -53,6 +54,7 @@ return function(GameScene)
     table.insert(updateList,camerac)
     table.insert(updateList,self.TileTest)
     table.insert(updateList, self.RockTest)
+    table.insert(updateList, self.RockTest2)
     table.insert(updateList, self.BaseTest)
     for i,player in ipairs(self.players) do
       table.insert(updateList, player)
