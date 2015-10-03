@@ -14,7 +14,7 @@ function Tile:initialize (x,y,i,v,scale,active)
     self.health = 3
 
     self.scale = scale
-    self.image = TexMateStatic(TEAMASSETS,"icetile/TileState_0000",x,y,nil,10,nil,nil,self.scale,nil,"center")
+    self.image = TexMateStatic(TEAMASSETS,"icetile2/TileState_0000",x,y,nil,10,nil,nil,self.scale,nil,"center")
 
     self.xcoor = v
     self.ycoor = i
@@ -40,13 +40,15 @@ function Tile:damage(amt)
     self.active = true
 
     if damage == 3 then
-      self.image:changeImage("icetile/TileState_0001")
+      self.image:changeImage("icetile2/TileState_0001")
     elseif damage == 2 then
-      self.image:changeImage("icetile/TileState_0002")
+      self.image:changeImage("icetile2/TileState_0002")
     elseif damage == 1 then
-      self.image:changeImage("icetile/TileState_0003")
+      self.image:changeImage("icetile2/TileState_0003")
     elseif damage == 0 then
       self.active = false
+
+
     end
   end
 end
