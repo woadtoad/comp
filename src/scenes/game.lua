@@ -18,8 +18,8 @@ return function(GameScene)
     love.graphics.setBackgroundColor( 100, 110, 200 )
 
     self.timer = 0
-    self.maxTime = 5
-
+    self.maxTime = 60
+    self.thePickupTimer = 2
     --instantiate a new player and their bases.
     self.Bases = {}
     self.players = {}
@@ -41,8 +41,8 @@ return function(GameScene)
 
     self.TileTest = TileSystem:new()
 
-    self.RockTest = ThePickup:new()
-    self.RockTest2 = ThePickup:new(500,500)
+    -- create a pool of pickups
+    self.pickupPool = {}
 
     self.EffectTest = Effects:new()
 
@@ -59,8 +59,6 @@ return function(GameScene)
 
     table.insert(updateList,camerac)
     table.insert(updateList,self.TileTest)
-    table.insert(updateList, self.RockTest)
-    table.insert(updateList, self.RockTest2)
     table.insert(updateList, self.BaseTest)
     for i, base in ipairs(self.Bases) do
       table.insert(updateList, base)
@@ -72,10 +70,13 @@ return function(GameScene)
   end
 
   function GameScene:update(dt)
+    -- ************** TIMER STUFF ***************
     self.timer = self.timer + dt
     if self.timer >= self.maxTime then
       --logic here
     end
+    self:updatePickupTimer(dt)
+    --------- end timer stuff --------------
     world:update(dt)
 
     --Iterate through the items for update
@@ -190,6 +191,18 @@ return function(GameScene)
     --Iterate through the items for update
     for i, v in pairs(updateList) do
       updateList[i]:draw()
+    end
+  end
+
+  function GameScene:updatePickupTimer(dt)
+    -- decrement the pickup timer
+    --print(self.thePickupTimer)
+    self.thePickupTimer = self.thePickupTimer - dt
+    if self.thePickupTimer <=0 then
+      table.insert(self.pickupPool, ThePickup:new(love.math.random(100, 900),love.math.random(50, 500)))
+      table.insert(updateList,self.pickupPool[#self.pickupPool])
+      print ('DROPPIN PICKUP')
+      self.thePickupTimer = love.math.random(3, 20)
     end
   end
 

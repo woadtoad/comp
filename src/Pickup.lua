@@ -15,7 +15,6 @@ function Pickup:initialize(x,y)
   self.collider = world:newCircleCollider(x, y, 50, {collision_class='Pickup'})
   self.collider.body:setFixedRotation(true)
   self.collider.fixtures['main']:setRestitution(0.3)
-  self.collider.body:applyLinearImpulse(100,0,self.collider.body:getX()-30,self.collider.body:getY()-30)
   isActive = true
 end
 
@@ -44,7 +43,7 @@ end
 
 function Pickup:deactivate()
   self.collider.body:setActive(false)
-  isActive = true
+  isActive = false
 end
 
 return Pickup
