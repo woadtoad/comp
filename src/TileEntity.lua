@@ -1,6 +1,7 @@
 local Pools = require("src.Pool")
 local TexMate = require("texmate.TexMate")
 local world = require('src.world')
+local PLAYER_STATES = require('src.Player').static.STATES
 local Camera = require('src.Camera')
 local TexMateStatic = require("texmate.TexMateStatic")
 
@@ -9,17 +10,26 @@ Tile:include(require('stateful'))
 
 Tile.static.PLAYER_DAMAGE_INTERVAL = 0.25
 Tile.static.TILE_TYPES = {
+  NONE = 0,
   ICE = 1,
   STONES = 2
 }
 
+<<<<<<< HEAD
 function Tile:initialize (x,y,i,v,scale,active,typetile)
   if not active then return end
 
 
   self.active = active
+=======
+function Tile:initialize (x,y,i,v,scale,filled,typetile)
+  self.filled = filled
+>>>>>>> Player now bloats immensilly doddle when falling from the island
   self.resetTime = 3
   self.type = typetile
+  if filled == false then
+    self.type = Tile.static.TILE_TYPES.NONE
+  end
 
   self.health = 4
   self.regenRate = 1
@@ -130,6 +140,10 @@ function Tile:initialize (x,y,i,v,scale,active,typetile)
   if self.type >= Tile.static.TILE_TYPES.STONES then
     self:gotoState("Stone")
   end
+
+  if self.type == Tile.static.TILE_TYPES.NONE then
+    self:gotoState("Empty")
+  end
 end
 
 function Tile:damage(amt)
@@ -146,7 +160,7 @@ function Tile:regenHealth(dt)
 end
 
 function Tile:draw()
-  if self.active and self.type >= 1 then
+  if self.filled and self.type >= 1 then
 
     self.sprite:draw()
 
@@ -159,7 +173,7 @@ function Tile:draw()
 end
 
 function Tile:update(dt)
-  if self.active and self.type == 1 then
+  if self.filled and self.type == 1 then
     if self.collider:enter('PlayerFeet') then
       local a, pushingPlayer = self.collider:enter('PlayerFeet')
       pushingPlayer = pushingPlayer.parent
@@ -181,9 +195,9 @@ function Tile:update(dt)
     self:updatePlayerTicks(dt)
     self:applyPlayerDamages(dt)
 
-    self:updateStates(dt)
   end
 
+  self:updateStates(dt)
 end
 
 function Tile:addPlayerAsDamager(player)
@@ -229,6 +243,20 @@ function Tile:getLoc()
   return self.x,self.y
 end
 
+
+
+local Empty = Tile:addState('Empty')
+
+function Empty:updateStates(dt)
+  if self.collider:enter('PlayerFeet') then
+    local a, player = self.collider:enter('PlayerFeet')
+    player = player.parent
+
+    if player:getStateStackDebugInfo()[1] ~= PLAYER_STATES.FALL then
+      player:gotoState(PLAYER_STATES.FALL)
+    end
+  end
+end
 
 
 local Stone = Tile:addState('Stone')

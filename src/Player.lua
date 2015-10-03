@@ -15,7 +15,9 @@ local STATE = {
   RUN = 'run',
   SLIDE = 'slide',
   JUMP = 'jump',
+  FALL = 'fall'
 }
+Player.static.STATES = STATE
 
 function Player:initialize(x, y, scale, id, facing)
   print('    Player '..id)
@@ -122,6 +124,7 @@ function Player:initialize(x, y, scale, id, facing)
   self.damagerTick = 0
   self.damagerAmount = 1
   self.effort = 1
+  self.canControl = true
 end
 
 function Player:update(dt)
@@ -161,32 +164,32 @@ function Player:ddraw()
 end
 
 function Player:input(input)
-  local xDir = input:down(INPUTS.MOVEX, self.id)
-  local yDir = input:down(INPUTS.MOVEY, self.id)
+  if self.canControl then
+    local xDir = input:down(INPUTS.MOVEX, self.id)
+    local yDir = input:down(INPUTS.MOVEY, self.id)
 
-  self.isRunningForwards = false
-  self.effort = 1
+    self.isRunningForwards = false
+    self.effort = 1
 
-  if xDir or yDir then
-    self:move(xDir or 0, yDir or 0)
-  end
-
-  if self.isRunningForwards then
-    if self:getStateStackDebugInfo()[1] ~= STATE.RUN then
-      self:gotoState(STATE.RUN)
+    if xDir or yDir then
+      self:move(xDir or 0, yDir or 0)
     end
-  else
-    if self:getStateStackDebugInfo()[1] ~= STATE.SLIDE then
-      self:gotoState(STATE.SLIDE)
+
+    if self.isRunningForwards then
+      if self:getStateStackDebugInfo()[1] ~= STATE.RUN then
+        self:gotoState(STATE.RUN)
+      end
+    else
+      if self:getStateStackDebugInfo()[1] ~= STATE.SLIDE then
+        self:gotoState(STATE.SLIDE)
+      end
     end
-  end
 
-  if self.effort > 1.3 then
-    self.effort = 1.3
+    if self.effort > 1.3 then
+      self.effort = 1.3
+    end
+    self.sprite.animlist['Running'].framerate = Player.static.RUNNING_FPS * (self.effort)
   end
-  self.sprite.animlist['Running'].framerate = Player.static.RUNNING_FPS * (self.effort)
-
-  -- print(self.sprite.animlist['Running'].framerate)
 end
 
 function Player:isMoving()
@@ -254,6 +257,16 @@ function JumpingPlayer:enteredState()
 end
 
 -----------------------
+-- Falling State
+local FallingPlayer = Player:addState(STATE.FALL)
+function FallingPlayer:enteredState()
+  print('Player fell!')
+  self.sprite:changeAnim('FatIdle')
+  self.collider.body:setLinearDamping(10)
+  self.canControl = false
+end
+
+-----------------------
 -- Throwing State
 
 -----------------------
@@ -264,9 +277,6 @@ end
 
 -----------------------
 -- Equipped && Equipping State
-
------------------------
--- Falling State
 
 -----------------------
 -- Spawning State

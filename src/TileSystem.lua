@@ -12,7 +12,7 @@ function TileSystem:initialize (x, y)
   local mapWidth = TileMap.width
   local mapHeight = TileMap.height
   local newTileMap = {}
-  local istile = true
+  local isTileFilled = false
   local isstone = false
   for i=1,mapWidth do
     newTileMap[i] = {}
@@ -28,12 +28,13 @@ function TileSystem:initialize (x, y)
   for i=1, mapWidth do
     self.Tiles[i] = {}
     for v=1, mapHeight do
+      isTileFilled = false
       local offset = 0
 
         if i % 2 == 0 then offset = 65 end
 
         if newTileMap[i][v] >= 1 then
-          istile = true
+          isTileFilled = true
         end
 
         table.insert(
@@ -44,7 +45,8 @@ function TileSystem:initialize (x, y)
             i,
             v,
             scale,
-            istile,newTileMap[i][v]
+            isTileFilled,
+            newTileMap[i][v]
           )
         )
 
