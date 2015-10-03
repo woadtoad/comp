@@ -27,7 +27,7 @@ function Effects:makeEffect(name,x,y)
       effect.endCallback[name] = function() self.Pool:deactivate(effect.key) end
       effect:changeAnim(name)
       effect.offset.x = 0
-      effect.offset.y = 0
+      effect.offset.y = -20
       effect:changeLoc(x,y)
 
     end

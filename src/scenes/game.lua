@@ -154,7 +154,8 @@ return function(GameScene)
     end
 
     if key == "s" then
-          self.EffectTest:makeEffect("Splash",self.TileTest.Tiles[10][10]:getLoc())
+      print("anim")
+      self.EffectTest:makeEffect("Splash",self.TileTest.Tiles[6][10]:getLoc())
     end
   end
 

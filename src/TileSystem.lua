@@ -52,7 +52,7 @@ function TileSystem:initialize (x, y)
 
         if newTileMap[i][v] == 1 then
           table.insert(viableTable,{i,v})
-          print(i,v,"is viable")
+
         end
       end
   end
@@ -79,7 +79,15 @@ end
 
 --for muzza
 function TileSystem:viableBuffet()
-  return viableTable
+  local viableXandY = {}
+
+  for i=1,#viableTable do
+    local x,y = self.Tiles[viableTable[i][1]][viableTable[i][2]]:getLoc()
+    print(x,y)
+    table.insert(viableXandY,{x,y})
+  end
+
+  return viableXandY
 end
 
 function TileSystem:toWorld(x,y)

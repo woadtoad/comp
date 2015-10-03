@@ -12,7 +12,8 @@ Tile.static.PLAYER_DAMAGE_INTERVAL = 0.25
 Tile.static.TILE_TYPES = {
   NONE = 0,
   ICE = 1,
-  STONES = 2
+  STONES = 2,
+  STATUES = 4,
 }
 
 function Tile:initialize (x,y,i,v,scale,filled,typetile)
@@ -46,6 +47,21 @@ function Tile:initialize (x,y,i,v,scale,filled,typetile)
   anims["Stone3"] = {
     framerate = 8,
     frames = {"stonetile2/TileStone_0002"}
+  }
+
+  anims["Statue1"] = {
+    framerate = 8,
+    frames = {"stonetile2/TileStatue_0000"}
+  }
+
+  anims["Statue2"] = {
+    framerate = 8,
+    frames = {"stonetile2/TileStatue_0001"}
+  }
+
+  anims["Statue3"] = {
+    framerate = 8,
+    frames = {"stonetile2/TileStatue_0002"}
   }
 
   anims["IdleState"] = {
@@ -129,12 +145,19 @@ function Tile:initialize (x,y,i,v,scale,filled,typetile)
     self:gotoState("Spawn")
   end
 
-  if self.type >= Tile.static.TILE_TYPES.STONES then
+  if self.type >= Tile.static.TILE_TYPES.STONES and self.type <= Tile.static.TILE_TYPES.STATUES then
     self:gotoState("Stone")
   end
 
+
   if self.type == Tile.static.TILE_TYPES.NONE then
     self:gotoState("Empty")
+
+  end
+
+  if self.type >= Tile.static.TILE_TYPES.STATUES then
+    self:gotoState("Statue")
+
   end
 end
 
@@ -258,6 +281,19 @@ function Stone:enteredState(dt)
 end
 
 function Stone:updateStates(dt)
+  self.sprite:update(dt)
+end
+------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------
+
+local Statue = Tile:addState('Statue')
+
+function Statue:enteredState(dt)
+    self.sprite:changeAnim("Statue"..math.random(1,3))
+end
+
+function Statue:updateStates(dt)
   self.sprite:update(dt)
 end
 ------------------------------------------------------------------------------
