@@ -78,7 +78,7 @@ function Player:initialize(x, y, scale, id)
 
   self.collider = world:newCircleCollider(x, y, self.radius, {collision_class = 'PlayerBody'})
   self.collider.fixtures['main']:setRestitution(0.3)
-  self.collider.body:setLinearDamping(2)
+  self.collider.body:setLinearDamping(1.5)
   self.collider.body:setFixedRotation(true)
 
   self.shadowSprite = TexMate:new(TEAMASSETS, playerShadow, "Idle" , nil, nil, 0, -(self.radius), nil, nil, self.spriteScale)
@@ -97,6 +97,11 @@ function Player:initialize(x, y, scale, id)
   local armX = x
   local armY = y
   self.arm = world:newCircleCollider(x, y, self.armRadius, {collision_class = 'ArmIn'})
+  self.arm.body:setLinearDamping(0)
+  self.arm.body:setInertia(0)
+  self.arm.body:resetMassData(0)
+  self.arm.fixtures['main']:setDensity(0)
+
   self.armSprite = TexMate:new(PROTOTYPEASSETS,armAnims,"Idle",nil,nil,0,0)
   self.armJoint = world:addJoint('RopeJoint', self.collider.body, self.arm.body, armX, armY, armX, armY, Player.static.BASIS_ARM_LENGTH * self.scale, false)
 
@@ -152,20 +157,20 @@ function Player:input(input)
   local xDir = input:down(INPUTS.MOVEX, self.id)
   local yDir = input:down(INPUTS.MOVEY, self.id)
 
-  self.moving = false
+  self.isRunningForwards = false
 
-  if xDir then
-    self:moveX(xDir)
+  if xDir or yDir then
+    self:move(xDir or 0, yDir or 0)
   end
 
-  if yDir then
-    self:moveY(yDir)
-  end
-
-  if self.moving then
-    self:gotoState(STATE.RUN)
+  if self.isRunningForwards then
+    if self:getStateStackDebugInfo()[1] ~= STATE.RUN then
+      self:gotoState(STATE.RUN)
+    end
   else
-    self:gotoState(STATE.SLIDE)
+    if self:getStateStackDebugInfo()[1] ~= STATE.SLIDE then
+      self:gotoState(STATE.SLIDE)
+    end
   end
 end
 
@@ -177,20 +182,26 @@ end
 function Player:shoot(args)
 end
 
-function Player:move(dir, isY)
-  local speed = Player.static.BASE_SPEED * dir * self.scale
+function Player:move(xd, yd)
+  if (xd > 0.3 or xd < -0.3) or(yd > 0.3 or yd < -0.3)  then
+    -- Establish the fact our player is making the Player
+    -- run forwards
+    local bodyVel = Vector(self.collider.body:getLinearVelocity())
+    bodyVel = bodyVel:normalized()
+    local pushingVel = Vector(xd, yd)
+    pushingVel = pushingVel:normalized()
+    local angle = math.deg(pushingVel:angleTo(bodyVel))
+    if angle < 0 then
+      angle = angle * -1
+    end
 
-  local x = 0
-  local y = 0
+    local angleMod = 20
+    self.isRunningForwards = angle < (90 - angleMod) or angle > (90 * 3 + angleMod)
+    -- print("self.isRunningForwards->", self.isRunningForwards)
 
-  if isY then
-    y = speed
-  else
-    x = speed
-  end
+    local x = Player.static.BASE_SPEED * xd * self.scale
+    local y = Player.static.BASE_SPEED * yd * self.scale
 
-  if dir > 0.3 or dir < -0.3 then
-    self.moving = true
     self.sprite:changeAnim("Running", dir)
     self.collider.body:applyLinearImpulse(x, y, self.collider.body:getX(), self.collider.body:getY())
   end
