@@ -200,7 +200,6 @@ return function(GameScene)
 
   function GameScene:updatePickupTimer(dt)
     -- decrement the pickup timer
-    --print(self.thePickupTimer)
     self.thePickupTimer = self.thePickupTimer - dt
     if self.thePickupTimer <=0 then
       self.viableTiles = self.TileTest:viableBuffet()
