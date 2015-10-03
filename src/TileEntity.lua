@@ -12,6 +12,7 @@ function Tile:initialize (x,y,i,v,scale,active)
   if active then
 
     self.health = 3
+    self.regenRate = 1
 
     self.scale = scale
     self.image = TexMateStatic(TEAMASSETS,"icetile2/TileState_0000",x,y,nil,10,nil,nil,self.scale,nil,"center")
@@ -53,6 +54,10 @@ function Tile:damage(amt)
   end
 end
 
+function Tile:regenHealth(dt)
+  self.health = self.health + (self.regenRate*dt)
+end
+
 function Tile:draw()
   if self.active then
     self.image:draw()
@@ -66,12 +71,90 @@ function Tile:draw()
 end
 
 function Tile:update(dt)
-  --self.image:update()
 
 end
 
 function Tile:getLoc()
   return self.x,self.y
 end
+
+------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------
+
+local Full = Tile:addState('Full')
+
+function Full:enteredState(dt)
+    self.image:changeImage("icetile2/TileState_0000")
+end
+
+function Full:update(dt)
+
+end
+
+------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------
+
+local DamageOne = Tile:addState('DamageOne')
+
+function DamageOne:enteredState(dt)
+  print("Damage1")
+  self.image:changeImage("icetile2/TileState_0001")
+end
+
+function DamageOne:update(dt)
+  self:regenHealth()
+
+end
+
+------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------
+
+local DamageTwo = Tile:addState('DamageTwo')
+
+function DamageTwo:enteredState(dt)
+  print("Damage2")
+  self.image:changeImage("icetile2/TileState_0002")
+end
+
+function DamageTwo:update(dt)
+  self:regenHealth()
+
+end
+
+------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------
+
+local DamageThree = Tile:addState('DamageThree')
+
+function DamageThree:enteredState(dt)
+  print("Damage3")
+
+  self.image:changeImage("icetile2/TileState_0003")
+end
+
+function DamageThree:update(dt)
+  self:regenHealth()
+
+end
+
+------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------
+
+
+local Destroyed = Tile:addState('Destroyed')
+
+function Destroyed:enteredState(dt)
+  print("dest")
+end
+
+function Destroyed:update(dt)
+
+end
+
 
 return Tile
