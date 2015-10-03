@@ -202,6 +202,8 @@ return function(GameScene)
     --print(self.thePickupTimer)
     self.thePickupTimer = self.thePickupTimer - dt
     if self.thePickupTimer <=0 then
+      self.viableTiles = self.TileTest:viableBuffet()
+      self.theTile = self.viableTiles[love.math.random(0,#self.viableTiles)]
       table.insert(self.pickupPool, ThePickup:new(love.math.random(400, 1000),love.math.random(800, 1200)))
       table.insert(updateList,self.pickupPool[#self.pickupPool])
       print ('DROPPIN PICKUP')
