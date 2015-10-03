@@ -11,16 +11,22 @@ local isActive
 function Pickup:initialize(x,y)
   x = x or 300
   y = y or 300
-  self.frame = TexMateStatic(PROTOTYPEASSETS,"rockDirt.png",0,0,65,123)
-  self.collider = world:newCircleCollider(x, y, 50, {collision_class='Pickup'})
+  foodOffsetX = 130
+  foodOffsetY = 140
+  foodScale = .4
+  self.frames = {TexMateStatic(TEAMASSETS,"food/Item_0000",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale),
+                TexMateStatic(TEAMASSETS,"food/Item_0001",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale),
+                TexMateStatic(TEAMASSETS,"food/Item_0002",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale)}
+  self.food = love.math.random(1,3)
+  self.collider = world:newCircleCollider(x, y, 15, {collision_class='Pickup'})
   self.collider.body:setFixedRotation(true)
   self.collider.fixtures['main']:setRestitution(0.3)
   isActive = true
 end
 
 function Pickup:update(dt)
-  self.frame:changeLoc(self.collider.body:getX(),self.collider.body:getY())
-  self.frame:changeRot(math.deg(self.collider.body:getAngle()))
+  self.frames[self.food]:changeLoc(self.collider.body:getX(),self.collider.body:getY())
+  self.frames[self.food]:changeRot(math.deg(self.collider.body:getAngle()))
  --[[ if self.collider:enter('Player') then
       --player collision logic here
   end]]--
@@ -31,7 +37,7 @@ end
 
 function Pickup:draw()
   if isActive then
-    self.frame:draw()
+    self.frames[self.food]:draw()
   end
 end
 
