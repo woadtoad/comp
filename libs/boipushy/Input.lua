@@ -97,16 +97,19 @@ function Input:down(action)
         if (love.keyboard.isDown(key) or love.mouse.isDown(key_to_button[key] or 0)) then
             return true
         end
-        
+
         -- Supports only 1 gamepad, add more later...
-        if self.joysticks[1] then
-            if axis_to_button[key] then
-                return self.state[key]
-            elseif gamepad_to_button[key] then
-                if self.joysticks[1]:isGamepadDown(gamepad_to_button[key]) then
-                    return true
-                end
-            end
+        for j, p in pairs (self.joysticks) do
+          if self.joysticks[j] then
+            print(p:getName())
+              if axis_to_button[key] then
+                  return self.state[key]
+              elseif gamepad_to_button[key] then
+                  if self.joysticks[j]:isGamepadDown(gamepad_to_button[key]) then
+                      return true
+                  end
+              end
+          end
         end
     end
 end
@@ -169,7 +172,7 @@ local button_to_gamepad = {a = 'fdown', y = 'fup', x = 'fleft', b = 'fright', ba
                            dpup = 'dpup', dpdown = 'dpdown', dpleft = 'dpleft', dpright = 'dpright'}
 
 function Input:gamepadpressed(joystick, button)
-    self.state[button_to_gamepad[button]] = true 
+    self.state[button_to_gamepad[button]] = true
 end
 
 function Input:gamepadreleased(joystick, button)
