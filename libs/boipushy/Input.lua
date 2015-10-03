@@ -58,7 +58,7 @@ end
 
 -- pass the action and the id to see if a key is pressed
 function Input:pressed(action, id)
-  id = id or 1
+    id = id or 1
     if action then
         for _, key in ipairs(self.binds[action]) do
             if self.state[id][key] and not self.prev_state[id][key] then
@@ -138,8 +138,8 @@ local copy = function(t1)
 end
 
 function Input:update()
-    self:pressed()
     for i, j in pairs(self.state) do
+      self:pressed(nil, i)
       for e, f in pairs(self.state[i]) do
         self.prev_state[i][e] = copy(self.state[i][e])
         self.state[i]['wheelup'] = false

@@ -84,12 +84,28 @@ function Player:initialize(x, y, scale, id)
   self.armSprite = TexMate:new(PROTOTYPEASSETS,armAnims,"Idle",nil,nil,0,0)
   self.armJoint = world:addJoint('RopeJoint', self.collider.body, self.arm.body, armX, armY, armX, armY, Player.static.BASIS_ARM_LENGTH * self.scale, false)
 
+  self.isGrabbing = false
   self.lastXDir = 0
 end
 
 function Player:update(dt)
   self:updateMovingAnimation()
 
+  -- Bring in the arm if you aren't grabbing
+    self.arm.fixtures['main']:setDensity(0)
+    local x, y = self.collider.body:getPosition();
+    self.arm.body:applyForce(
+      x + 1000,
+      y + 1000)
+  if self.isGrabbing then
+    self.arm.fixtures['main']:setDensity(100)
+  else
+  end
+
+  self:updateSprites(dt)
+end
+
+function Player:updateSprites(dt)
   self.sprite:update(dt)
   self.sprite:changeLoc(self.collider.body:getX(),self.collider.body:getY())
 
