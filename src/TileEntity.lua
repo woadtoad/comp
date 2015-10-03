@@ -8,11 +8,11 @@ Tile:include(require('stateful'))
 
 Tile.static.PLAYER_DAMAGE_INTERVAL = 0.25
 
-function Tile:initialize (x,y,i,v,scale,active)
+function Tile:initialize (x,y,i,v,scale,active,typetile)
   self.active = active
   self.resetTime = 3
-
-  if active then
+  self.type = typetile
+  if active and typetile == 1 then
 
     self.health = 4
     self.regenRate = 1
@@ -22,6 +22,11 @@ function Tile:initialize (x,y,i,v,scale,active)
     anims["Spawn"] = {
       framerate = 8,
       frames = {TexMate:frameCounter("icetile2/TileRespawn_",0,10,4)}
+    }
+
+    anims["Stone1"] = {
+      framerate = 8,
+      frames = {"stonetile2/TileStone_0000"}
     }
 
     anims["IdleState"] = {
@@ -98,6 +103,45 @@ function Tile:initialize (x,y,i,v,scale,active)
     self.damageCheckTick = 0
 
     self:gotoState("Spawn")
+
+  elseif active and typetile >= 2 then
+
+
+
+    local anims = {}
+
+    anims["Stone1"] = {
+      framerate = 8,
+      frames = {"stonetile2/TileStone_0000"}
+    }
+
+    self.scale = scale
+    self.sprite = TexMate(TEAMASSETS,anims,"Stone1",x,y,nil,-20,nil,nil,self.scale)
+
+    self.xcoor = v
+    self.ycoor = i
+    self.xoffset = 65 *self.scale
+    self.yoffset = 64 *self.scale
+    self.x = x
+    self.y = y
+
+    local ww = 65 * self.scale
+    local hh = 70 * self.scale
+    local hhh2 = 32 * self.scale
+    self.collider = world:newPolygonCollider(
+      {0, -hh, ww, -hhh2, ww, hhh2, 0, hh, -ww,hhh2,-ww,-hhh2},
+      {
+        body_type = 'static',
+        collision_class = 'Tile',
+      }
+    )
+    self.collider.body:setPosition(x,y)
+    self.collider.parent = self
+
+    self.players = {}
+
+    self:gotoState("Stone")
+
   end
 
 end
@@ -116,7 +160,8 @@ function Tile:regenHealth(dt)
 end
 
 function Tile:draw()
-  if self.active then
+  if self.active and self.type >= 1 then
+
     self.sprite:draw()
 
     if DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION or DEBUG.MODE == DEBUG.MODES.SHOW_ONLY_COLLISION then
@@ -128,7 +173,7 @@ function Tile:draw()
 end
 
 function Tile:update(dt)
-  if self.active then
+  if self.active and self.type == 1 then
     if self.collider:enter('PlayerFeet') then
       local a, pushingPlayer = self.collider:enter('PlayerFeet')
       pushingPlayer = pushingPlayer.parent
@@ -198,6 +243,17 @@ function Tile:getLoc()
   return self.x,self.y
 end
 
+
+
+local Stone = Tile:addState('Stone')
+
+function Stone:enteredState(dt)
+    self.sprite:changeAnim("Stone1")
+end
+
+function Stone:updateStates(dt)
+  self.sprite:update(dt)
+end
 ------------------------------------------------------------------------------
 
 ------------------------------------------------------------------------------

@@ -8,9 +8,9 @@ function  Effects:initialize()
 
   self.AnimList = {}
 
-  self.AnimList["TileSpawn"] = {
+  self.AnimList["Splash"] = {
     framerate = 10,
-    frames = {TexMate:frameCounter("icetile/TileBreak_",0,6,4)
+    frames = {TexMate:frameCounter("spash/Splash_",0,8,4)
     }
   }
   self.AnimList["TileDie"] = {
