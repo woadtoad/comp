@@ -26,6 +26,8 @@ return function(GameScene)
     self.TileTest = TileSystem:new()
 
     self.TileTest.Tiles[10][10]:damage(1)
+    self.TileTest.Tiles[11][10]:damage(2)
+    self.TileTest.Tiles[12][10]:damage(3)
 
 
     self.RockTest = ThePickup:new()
@@ -33,6 +35,7 @@ return function(GameScene)
     self.EffectTest = Effects:new()
 
     self.EffectTest:makeEffect("Explosion",0,-120,self.TileTest.Tiles[10][10]:getLoc())
+
 
 
     self:resetCameraPosition()

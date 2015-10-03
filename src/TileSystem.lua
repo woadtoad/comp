@@ -22,7 +22,7 @@ function TileSystem:initialize (x, y)
   end
 
   self.Tiles = {}
-  local scale = 0.5
+  local scale = 0.6
 
   for i=1, mapWidth do
     self.Tiles[i] = {}

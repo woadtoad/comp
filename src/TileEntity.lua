@@ -57,10 +57,11 @@ function Tile:draw()
   if self.active then
     self.image:draw()
 
-    love.graphics.setColor(0,0,0,255) --Add this line
-    --love.graphics.print(self.xcoor..","..self.ycoor,self.x-20,self.y-20)
-    love.graphics.setColor(255,255,255,255) --Add this line
-
+    if DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION or DEBUG.MODE == DEBUG.MODES.SHOW_ONLY_COLLISION then
+      love.graphics.setColor(0,0,0,255) --Add this line
+      love.graphics.print(self.xcoor..","..self.ycoor,self.x-20,self.y-20)
+      love.graphics.setColor(255,255,255,255) --Add this line
+    end
   end
 end
 
