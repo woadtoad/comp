@@ -123,6 +123,17 @@ return function(GameScene)
     for i,player in ipairs(self.players) do
       player:input(input)
     end
+
+    if DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION or DEBUG.MODE == DEBUG.MODES.SHOW_ONLY_COLLISION then
+      if input:down(INPUTS.ZOOM_OUT) then
+        DEBUG.ZOOM = DEBUG.ZOOM - 0.02
+      end
+      if input:down(INPUTS.ZOOM_IN) then
+        DEBUG.ZOOM = DEBUG.ZOOM + 0.02
+      end
+
+      Camera:setScale(DEBUG.ZOOM)
+    end
   end
 
   function GameScene:resetCameraPosition()
