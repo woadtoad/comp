@@ -7,7 +7,7 @@ local TileSystem = class('TileSystem')
 TileSystem:include(require('stateful'))
 
 local viableTable = {}
-
+local spawnTable = {}
 function TileSystem:initialize (x, y)
   local mapWidth = TileMap.width
   local mapHeight = TileMap.height
@@ -49,7 +49,9 @@ function TileSystem:initialize (x, y)
             newTileMap[i][v]
           )
         )
-
+        if newTileMap[i][v] == 3 then
+          table.insert(spawnTable,{i,v})
+        end
         if newTileMap[i][v] == 1 then
           table.insert(viableTable,{i,v})
 
@@ -83,11 +85,21 @@ function TileSystem:viableBuffet()
 
   for i=1,#viableTable do
     local x,y = self.Tiles[viableTable[i][1]][viableTable[i][2]]:getLoc()
-    print(x,y)
     table.insert(viableXandY,{x,y})
   end
-
+  print(#viableXandY)
   return viableXandY
+end
+
+function TileSystem:spawnBuffet()
+  local spawnXandY = {}
+
+  for i=1,#spawnTable do
+    local x,y = self.Tiles[spawnTable[i][1]][spawnTable[i][2]]:getLoc()
+    table.insert(spawnXandY,{x,y})
+  end
+
+  return spawnXandY
 end
 
 function TileSystem:toWorld(x,y)

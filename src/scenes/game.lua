@@ -19,14 +19,18 @@ return function(GameScene)
     self.timer = 0
     self.maxTime = 60
     self.thePickupTimer = 2
-    --instantiate a new player and their bases.
+
     self.Bases = {}
     self.players = {}
-    for i,joystick in ipairs(love.joystick.getJoysticks()) do
+
+    self.TileTest = TileSystem:new()
+    self.spawnTiles = self.TileTest:spawnBuffet()
+    --instantiate a new player and their bases.
+    for i,joystick in pairs(love.joystick.getJoysticks()) do
       local id = joystick:getID()
       local player = Player:new(
-      love.graphics.getWidth() / 2,
-      love.graphics.getHeight() / 2,
+      self.spawnTiles[id][1],
+      self.spawnTiles[id][2],
       1,
       id
       )
@@ -34,11 +38,13 @@ return function(GameScene)
       table.insert(self.players, player)
 
       -- generate a base for each player
-      local base = PlayerBase:new((100*id),100,id,100)
+      local base = PlayerBase:new(
+      self.spawnTiles[id][1],
+      self.spawnTiles[id][2],
+      id,
+      100)
       table.insert(self.Bases, base)
     end
-
-    self.TileTest = TileSystem:new()
 
     -- create a pool of pickups
     self.pickupPool = {}
@@ -209,7 +215,6 @@ return function(GameScene)
       self.theTile.y = self.viableTiles[self.theRandom][2]
       table.insert(self.pickupPool, ThePickup:new(self.theTile.x,self.theTile.y))
       table.insert(updateList,self.pickupPool[#self.pickupPool])
-      print ('DROPPIN PICKUP')
       self.thePickupTimer = love.math.random(3, 20)
     end
   end
