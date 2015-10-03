@@ -9,6 +9,8 @@ Tile:include(require('stateful'))
 
 function Tile:initialize (x,y,i,v,scale,active)
   self.active = active
+  self.resetTime = 3
+
   if active then
 
     self.health = 4
@@ -16,9 +18,14 @@ function Tile:initialize (x,y,i,v,scale,active)
 
     local anims = {}
 
+    anims["Spawn"] = {
+      framerate = 8,
+      frames = {TexMate:frameCounter("icetile2/TileRespawn_",0,10,4)}
+    }
+
     anims["IdleState"] = {
       framerate = 4,
-      frames = {"icetile2/TileState_0000","icetile2/TileRipple_0000"}
+      frames = {"icetile2/TileState_0000","icetile2/TileRipple_0000","icetile2/TileRipple_0001","icetile2/TileRipple_0002"}
     }
 
     anims["DamageOne"] = {
@@ -36,9 +43,39 @@ function Tile:initialize (x,y,i,v,scale,active)
       frames = {"icetile2/TileState_0003"}
     }
 
+    anims["Destroy"] = {
+      framerate = 8,
+      frames = {"icetile2/TileBreak_0000",
+                "icetile2/TileBreak_0001",
+                "icetile2/TileBreak_0002",
+                "icetile2/TileBreak_0003",
+                "icetile2/TileBreak_0004",
+                "icetile2/TileBreak_0005",
+                }
+    }
+
+    anims["Blank"] = {
+      framerate = 8,
+      frames = {"icetile2/Blank_0000"
+                }
+    }
+
+
+
+
+
+
     self.scale = scale
     self.sprite = TexMate(TEAMASSETS,anims,"IdleState",x,y,nil,10,nil,nil,self.scale)
     --(Atlas, animlist, defaultanim, x, y, pivotx, pivoty, rot, flip, scale)
+
+    self.sprite.endCallback["Destroy"] = function()
+      self.sprite:changeAnim("Blank")
+    end
+
+    self.sprite.endCallback["Spawn"] = function()
+      self:gotoState("Full")
+    end
 
 
     self.xcoor = v
@@ -54,7 +91,7 @@ function Tile:initialize (x,y,i,v,scale,active)
     self.collider = world:newPolygonCollider({0, -hh, ww, -hhh2, ww, hhh2, 0, hh, -ww,hhh2,-ww,-hhh2},{body_type = 'static'})
     self.collider.body:setActive(false)
     self.collider.body:setPosition(x,y)
-    self:gotoState("Full")
+    self:gotoState("Spawn")
   end
 
 end
@@ -93,10 +130,29 @@ end
 
 ------------------------------------------------------------------------------
 
+local Spawn = Tile:addState('Spawn')
+
+function Spawn:enteredState(dt)
+ -- print("Spawn",self.health)
+
+    self.sprite:changeAnim("Spawn")
+end
+
+function Spawn:update(dt)
+  self.sprite:update(dt)
+
+
+end
+
+------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------
+
 local Full = Tile:addState('Full')
 
 function Full:enteredState(dt)
  -- print("full",self.health)
+    self.health = 4
     self.sprite:changeAnim("IdleState")
 end
 
@@ -116,6 +172,7 @@ local DamageOne = Tile:addState("DamageOne")
 
 function DamageOne:enteredState(dt)
   print("DamageOne",self.health)
+  self.health = 3
   self.sprite:changeAnim("DamageOne")
 end
 
@@ -138,6 +195,7 @@ end
 local DamageTwo = Tile:addState('DamageTwo')
 
 function DamageTwo:enteredState(dt)
+  self.health = 2
   print("Damage2",self.health)
   self.sprite:changeAnim("DamageTwo")
 end
@@ -160,6 +218,7 @@ end
 local DamageThree = Tile:addState('DamageThree')
 
 function DamageThree:enteredState(dt)
+  self.health = 1
   print("Damage3",self.health)
 
   self.sprite:changeAnim("DamageThree")
@@ -186,17 +245,20 @@ local Destroyed = Tile:addState('Destroyed')
 
 function Destroyed:enteredState(dt)
   print("dest")
-
-
+  self.sprite:changeAnim("Destroy")
+  self.resetTimer = self.resetTime
 end
 
 function Destroyed:update(dt)
+    self.sprite:update(dt)
+    self.resetTimer =  self.resetTimer - 1 * dt
 
+    if self.resetTimer < 0 then
+      self:gotoState("Spawn")
+    end
 end
 
-function Destroyed:draw()
 
-end
 
 
 return Tile

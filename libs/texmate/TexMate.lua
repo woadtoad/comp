@@ -114,10 +114,6 @@ end
 
 function _M:update (dt)
 
-  if self.docallback then
-    self.endCallback[self.activeAnim]()
-    self.docallback = nil
-  end
 
 	--Active is whether we want the sprite to animate or not. We increment an iterator using delta time to keep things frame rate independent
 	if self.active == true then
@@ -135,6 +131,10 @@ function _M:update (dt)
 		end
 
 	end
+  if self.docallback then
+    self.endCallback[self.activeAnim]()
+    self.docallback = nil
+  end
 
 
 
