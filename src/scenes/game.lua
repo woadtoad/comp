@@ -13,11 +13,6 @@ return function(GameScene)
   local updateList = {}
 
   function GameScene:initialize()
-    --we are using box 2d in this example, and i am using a little library called hxcx which simplifies using box 2d a ton, but we still have access to the core mappings so it's a win win for us.
-    world:addCollisionClass('Ghost')
-    world:collisionClassesSet()
-
-
     love.graphics.setBackgroundColor( 100, 110, 200 )
 
     --instantiate a new player.
@@ -66,23 +61,28 @@ return function(GameScene)
   function GameScene:draw()
     Camera:draw(
     function(l, t, w, h)
-      if DEBUG.MODE == DEBUG.MODES.SHOW_GAME or DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION then
-        --Iterate through the items for drawing
-          self:drawFromUpdateList()
-      end
+      self:drawFromUpdateList()
 
-      if DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION or DEBUG.MODE == DEBUG.MODES.SHOW_ONLY_COLLISION then
-        self:drawDebugPoints()
-
-        --Debug Drawing for physics
-        world:draw()
-      end
       --need to put this in draw list.
       self.EffectTest:draw()
 
-
       if love.joystick.getJoystickCount() < 1 then
         love.graphics.printf('NO PLAYERS DETECTED', w / 2 - 50, 50, 100, 'center')
+      end
+    end
+    )
+  end
+
+  function GameScene:ddraw()
+    Camera:draw(
+    function(l, t, w, h)
+      --Debug Drawing for physics
+      world:draw()
+
+      self:drawDebugPoints()
+
+      for k,player in pairs(self.players) do
+        player:ddraw()
       end
     end
     )
@@ -124,6 +124,7 @@ return function(GameScene)
       player:input(input)
     end
 
+    -- Debugging controls
     if DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION or DEBUG.MODE == DEBUG.MODES.SHOW_ONLY_COLLISION then
       if input:down(INPUTS.ZOOM_OUT) then
         DEBUG.ZOOM = DEBUG.ZOOM - 0.02
@@ -133,6 +134,13 @@ return function(GameScene)
       end
 
       Camera:setScale(DEBUG.ZOOM)
+    end
+
+    -- More debugging controls
+    if input:pressed(INPUTS.SWITCH_MODE) then
+      local MODES = 3
+      print((DEBUG.MODE % MODES) + 1)
+      DEBUG.MODE = (DEBUG.MODE % MODES) + 1
     end
   end
 

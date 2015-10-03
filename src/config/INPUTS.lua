@@ -9,6 +9,7 @@ INPUTS = {
   -- Debugging
   ZOOM_OUT = 'zoomout',
   ZOOM_IN = 'zoomin',
+  SWITCH_MODE = 'switchmode',
 }
 
 return function(input)
@@ -27,5 +28,6 @@ return function(input)
   -- Debugging
   input:bind('dpdown', INPUTS.ZOOM_OUT)
   input:bind('dpup', INPUTS.ZOOM_IN)
+  input:bind('start', INPUTS.SWITCH_MODE)
 
 end

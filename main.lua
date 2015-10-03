@@ -74,7 +74,13 @@ function love.update(dt)
 end
 
 function love.draw()
-  SceneManager:draw()
+  if DEBUG.MODE == DEBUG.MODES.SHOW_GAME or DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION then
+    SceneManager:draw()
+  end
+
+  if DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION or DEBUG.MODE == DEBUG.MODES.SHOW_ONLY_COLLISION then
+    SceneManager:ddraw()
+  end
 end
 
 function love.keypressed(key, isrepeat)

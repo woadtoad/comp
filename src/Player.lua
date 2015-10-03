@@ -55,6 +55,15 @@ function Player:initialize(x, y, scale, id)
     }
   }
 
+  local playerShadow = {
+    Idle = {
+      framerate = 1,
+      frames = {
+        'mockup_toad_new/Shadow_0000'
+      }
+    }
+  }
+
   local armAnims = {
     Idle = {
       framerate = 14,
@@ -71,6 +80,8 @@ function Player:initialize(x, y, scale, id)
   self.collider.fixtures['main']:setRestitution(0.3)
   self.collider.body:setLinearDamping(2)
   self.collider.body:setFixedRotation(true)
+
+  self.shadowSprite = TexMate:new(TEAMASSETS, playerShadow, "Idle" , nil, nil, 0, 0, nil, nil, self.spriteScale)
 
   local feetXSize = self.feetRadius * 3
   local feetYSize = self.feetRadius * 2
@@ -111,26 +122,37 @@ function Player:update(dt)
 end
 
 function Player:updateSprites(dt)
+  self.shadowSprite:update(dt)
+  self.armSprite:update(dt)
   self.sprite:update(dt)
-  self.sprite:changeLoc(self.collider.body:getX(),self.collider.body:getY())
 
+  self.shadowSprite:changeLoc(self.feet.body:getX(),self.feet.body:getY())
+  self.sprite:changeLoc(self.collider.body:getX(),self.collider.body:getY())
   self.armSprite:changeLoc(self.arm.body:getX(),self.arm.body:getY())
-  self.sprite:changeRot(math.deg(self.arm.body:getAngle()))
 end
 
 function Player:draw()
+  self.shadowSprite:draw()
+  self.armSprite:draw()
   self.sprite:draw()
+end
 
-  if DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION or DEBUG.MODE == DEBUG.MODES.SHOW_ONLY_COLLISION then
-    local x, y = self.collider.body:getPosition()
-    love.graphics.setColor(255, 255, 255, 100)
-    love.graphics.print('player '..self.id, x, y-(50 * self.scale))
-  end
+function Player:ddraw()
+  -- Print player name
+  local x, y = self.collider.body:getPosition()
+  love.graphics.setColor(255, 255, 255, 100)
+  love.graphics.printf('player '..self.id, x - (self.radius / 2 * self.scale), y-(50 * self.scale), 20, 'center')
+
+  -- Print player state
+  love.graphics.setColor(220, 20, 20, 180)
+  love.graphics.printf(self:getStateStackDebugInfo()[1], x - (self.radius / 2 * self.scale), y-(60 * self.scale), 20, 'center')
 end
 
 function Player:input(input)
   local xDir = input:down(INPUTS.MOVEX, self.id)
   local yDir = input:down(INPUTS.MOVEY, self.id)
+
+  self.moving = false
 
   if xDir then
     self:moveX(xDir)
@@ -139,11 +161,16 @@ function Player:input(input)
   if yDir then
     self:moveY(yDir)
   end
+
+  if self.moving then
+    self:gotoState(STATE.RUN)
+  else
+    self:gotoState(STATE.SLIDE)
+  end
 end
 
   -- Grab something with an extendable fixture
 function Player:grab(vec)
-
 end
 
   -- Throw/spit the projectile thing
@@ -163,6 +190,7 @@ function Player:move(dir, isY)
   end
 
   if dir > 0.3 or dir < -0.3 then
+    self.moving = true
     self.sprite:changeAnim("Running", dir)
     self.collider.body:applyLinearImpulse(x, y, self.collider.body:getX(), self.collider.body:getY())
   end
@@ -203,7 +231,7 @@ end
 -- Slide State
 local SlidingPlayer = Player:addState(STATE.SLIDE)
 function SlidingPlayer:enteredState()
-  self.collider.body:setLinearDamping(10)
+  self.collider.body:setLinearDamping(6)
 end
 
 -----------------------
