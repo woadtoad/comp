@@ -15,7 +15,8 @@ local STATE = {
   RUN = 'run',
   SLIDE = 'slide',
   JUMP = 'jump',
-  FALL = 'fall'
+  FALL = 'fall',
+  LAND = 'land'
 }
 Player.static.STATES = STATE
 
@@ -61,6 +62,18 @@ function Player:initialize(x, y, scale, id, facing)
       framerate = 14,
       frames = {
         "toad_animations/Jump_0000","toad_animations/Jump_0001","toad_animations/Jump_0002","toad_animations/Jump_0003"
+      }
+    },
+    JumpIdle = {
+      framerate = 14,
+      frames = {
+        "toad_animations/Jump_0003"
+      }
+    },
+    Landing = {
+      framerate = 12,
+      frames = {
+        "toad_animations/Run_Land_0000","toad_animations/Run_Land_0001"
       }
     },
     FatRun = {
@@ -143,6 +156,10 @@ function Player:initialize(x, y, scale, id, facing)
   --make the sprite , args: atlas, animation dataformat, default animation.
   self.sprite = TexMate:new(TEAMASSETS, playerAnims, "Idle" , nil, nil, 0, 30 + self.scale, nil, nil, self.spriteScale)
 
+  self.sprite.endCallback['Jumping'] = function()
+        self.sprite:changeAnim("JumpIdle")
+  end
+
   self.collider = WorldManager.world:newCircleCollider(x, y, self.radius, {collision_class = 'PlayerBody'})
   self.collider.parent = self
   self.collider.fixtures['main']:setRestitution(0.3)
@@ -203,6 +220,8 @@ end
 function Player:drawStates()
 end
 
+
+--debug draww
 function Player:ddraw()
   -- Print player name
   local x, y = self.collider.body:getPosition()
@@ -236,10 +255,17 @@ function Player:input(input)
       end
     end
 
+    --print(input:pressed(INPUTS.JUMP))
+
+    if input:pressed(INPUTS.JUMP) then
+      --print("inputJump")
+      self:gotoState(STATE.JUMP)
+    end
+
     if self.effort > 1.3 then
       self.effort = 1.3
     end
-    self.sprite.animlist['Running'].framerate = Player.static.RUNNING_FPS * (self.effort)
+    --self.sprite.animlist['Running'].framerate = Player.static.RUNNING_FPS * (self.effort)
   end
 end
 
@@ -256,6 +282,7 @@ function Player:move(xd, yd)
   if (xd > 0.3 or xd < -0.3) or(yd > 0.3 or yd < -0.3)  then
     -- Establish the fact our player is making the Player
     -- run forwards
+    self.xd,self.yd = xd,yd
     local bodyVel = Vector(self.collider.body:getLinearVelocity())
     bodyVel = bodyVel:normalized()
     local pushingVel = Vector(xd, yd)
@@ -282,6 +309,7 @@ end
 -- Running State
 local RunningPlayer = Player:addState(STATE.RUN)
 function RunningPlayer:enteredState()
+  print("e run")
   self.sprite:changeAnim('Running')
   self.collider.body:setLinearDamping(0.3)
 end
@@ -301,10 +329,60 @@ end
 
 -----------------------
 -- Jumping State
+
+---------------------------
+
+--TOOOOO FINISH JUMPING MURRY
+
+-------------------------
 local JumpingPlayer = Player:addState(STATE.JUMP)
 function JumpingPlayer:enteredState()
+  print("jump")
+  self.canControl = false
+
+  --this should probably be the control vector not the current velocity
+  --local linear = Vector(self.collider.body:getLinearVelocity())
+  linear = Vector(self.xd,self.xy)
+  linear:normalize_inplace()
+  local impulse = 1200
   self.sprite:changeAnim('Jumping')
-  self.collider.body:setLinearDamping(0.2)
+  self.collider.body:setLinearDamping(0)
+  self.collider.body:applyLinearImpulse(linear.x*impulse,linear.y*impulse)
+
+  self.timerj = 0.5
+end
+
+function JumpingPlayer:updateStates(dt)
+  print(self.timerj,"timer")
+  self.timerj = self.timerj - 1 *dt
+
+  if self.timerj < 0 then
+
+    self:gotoState(STATE.LAND)
+  end
+end
+
+-----------------------
+-- landing State
+local LandPlayer = Player:addState(STATE.LAND)
+function LandPlayer:enteredState()
+  print('Player landed!')
+  self.collider.body:setLinearDamping(0.3)
+  self.sprite:changeAnim('Landing')
+
+  --self.canControl = false
+
+  self.timerl = 0.2
+end
+
+function LandPlayer:updateStates(dt)
+  print(self.timerj,"timer")
+  self.timerl = self.timerl - 1 *dt
+
+  if self.timerl < 0 then
+    self.canControl = true
+    self:gotoState(STATE.IDLE)
+  end
 end
 
 -----------------------

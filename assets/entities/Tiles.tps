@@ -175,6 +175,9 @@
             <filename>../../../../Google Drive/COMPASSETS/mockup_toad_new.swf</filename>
             <filename>../../../../Google Drive/COMPASSETS/icetile2.swf</filename>
             <filename>../../../../Google Drive/COMPASSETS/toad_animations.swf</filename>
+            <filename>../../../../Google Drive/COMPASSETS/spash.swf</filename>
+            <filename>../../../../Google Drive/COMPASSETS/stonetile2.swf</filename>
+            <filename>../../../../Google Drive/COMPASSETS/food.swf</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

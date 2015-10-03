@@ -5,6 +5,8 @@ INPUTS = {
   LOBX = 'lobx',
   LOBY = 'loby',
   THROW = 'throw',
+  JUMP = 'jump',
+
 
   -- Debugging
   ZOOM_OUT = 'zoomout',
@@ -25,6 +27,9 @@ return function(input)
 
   -- Buttons
   input:bind('r2', INPUTS.THROW)
+  input:bind('l2', INPUTS.JUMP)
+  input:bind('fdown', INPUTS.JUMP)
+  input:bind('fright', INPUTS.JUMP)
 
   -- Debugging
   input:bind('dpdown', INPUTS.ZOOM_OUT)
