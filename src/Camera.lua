@@ -10,4 +10,5 @@ local camera = Camera.new(-canvas, -canvas, canvas*2, canvas*2)
 -- Camera is a singleton, since we'll only have one to begin
 -- When we need more cameras (if multiplayer requires it) then
 -- we need to create a CameraManger
+
 return camera

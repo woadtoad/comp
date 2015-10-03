@@ -9,6 +9,7 @@ local ThePickup = require('src.Pickup')
 local TileSystem = require('src.TileSystem')
 local Effects = require('src.Effects')
 local PlayerBase = require('src.PlayerBase')
+local CameraController = require('src.CameraController')
 
 return function(GameScene)
   local updateList = {}
@@ -41,8 +42,15 @@ return function(GameScene)
     self.BaseTest = PlayerBase:new(100,100,1,100)
 
     self:resetCameraPosition()
+
+    camerac = CameraController:new()
+
+    --camerac:moveTo(1000,1000,1,10)
+
+
     --we'll just use a simple table to keep things updated
 
+    table.insert(updateList,camerac)
     table.insert(updateList,self.TileTest)
     table.insert(updateList, self.RockTest)
     table.insert(updateList, self.BaseTest)
@@ -121,6 +129,13 @@ return function(GameScene)
         self.TileTest.Tiles[10][10]:damage()
     end
 
+
+    if key == "y" then
+          camerac:shaker(100,0.5)
+    end
+    if key == "u" then
+          camerac:shaker(10,0.2)
+    end
   end
 
   function GameScene:input(input)
