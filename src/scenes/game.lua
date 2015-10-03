@@ -178,7 +178,11 @@ return function(GameScene)
     -- More debugging controls
     if input:pressed(INPUTS.SWITCH_MODE) then
       local MODES = 3
-      DEBUG.MODE = (DEBUG.MODE % MODES) + 1
+
+      DEBUG.MODE = DEBUG.MODE - 1
+      if DEBUG.MODE == 0 then
+        DEBUG.MODE = MODES
+      end
     end
   end
 
