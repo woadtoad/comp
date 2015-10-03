@@ -9,6 +9,7 @@ Player:include(require('stateful'))
 Player.static.BASE_SPEED = 30
 Player.static.BASE_VEC = Vector(0, 0)
 Player.static.BASE_RADIUS = 25
+Player.static.BASIS_ARM_LENGTH = 60
 
 function Player:initialize(x, y, scale, id)
   self.Health = 10
@@ -60,20 +61,22 @@ function Player:initialize(x, y, scale, id)
   self.collider.body:setLinearDamping(2)
   self.collider.body:setFixedRotation(true)
 
-  -- Add feet to player via fixed joint
   local feetXSize = self.feetRadius * 3
   local feetYSize = self.feetRadius * 2
   local feetX = x - (self.radius * 3 / 4)
   local feetY = y
   self.feet = world:newRectangleCollider(feetX, feetY, feetXSize, feetYSize, {collision_class = 'PlayerFeet'})
-  self.joint = world:addJoint('RevoluteJoint', self.feet.body, self.collider.body, x, y, false)
+  self.feetJoint = world:addJoint('RevoluteJoint', self.feet.body, self.collider.body, x, y, false)
   self.feet.body:setFixedRotation(true)
   self.feet:addShape('left', 'CircleShape', -(self.radius / 1.5), 0, self.feetRadius)
   self.feet:addShape('right', 'CircleShape', (self.radius / 1.5), 0, self.feetRadius)
 
   -- Add arm to Player
+  local armX = x
+  local armY = y
   self.arm = world:newCircleCollider(x, y, self.armRadius, {collision_class = 'ArmIn'})
   self.armSprite = TexMate:new(PROTOTYPEASSETS,armAnims,"Idle",nil,nil,0,0)
+  self.armJoint = world:addJoint('RopeJoint', self.collider.body, self.arm.body, armX, armY, armX, armY, Player.static.BASIS_ARM_LENGTH * self.scale, false)
 
   self.lastXDir = 0
 end

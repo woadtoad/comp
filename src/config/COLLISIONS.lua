@@ -2,20 +2,39 @@ local COLLISION_CLASSES = {
   -- NOTE: Ordering matters!
 
   -- Player
-  PlayerBody = {},
-  PlayerFeet = {},
+  {
+    name = "PlayerBody",
+    config = {}
+  },
+
+  {
+    name = "PlayerFeet",
+    config = {}
+  },
+
 
   -- Players Arm
-  ArmOut = {},
-  ArmIn = {},
+  {
+    name = "ArmOut",
+    config = {
+      ignores = {'PlayerFeet'}
+    }
+  },
+
+  {
+    name = "ArmIn",
+    config = {
+      ignores = {'PlayerFeet'}
+    }
+  },
 
   -- Tiles
 }
 
 return function(world)
 
-  for collClass,collConfig in pairs(COLLISION_CLASSES) do
-    world:addCollisionClass(collClass, collConfig or {})
+  for i,collision in ipairs(COLLISION_CLASSES) do
+    world:addCollisionClass(collision.name, collision.config)
   end
 
 end
