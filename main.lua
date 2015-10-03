@@ -62,7 +62,7 @@ function love.load()
   input = require('src.Input')
   require('src.config.INPUTS')(input) -- Initialise bindings
 
-  Camera:setScale(DEBUG.ZOOM)
+  Camera.parent:setScale(DEBUG.ZOOM)
 end
 
 function love.update(dt)

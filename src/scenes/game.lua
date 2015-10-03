@@ -9,7 +9,6 @@ local ThePickup = require('src.Pickup')
 local TileSystem = require('src.TileSystem')
 local Effects = require('src.Effects')
 local PlayerBase = require('src.PlayerBase')
-local CameraController = require('src.CameraController')
 
 return function(GameScene)
   local updateList = {}
@@ -50,14 +49,11 @@ return function(GameScene)
 
     self:resetCameraPosition()
 
-    camerac = CameraController:new()
-
-    camerac:moveTo(love.window.getWidth() / 2+50, love.window.getHeight() / 2+350,1,1)
-
+    Camera:moveTo(love.window.getWidth() / 2+50, love.window.getHeight() / 2+350,1,1)
 
     --we'll just use a simple table to keep things updated
 
-    table.insert(updateList,camerac)
+    table.insert(updateList,Camera)
     table.insert(updateList,self.TileTest)
     table.insert(updateList, self.BaseTest)
     for i, base in ipairs(self.Bases) do
@@ -88,7 +84,7 @@ return function(GameScene)
   end
 
   function GameScene:draw()
-    Camera:draw(
+    Camera.parent:draw(
     function(l, t, w, h)
       self:drawFromUpdateList()
 
@@ -103,7 +99,7 @@ return function(GameScene)
   end
 
   function GameScene:ddraw()
-    Camera:draw(
+    Camera.parent:draw(
     function(l, t, w, h)
       --Debug Drawing for physics
       world:draw()
@@ -152,10 +148,10 @@ return function(GameScene)
 
 
     if key == "y" then
-          camerac:shaker(100,0.5)
+          Camera:shaker(100,0.5)
     end
     if key == "u" then
-          camerac:shaker(10,0.2)
+          Camera:shaker(10,0.2)
     end
   end
 
@@ -173,7 +169,7 @@ return function(GameScene)
         DEBUG.ZOOM = DEBUG.ZOOM + 0.02
       end
 
-      Camera:setScale(DEBUG.ZOOM)
+      Camera.parent:setScale(DEBUG.ZOOM)
     end
 
     -- More debugging controls
@@ -184,7 +180,7 @@ return function(GameScene)
   end
 
   function GameScene:resetCameraPosition()
-    Camera:setPosition(love.window.getWidth() / 2, love.window.getHeight() / 2)
+    Camera.parent:setPosition(love.window.getWidth() / 2, love.window.getHeight() / 2)
   end
 
   function GameScene:drawFromUpdateList()
