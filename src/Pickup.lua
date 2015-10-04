@@ -13,16 +13,16 @@ function Pickup:initialize(x,y)
   x = x or 300
   y = y or 300
   foodOffsetX = 130
-  foodOffsetY = 140
+  foodOffsetY = 130
   shadowOffsetX = 275
-  shadowOffsetY = 215
+  shadowOffsetY = 210
   foodScale = 0.6
   self.frames = {TexMateStatic(TEAMASSETS,"food/Chicken_0000",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale),
                 TexMateStatic(TEAMASSETS,"food/Ham_0001",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale),
                 TexMateStatic(TEAMASSETS,"food/Ribs_0002",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale)}
   self.shadow = TexMateStatic(TEAMASSETS,"mockup_toad_new/Shadow_0000",0,0,shadowOffsetX,shadowOffsetY,0,false,foodScale,foodScale)
   self.food = love.math.random(1,3)
-  self.collider = WorldManager.world:newCircleCollider(x, y, 15, {collision_class='Pickup'})
+  self.collider = WorldManager.world:newCircleCollider(x, y, 30, {collision_class='Pickup'})
   self.collider.body:setFixedRotation(true)
   self.collider.parent = self
   self.collider.body:setLinearDamping(1.5)
