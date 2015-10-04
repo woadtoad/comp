@@ -56,6 +56,9 @@ return function(EndScene)
 
       love.graphics.setColor(255, 255, 255, 255)
       love.graphics.printf('END SCENE', w / 2, h / 2, 100, 'center')
+      for i=1,#self.bases do
+        love.graphics.printf("Player "..i.." Score: "..self.bases[i]:getcurrentPoints(), w / 2, h/2 + (10*i), 200, 'center')
+      end
     end
     )
   end
