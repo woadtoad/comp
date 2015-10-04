@@ -26,7 +26,7 @@ Player.Vars = {
   SKINNY_MAX_SPEED = 0,
 
   FAT_STUN_AT_SPEED = 100,
-  SKINNY_STUN_AT_SPEED = 300,
+  SKINNY_STUN_AT_SPEED = 280,
 
   SKINNY_FRICTION_RUN = 0.3,
   FAT_FRICTION_RUN = 0.3,
@@ -55,6 +55,10 @@ Player.Vars = {
   EAT_FRICTION = 0.2,
   SPIT_FRICTION = 0.2,
 
+  MAX_SPEED = 350,
+
+  RESPAWN_TIME = 2
+
 }
 
 
@@ -71,8 +75,6 @@ local STATE = {
   SPAWNING = 'spawning',
 }
 Player.static.STATES = STATE
-
-local RESPAWN_TIME = 2
 
 function Player:initialize(x, y, scale, id, facing)
   print('    Player '..id)
@@ -300,8 +302,8 @@ function Player:initialize(x, y, scale, id, facing)
   self.damagerAmount = 1
   self.effort = 1
   self.canControl = true
-  self.spawnSpinnerCount = 2
-  self.respawnTimer = RESPAWN_TIME
+  self.spawnSpinnerCount = 3
+
   self:gotoState(STATE.SPAWNING)
 end
 
@@ -313,17 +315,12 @@ function Player:update(dt)
   if self.fat == false then
 
       if self.collider:enter('PlayerBody') then
-
-<<<<<<< HEAD
         local a, collider = self.collider:enter('PlayerBody')
        --print("STUNNERMATE")
 
         local velx,vely = collider.body:getLinearVelocity()
         local vec = Vector(velx,vely)
         local vel = vec:len()
-=======
-       -- local a, collider = self.collider:enter('Pickup')
->>>>>>> Added player spawning state
 
        -- print("vel",vel)
         if vel > self.Vars.FAT_STUN_AT_SPEED and collider.parent.fat then
@@ -341,11 +338,11 @@ function Player:update(dt)
 end
 
 function Player:updateSprites(dt)
-  self.sprite:update(dt)
   self.shadowSprite:update(dt)
+  self.sprite:update(dt)
 
-  self.sprite:changeLoc(self.collider.body:getX(),self.collider.body:getY())
   self.shadowSprite:changeLoc(self.feet.body:getX(),self.feet.body:getY())
+  self.sprite:changeLoc(self.collider.body:getX(),self.collider.body:getY())
 end
 
 function Player:draw()
@@ -453,22 +450,29 @@ function Player:move(xd, yd)
     self.isFacingRight = xd > 0
     self.effort = angle / 360 + 1
 
+    local velx2,vely2 = self.collider.body:getLinearVelocity()
+    if velx2 < 0 then
+      velx2 = velx2 * -1
+    end
+    if vely2 < 0 then
+      vely2 = vely2 * -1
+    end
+    local vec2 = Vector(velx,vely)
+    local vel2 = vec2:len()
+    local maxSpeed = self.Vars.MAX_SPEED
+
     local x = Player.static.BASE_SPEED * xd * self.ControlInfluence
     local y = Player.static.BASE_SPEED * yd * self.ControlInfluence
 
-    self.collider.body:applyLinearImpulse(x, y, self.collider.body:getX(), self.collider.body:getY())
-
---[[
-    local velx2,vely2 = self.collider.body:getLinearVelocity()
-    local vec2 = Vector(velx,vely)
-    local vel2 = vec2:len()
-    local maxSpeed = 400
-
-    print(vel2)
-    if vel2 > maxSpeed then
+    if velx2 > maxSpeed then
       --self.collider.body:setLinearVelocity()
-      print("SPEEDING FINE")
-    end]]
+      x = 0
+    end
+    if vely2 > maxSpeed then
+      --self.collider.body:setLinearVelocity()
+      y = 0
+    end
+    self.collider.body:applyLinearImpulse(x, y, self.collider.body:getX(), self.collider.body:getY())
   end
 
   --print(self.collider.body:getLinearVelocity())
@@ -617,10 +621,6 @@ function Transform:updateStates(dt)
   self.timerj = self.timerj - 1 *dt
 
   if self.timerj < 0 then
-<<<<<<< HEAD
-   -- print("extit")
-=======
->>>>>>> Added player spawning state
     self.canControl = true
     self:gotoState(STATE.RUN)
   end
@@ -730,7 +730,7 @@ function FallingPlayer:enteredState()
   self.collider.body:setLinearDamping(10)
   self.canControl = false
   self.hasFallen = true
-  self.respawnTimer = RESPAWN_TIME -- ms
+  self.respawnTimer = self.Vars.RESPAWN_TIME -- ms
 end
 
 function FallingPlayer:updateStates(dt)
@@ -744,6 +744,7 @@ function FallingPlayer:updateStates(dt)
     end
   end
 end
+
 
 -----------------------
 -- Spawning State
