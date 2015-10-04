@@ -24,6 +24,7 @@ local STATE = {
   LAND = 'land',
   EAT = 'eat',
   TRANSFORM = 'transform',
+  STUN = 'stun',
 }
 Player.static.STATES = STATE
 
@@ -598,6 +599,32 @@ function JumpingPlayer:updateStates(dt)
   if self.timerj < 0 then
 
     self:gotoState(STATE.LAND)
+  end
+end
+
+-----------------------
+-- landing State
+local StunState = Player:addState(STATE.STUN)
+function StunState:enteredState()
+  self.collider.body:setLinearDamping(0.3)
+  if self.fat == false then
+    self.sprite:changeAnim('Stun')
+    self.timerl = 0.86
+    self.canControl = false
+  else
+   -- self.sprite:changeAnim('FatLand')
+   -- self.timerl = 0.4
+   --DO SPIT
+  end
+end
+
+function StunState:updateStates(dt)
+  --print(self.timerj,"timer")
+  self.timerl = self.timerl - 1 *dt
+
+  if self.timerl < 0 then
+    self.canControl = true
+    self:gotoState(STATE.RUN)
   end
 end
 
