@@ -1,4 +1,5 @@
 return {
   GAME = 'game',
-  MENU = 'menu'
+  MENU = 'menu',
+  END = 'end',
 }

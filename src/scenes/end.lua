@@ -47,7 +47,15 @@ return function(EndScene)
   function EndScene:draw()
     Camera.parent:draw(
     function(l, t, w, h)
+      for i, v in pairs(self.drawList) do
+        self.drawList[i]:draw()
+      end
 
+      love.graphics.setColor(20, 20, 20, 180)
+      love.graphics.rectangle('fill', l, t, w, h)
+
+      love.graphics.setColor(255, 255, 255, 255)
+      love.graphics.printf('END SCENE', w / 2, h / 2, 100, 'center')
     end
     )
   end
@@ -58,6 +66,12 @@ return function(EndScene)
 
     end
     )
+  end
+
+  function EndScene:keypressed(key, isrepeat)
+    if key =="e" then
+      self:popState()
+    end
   end
 
   function EndScene:input(input)

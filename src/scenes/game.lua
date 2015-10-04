@@ -197,6 +197,8 @@ return function(GameScene)
       SceneManager:gotoState(SCENES.GAME)
     elseif key =="m" then
       SceneManager:gotoState(SCENES.MENU)
+    elseif key =="e" then
+      self:pushState(SCENES.END)
     end
 
     if key == " " then
