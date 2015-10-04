@@ -11,6 +11,8 @@ Player.static.BASE_VEC = Vector(0, 0)
 Player.static.BASE_RADIUS = 25
 Player.static.RUNNING_FPS = 12
 
+
+
 local STATE = {
   RUN = 'run',
   SLIDE = 'slide',
@@ -32,6 +34,7 @@ function Player:initialize(x, y, scale, id, facing)
   self.scale = scale or 1
   self.id = id or 1
   self.isFacingRight = facing or false
+  self.isFat = trues
 
   --flag to not override specific states
   self.doingState = false
@@ -87,9 +90,9 @@ function Player:initialize(x, y, scale, id, facing)
       }
     },
     FatJump = {
-      framerate = 14,
+      framerate = 17,
       frames = {
-        TexMate:frameCounter("toad_animations/Fat_Jump_",0,4,4)
+        TexMate:frameCounter("toad_animations/Fat_Jump_",0,7,4)
       }
     },
     Spit = {
@@ -308,8 +311,8 @@ function Player:move(xd, yd)
     self.isFacingRight = xd > 0
     self.effort = angle / 360 + 1
 
-    local x = Player.static.BASE_SPEED * xd * self.scale
-    local y = Player.static.BASE_SPEED * yd * self.scale
+    local x = Player.static.BASE_SPEED * xd * self.ControlInfluence
+    local y = Player.static.BASE_SPEED * yd * self.ControlInfluence
 
     self.collider.body:applyLinearImpulse(x, y, self.collider.body:getX(), self.collider.body:getY())
   end
@@ -317,17 +320,61 @@ function Player:move(xd, yd)
   print(self.collider.body:getLinearVelocity())
 end
 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Player.ControlInfluence = 1
+
+Player.Vars = {
+  --control is a value from 0-1 of how much influence the player has over the movement. going above one will give more control... use with caution
+  --boost is some arbitrary number given to box2d. around 1000 is a good place to start.
+  FAT_MAX_SPEED = 0,
+  SKINNY_MAX_SPEED = 0,
+
+  SKINNY_FRICTION_RUN = 0.3,
+  FAT_FRICTION_RUN = 0.3,
+
+  SKINNY_SLIDE_RECOVER = 0,
+  FAT_SLIDE_RECOVER = 0,
+  FAT_SLIDE_CONTROL = 0.5,
+  SKINNY_SLIDE_CONTROL = 0.5,
+
+  FAT_POST_JUMP_FRICTION = 0,
+  SKINNY_POST_JUMP_FRICTION = 0,
+  FAT_POST_JUMP_CONTROL = 0.5,
+  SKINNY_POST_JUMP_CONTROL = 0.5,
+
+  FAT_JUMP_BOOST = 0,
+  SKINNY_JUMP_BOOST = 0,
+
+  FAT_SLIDE_FRICTION = 0,
+  SKINNY_SLIDE_FRICTION = 0,
+  FAT_SLIDE_CONTROL = 0.9,
+  SKINNY_SLIDE_CONTROL = 0.9,
+
+  EAT_BOOST = 1200,
+  SPIT_BOOST = 800,
+
+  EAT_FRICTION = 0,
+  SPIT_FRICTION = 0,
+
+}
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 -----------------------
 -- Running State
 local RunningPlayer = Player:addState(STATE.RUN)
 function RunningPlayer:enteredState()
-  print("e run")
-  self.sprite:changeAnim('Running')
-  self.collider.body:setLinearDamping(0.3)
+  if self.fat == false then
+    self.sprite:changeAnim('Running')
+    self.collider.body:setLinearDamping(Player.Vars.SKINNY_FRICTION_RUN)
+  else
+    self.sprite:changeAnim('FatRun')
+    self.collider.body:setLinearDamping(Player.Vars.FAT_FRICTION_RUN)
+  end
 end
 
-function RunningPlayer:updateStates(dt)
-end
 
 -----------------------
 -- eating State
@@ -335,11 +382,18 @@ local EatingPlayer = Player:addState(STATE.EAT)
 function EatingPlayer:enteredState()
   -- TODO: remove this when not using running anim
   self.doingState = true
-  self.sprite:changeAnim('Eat')
+
+  if self.fat == false then
+    self.sprite:changeAnim('Eat')
+      local impulse = player.vars.EAT_BOOST
+  else
+    self.sprite:changeAnim('Spit')
+      local impulse = player.vars.SPIT_BOOST
+  end
 
   self.timerj = 0.5
 
-  local impulse = 1200
+
   --self.collider.body:setLinearDamping(0)
 
   linear = Vector(self.xd,self.yd)
@@ -364,8 +418,13 @@ end
 local SlidingPlayer = Player:addState(STATE.SLIDE)
 function SlidingPlayer:enteredState()
   -- TODO: remove this when not using running anim
-  self.sprite.animlist['Running'].framerate = Player.static.RUNNING_FPS
-  self.sprite:changeAnim('Running')
+ -- self.sprite.animlist['Running'].framerate = Player.static.RUNNING_FPS
+  if self.fat == false then
+    self.sprite:changeAnim('Running')
+  else
+    self.sprite:changeAnim('FatRun')
+  end
+
   self.collider.body:setLinearDamping(6)
 end
 
@@ -383,13 +442,21 @@ function JumpingPlayer:enteredState()
   --local linear = Vector(self.collider.body:getLinearVelocity())
 
   local impulse = 1200
-  self.sprite:changeAnim('Jumping')
+
+  if self.fat == false then
+    self.sprite:changeAnim('Jumping')
+    self.timerj = 0.4
+  else
+    self.sprite:changeAnim('FatJump')
+    self.timerj = 0.45
+  end
+
   self.collider.body:setLinearDamping(0)
   linear = Vector(self.xd,self.yd)
   linear:normalize_inplace()
   self.collider.body:applyLinearImpulse(linear.x*impulse,linear.y*impulse)
 
-  self.timerj = 0.4
+
 end
 
 function JumpingPlayer:updateStates(dt)
@@ -407,11 +474,14 @@ local LandPlayer = Player:addState(STATE.LAND)
 function LandPlayer:enteredState()
   print('Player landed!')
   self.collider.body:setLinearDamping(0.3)
-  self.sprite:changeAnim('Landing')
-
+  if self.fat == false then
+    self.sprite:changeAnim('landing')
+    self.timerl = 0.2
+  else
+    self.sprite:changeAnim('FatLand')
+    self.timerl = 0.4
+  end
   --self.canControl = false
-
-  self.timerl = 0.2
 end
 
 function LandPlayer:updateStates(dt)

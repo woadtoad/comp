@@ -15,7 +15,7 @@ function Pickup:initialize(x,y)
   foodOffsetY = 140
   shadowOffsetX = 275
   shadowOffsetY = 215
-  foodScale = .4
+  foodScale = 0.6
   self.frames = {TexMateStatic(TEAMASSETS,"food/Chicken_0000",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale),
                 TexMateStatic(TEAMASSETS,"food/Ham_0001",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale),
                 TexMateStatic(TEAMASSETS,"food/Ribs_0002",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale)}
