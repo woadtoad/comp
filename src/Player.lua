@@ -307,12 +307,12 @@ function Player:input(input)
 
     --print(input:pressed(INPUTS.JUMP))
 
-    if input:pressed(INPUTS.JUMP) then
+    if input:pressed(INPUTS.JUMP, self.id) then
       --print("inputJump")
       self:gotoState(STATE.JUMP)
     end
 
-    if input:pressed(INPUTS.EAT) then
+    if input:pressed(INPUTS.EAT, self.id) then
       self:gotoState(STATE.EAT)
     end
 
