@@ -16,7 +16,8 @@ local STATE = {
   SLIDE = 'slide',
   JUMP = 'jump',
   FALL = 'fall',
-  LAND = 'land'
+  LAND = 'land',
+  EAT = 'eat'
 }
 Player.static.STATES = STATE
 
@@ -31,6 +32,9 @@ function Player:initialize(x, y, scale, id, facing)
   self.scale = scale or 1
   self.id = id or 1
   self.isFacingRight = facing or false
+
+  --flag to not override specific states
+  self.doingState = false
 
   self.radius = self.scale * Player.static.BASE_RADIUS
   self.feetRadius = self.scale * (Player.static.BASE_RADIUS / 4)
@@ -59,15 +63,15 @@ function Player:initialize(x, y, scale, id, facing)
     },
 
     Jumping = {
-      framerate = 14,
+      framerate = 17,
       frames = {
-        "toad_animations/Jump_0000","toad_animations/Jump_0001","toad_animations/Jump_0002","toad_animations/Jump_0003"
+        TexMate:frameCounter("toad_animations/Jump_",0,6,4)
       }
     },
     JumpIdle = {
       framerate = 14,
       frames = {
-        "toad_animations/Jump_0003"
+        "toad_animations/Jump_0006"
       }
     },
     Landing = {
@@ -245,11 +249,11 @@ function Player:input(input)
       self:move(xDir or 0, yDir or 0)
     end
 
-    if self.isRunningForwards then
+    if self.isRunningForwards and not self.doingState then
       if self:getStateStackDebugInfo()[1] ~= STATE.RUN then
         self:gotoState(STATE.RUN)
       end
-    else
+    elseif not self.doingState then
       if self:getStateStackDebugInfo()[1] ~= STATE.SLIDE then
         self:gotoState(STATE.SLIDE)
       end
@@ -260,6 +264,10 @@ function Player:input(input)
     if input:pressed(INPUTS.JUMP) then
       --print("inputJump")
       self:gotoState(STATE.JUMP)
+    end
+
+    if input:pressed(INPUTS.EAT) then
+      self:gotoState(STATE.EAT)
     end
 
     if self.effort > 1.3 then
@@ -303,6 +311,8 @@ function Player:move(xd, yd)
 
     self.collider.body:applyLinearImpulse(x, y, self.collider.body:getX(), self.collider.body:getY())
   end
+
+  print(self.collider.body:getLinearVelocity())
 end
 
 -----------------------
@@ -318,6 +328,36 @@ function RunningPlayer:updateStates(dt)
 end
 
 -----------------------
+-- eating State
+local EatingPlayer = Player:addState(STATE.EAT)
+function EatingPlayer:enteredState()
+  -- TODO: remove this when not using running anim
+  self.doingState = true
+  self.sprite:changeAnim('Eat')
+
+  self.timerj = 0.5
+
+  local impulse = 1200
+  --self.collider.body:setLinearDamping(0)
+
+  linear = Vector(self.xd,self.yd)
+    print("pre",linear.x,linear.y)
+  linear:normalize_inplace()
+
+  print(linear.x,linear.y)
+  self.collider.body:applyLinearImpulse(linear.x*impulse,linear.y*impulse)
+
+end
+
+function EatingPlayer:updateStates(dt)
+  self.timerj = self.timerj - 1 *dt
+
+  if self.timerj < 0 then
+    self.doingState = false
+    self:gotoState(STATE.IDLE)
+  end
+end
+-----------------------
 -- Slide State
 local SlidingPlayer = Player:addState(STATE.SLIDE)
 function SlidingPlayer:enteredState()
@@ -332,9 +372,6 @@ end
 
 ---------------------------
 
---TOOOOO FINISH JUMPING MURRY
-
--------------------------
 local JumpingPlayer = Player:addState(STATE.JUMP)
 function JumpingPlayer:enteredState()
   print("jump")
@@ -342,18 +379,18 @@ function JumpingPlayer:enteredState()
 
   --this should probably be the control vector not the current velocity
   --local linear = Vector(self.collider.body:getLinearVelocity())
-  linear = Vector(self.xd,self.xy)
-  linear:normalize_inplace()
+
   local impulse = 1200
   self.sprite:changeAnim('Jumping')
   self.collider.body:setLinearDamping(0)
+  linear = Vector(self.xd,self.yd)
+  linear:normalize_inplace()
   self.collider.body:applyLinearImpulse(linear.x*impulse,linear.y*impulse)
 
-  self.timerj = 0.5
+  self.timerj = 0.4
 end
 
 function JumpingPlayer:updateStates(dt)
-  print(self.timerj,"timer")
   self.timerj = self.timerj - 1 *dt
 
   if self.timerj < 0 then

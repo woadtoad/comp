@@ -6,6 +6,7 @@ INPUTS = {
   LOBY = 'loby',
   THROW = 'throw',
   JUMP = 'jump',
+  EAT = 'eat',
 
 
   -- Debugging
@@ -29,7 +30,7 @@ return function(input)
   input:bind('r2', INPUTS.THROW)
   input:bind('l2', INPUTS.JUMP)
   input:bind('fdown', INPUTS.JUMP)
-  input:bind('fright', INPUTS.JUMP)
+  input:bind('fright', INPUTS.EAT)
 
   -- Debugging
   input:bind('dpdown', INPUTS.ZOOM_OUT)

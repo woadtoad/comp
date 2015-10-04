@@ -52,8 +52,7 @@ SceneManager:init()
 -- Start the game in the menu
 SceneManager:gotoState(SCENES.GAME)
 
-
-local input = nil
+local input = nils
 
 -- Start the game loops
 function love.load()
