@@ -240,6 +240,20 @@ end
 function Player:update(dt)
   self:updateSprites(dt)
   self:updateStates(dt)
+
+  --STUN probably bad practice
+  if self.fat == false then
+
+      if self.collider:enter('PlayerBody') then
+
+       -- local a, collider = self.collider:enter('Pickup')
+       print("STUNNERMATE")
+
+
+        self:gotoState(STATE.STUN)
+      end
+
+  end
 end
 
 function Player:updateSprites(dt)
