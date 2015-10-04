@@ -297,7 +297,7 @@ function Player:update(dt)
         local vec = Vector(velx,vely)
         local vel = vec:len()
 
-        print("vel",vel)
+       -- print("vel",vel)
         if vel > self.Vars.FAT_STUN_AT_SPEED and collider.parent.fat then
 
           self:gotoState(STATE.STUN)
@@ -307,6 +307,9 @@ function Player:update(dt)
       end
 
   end
+
+
+
 end
 
 function Player:updateSprites(dt)
@@ -426,6 +429,18 @@ function Player:move(xd, yd)
     local y = Player.static.BASE_SPEED * yd * self.ControlInfluence
 
     self.collider.body:applyLinearImpulse(x, y, self.collider.body:getX(), self.collider.body:getY())
+
+--[[
+    local velx2,vely2 = self.collider.body:getLinearVelocity()
+    local vec2 = Vector(velx,vely)
+    local vel2 = vec2:len()
+    local maxSpeed = 400
+
+    print(vel2)
+    if vel2 > maxSpeed then
+      --self.collider.body:setLinearVelocity()
+      print("SPEEDING FINE")
+    end]]
   end
 
   --print(self.collider.body:getLinearVelocity())
@@ -574,7 +589,7 @@ function Transform:updateStates(dt)
   self.timerj = self.timerj - 1 *dt
 
   if self.timerj < 0 then
-    print("extit")
+   -- print("extit")
     self.canControl = true
     self:gotoState(STATE.RUN)
   end
