@@ -20,7 +20,8 @@
 ## Loch tasks
 
 - [ ] fullscreen
-- [ ] high friction on bases.
+- [ ] high friction on bases for players.
+- [x] high friction on bases for pickups.
 - [ ] end conditions food in bases
 - [ ] food spawn anim
 - [ ] food respawns
