@@ -10,6 +10,8 @@ local TileSystem = require('src.TileSystem')
 local Effects = require('src.Effects')
 local PlayerBase = require('src.PlayerBase')
 
+local CAMERA_SCALE = 0.8
+
 return function(GameScene)
 
   function GameScene:initialize()
@@ -18,6 +20,7 @@ return function(GameScene)
       return
     end
 
+    Camera:setScale(CAMERA_SCALE)
     love.graphics.setBackgroundColor( 100, 110, 200 )
     self.initialized = true
   end
@@ -50,6 +53,7 @@ return function(GameScene)
   end
 
   function GameScene:reset()
+    Camera:setScale(CAMERA_SCALE)
     -- DIRTY reset for the game.
     -- TODO: make sure GC cleans up all the games objects
     self.updateList = {}
@@ -97,7 +101,8 @@ return function(GameScene)
     self.Effects = Effects
 
     self:resetCameraPosition()
-    Camera:moveTo(love.window.getWidth() / 2+50, love.window.getHeight() / 2+350,1,1)
+    Camera:setScale(CAMERA_SCALE)
+    Camera:moveTo(love.window.getWidth() / 2+120, love.window.getHeight() / 2 + 140,1,1)
 
     -- UPDATE list
     table.insert(self.updateList,Camera)
@@ -231,7 +236,7 @@ return function(GameScene)
         DEBUG.ZOOM = DEBUG.ZOOM + 0.02
       end
 
-      Camera.parent:setScale(DEBUG.ZOOM)
+      -- Camera.parent:setScale(DEBUG.ZOOM)
     end
 
     -- More debugging controls
