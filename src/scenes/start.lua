@@ -2,6 +2,7 @@ local SceneManager = require('src.SceneManager')
 local SCENES = require('src.config.SCENES')
 local Camera = require('src.Camera')
 local Player = require('src.Player')
+local Sounds = require('src.Sound')
 local PlayerBase = require('src.PlayerBase')
 
 return function(StartScene)
@@ -38,6 +39,7 @@ return function(StartScene)
   end
 
   function StartScene:reset()
+    Sounds.loop({SOUNDS.INTRO})
 
   end
 

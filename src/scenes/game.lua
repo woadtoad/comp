@@ -3,6 +3,7 @@ local SCENES = require('src.config.SCENES')
 local hxdx = require("hxdx")
 local WorldManager = require('src.WorldManager')
 local Camera = require('src.Camera')
+local Sounds = require('src.Sound')
 local Player = require('src.Player')
 local Tile = require('src.TileEntity')
 local ThePickup = require('src.Pickup')
@@ -53,6 +54,8 @@ return function(GameScene)
   end
 
   function GameScene:reset()
+    Sounds.loop({SOUNDS.BATTLE})
+
     Camera:setScale(CAMERA_SCALE)
     -- DIRTY reset for the game.
     -- TODO: make sure GC cleans up all the games objects

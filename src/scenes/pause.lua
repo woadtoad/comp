@@ -2,6 +2,7 @@ local SceneManager = require('src.SceneManager')
 local SCENES = require('src.config.SCENES')
 local Camera = require('src.Camera')
 local Player = require('src.Player')
+local Sounds = require('src.Sound')
 local PlayerBase = require('src.PlayerBase')
 
 return function(PauseScene)
@@ -37,6 +38,7 @@ return function(PauseScene)
   end
 
   function PauseScene:reset()
+    Sounds.loop({SOUNDS.MENU_DRUMS})
 
   end
 

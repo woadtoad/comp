@@ -1,3 +1,4 @@
+require('TESound')
 
 toad = [[
 
@@ -69,6 +70,7 @@ function love.load()
 end
 
 function love.update(dt)
+  TEsound.cleanup()
   -- Our input functions will handle boipushy events
   if love.joystick.getJoystickCount() > 0 then
     SceneManager:input(input)
