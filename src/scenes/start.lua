@@ -69,7 +69,11 @@ return function(StartScene)
     )
   end
 
-  function StartScene:keypressed()
+  function StartScene:keypressed(key, isrepeat)
+    --Start the game, lel
+    if key == " " then
+      self:pushState(SCENES.GAME)
+    end
   end
 
   function StartScene:input(input)

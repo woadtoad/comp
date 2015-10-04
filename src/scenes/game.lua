@@ -201,11 +201,6 @@ return function(GameScene)
       self:pushState(SCENES.END)
     end
 
-    if key == " " then
-        self.TileTest.Tiles[10][10]:damage()
-    end
-
-
     if key == "y" then
           Camera:shaker(100,0.5)
     end
