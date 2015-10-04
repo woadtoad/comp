@@ -127,7 +127,7 @@ return function(GameScene)
       -- ************** TIMER STUFF ***************
       self.timer = self.timer + dt
       if self.timer >= self.maxTime then
-        --logic here
+        self:pushState(SCENES.END)
       end
       self:updatePickupTimer(dt)
       --------- end timer stuff --------------
