@@ -8,6 +8,12 @@ INPUTS = {
   JUMP = 'jump',
   EAT = 'eat',
 
+  -- Menuish inputs
+  PAUSE = 'pause',
+  UNPAUSE = 'unpause',
+  JOIN = 'join',
+  NEW_GAME = 'newgame',
+  RESTART = 'restart',
 
   -- Debugging
   ZOOM_OUT = 'zoomout',
@@ -32,10 +38,17 @@ return function(input)
   input:bind('fdown', INPUTS.JUMP)
   input:bind('fright', INPUTS.EAT)
 
+  -- Menuish buttons
+  input:bind('back', INPUTS.RESTART)
+  input:bind('start', INPUTS.PAUSE)
+  input:bind('start', INPUTS.UNPAUSE)
+  input:bind('start', INPUTS.NEW_GAME)
+  input:bind('fdown', INPUTS.JOIN)
+
   -- Debugging
   input:bind('dpdown', INPUTS.ZOOM_OUT)
   input:bind('dpup', INPUTS.ZOOM_IN)
-  input:bind('start', INPUTS.SWITCH_MODE)
-  input:bind('back', INPUTS.RELOAD)
+  input:bind('guide', INPUTS.SWITCH_MODE)
+  input:bind('fup', INPUTS.RELOAD)
 
 end

@@ -50,7 +50,7 @@ local SceneManager = require('src.SceneManager')
 SceneManager:init()
 
 -- Start the game in the menu
-SceneManager:gotoState(SCENES.GAME)
+SceneManager:gotoState(SCENES.START)
 
 local input = nils
 

@@ -1,5 +1,6 @@
 return {
+  START = 'start',
   GAME = 'game',
-  MENU = 'menu',
+  PAUSE = 'pause',
   END = 'end',
 }
