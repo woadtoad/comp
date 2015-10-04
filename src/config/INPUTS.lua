@@ -48,7 +48,7 @@ return function(input)
   -- Debugging
   input:bind('dpdown', INPUTS.ZOOM_OUT)
   input:bind('dpup', INPUTS.ZOOM_IN)
-  input:bind('guide', INPUTS.SWITCH_MODE)
+  input:bind('fleft', INPUTS.SWITCH_MODE)
   input:bind('fup', INPUTS.RELOAD)
 
 end

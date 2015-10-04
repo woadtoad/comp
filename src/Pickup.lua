@@ -5,6 +5,7 @@ local WorldManager = require('src.WorldManager')
 local Pickup = class('Pickup')
 local TexMateStatic = require("texmate.TexMateStatic")
 Pickup:include(require('stateful'))
+local Vector = require('hump.vector')
 
 local isActive
 
@@ -49,8 +50,11 @@ function Pickup:draw()
   end
 end
 
-function Pickup:makeActive(x,y)
-  self.collider.body:setPosition(x,y)
+function Pickup:makeActive(x,y,velx,vely)
+  local vec = Vector(velx,vely)
+  vec:normalize_inplace()
+  self.collider.body:setPosition(x+vec.x*100,y+vec.y*100)
+  self.collider.body:setLinearVelocity(velx,vely)
   self.collider.body:setActive(true)
   isActive = true
 end
@@ -60,5 +64,6 @@ function Pickup:deactivate()
   self.collider.body:setActive(false)
   isActive = false
 end
+
 
 return Pickup

@@ -486,16 +486,18 @@ function EatingPlayer:updateStates(dt)
 
       local a, collider = self.collider:enter('Pickup')
      -- pushingPlayer = pushingPlayer.parent
-      print("EAT MEMEMEME")
       self.fat = true
       self.transformDelay = 0.5
 
       collider.parent:deactivate()
+      self.pickedUpFood = collider.parent
     end
   elseif self.fat == true and self.transformDelay < 0 then
-      print("skinny")
       self.fat = false
       self.transformDelay = 0.5
+      local x,y = self.collider.body:getPosition()
+      local velx,vely = self.collider.body:getLinearVelocity()
+      self.pickedUpFood:makeActive(x,y,velx,vely)
   end
 
 end
@@ -521,7 +523,6 @@ end
 
 local JumpingPlayer = Player:addState(STATE.JUMP)
 function JumpingPlayer:enteredState()
-  print("jump")
   self.canControl = false
 
   --this should probably be the control vector not the current velocity
@@ -558,10 +559,9 @@ end
 -- landing State
 local LandPlayer = Player:addState(STATE.LAND)
 function LandPlayer:enteredState()
-  print('Player landed!')
   self.collider.body:setLinearDamping(0.3)
   if self.fat == false then
-    self.sprite:changeAnim('landing')
+    self.sprite:changeAnim('Landing')
     self.timerl = 0.2
   else
     self.sprite:changeAnim('FatLand')
@@ -584,8 +584,6 @@ end
 -- Falling State
 local FallingPlayer = Player:addState(STATE.FALL)
 function FallingPlayer:enteredState()
-  print('Player fell!')
-
   if self.fat == false then
     self.sprite:changeAnim('Fall')
   else

@@ -158,7 +158,7 @@ function _M:draw (isFlipped)
 	--Binds the SpriteBatch to memory for more efficient updating.
 	self.batch:clear()
 	self.batch:bind()
-
+    assert(self.animlist[self.activeAnim],"no Anim")
     assert(self.Atlas.size[self.animlist[self.activeAnim].frames[round(self.iterator)]],"frame "..self.animlist[self.activeAnim].frames[round(self.iterator)].." Doesn't exist")
 
 		--find the center of the sprite.
