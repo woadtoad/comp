@@ -232,9 +232,11 @@ function Player:ddraw()
   love.graphics.setColor(255, 255, 255, 100)
   love.graphics.printf('player '..self.id, x - (self.radius * self.scale), y-(50 * self.scale), self.radius * 2, 'center')
 
-  -- Print player state
-  love.graphics.setColor(220, 20, 20, 180)
-  love.graphics.printf(self:getStateStackDebugInfo()[1], x - (self.radius * self.scale), y-(60 * self.scale), self.radius * 2, 'center')
+  if self:getStateStackDebugInfo()[1] then
+    -- Print player state
+    love.graphics.setColor(220, 20, 20, 180)
+    love.graphics.printf(self:getStateStackDebugInfo()[1], x - (self.radius * self.scale), y-(60 * self.scale), self.radius * 2, 'center')
+  end
 end
 
 function Player:input(input)
