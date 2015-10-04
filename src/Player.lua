@@ -68,6 +68,7 @@ local STATE = {
   EAT = 'eat',
   TRANSFORM = 'transform',
   STUN = 'stun',
+  SPAWNING = 'spawning',
 }
 Player.static.STATES = STATE
 
@@ -161,6 +162,12 @@ function Player:initialize(x, y, scale, id, facing)
         TexMate:frameCounter("toad_animations/Spin_",0,12,4)
       }
     },
+    Spawning = {
+      framerate = 14,
+      frames = {
+        TexMate:frameCounter("toad_animations/Spin_",0,12,4)
+      }
+    },
     FatIdle = {
       framerate = 14,
       frames = {"toad_animations/Fat_0003"
@@ -245,6 +252,15 @@ function Player:initialize(x, y, scale, id, facing)
 
   end
 
+  self.sprite.endCallback['Spawning'] = function()
+    self.spawnSpinnerCount = self.spawnSpinnerCount - 1
+    if self.spawnSpinnerCount < 1 then
+      self.sprite:changeAnim("Idle")
+
+      self:gotoState(STATE.LAND)
+    end
+  end
+
 
   self.collider = WorldManager.world:newCircleCollider(x, y, self.radius, {collision_class = 'PlayerBody'})
   self.collider.parent = self
@@ -279,6 +295,9 @@ function Player:initialize(x, y, scale, id, facing)
   self.damagerAmount = 1
   self.effort = 1
   self.canControl = true
+  self.spawnSpinnerCount = 3
+
+  self:gotoState(STATE.SPAWNING)
 end
 
 function Player:update(dt)
@@ -290,12 +309,16 @@ function Player:update(dt)
 
       if self.collider:enter('PlayerBody') then
 
+<<<<<<< HEAD
         local a, collider = self.collider:enter('PlayerBody')
        --print("STUNNERMATE")
 
         local velx,vely = collider.body:getLinearVelocity()
         local vec = Vector(velx,vely)
         local vel = vec:len()
+=======
+       -- local a, collider = self.collider:enter('Pickup')
+>>>>>>> Added player spawning state
 
        -- print("vel",vel)
         if vel > self.Vars.FAT_STUN_AT_SPEED and collider.parent.fat then
@@ -589,7 +612,10 @@ function Transform:updateStates(dt)
   self.timerj = self.timerj - 1 *dt
 
   if self.timerj < 0 then
+<<<<<<< HEAD
    -- print("extit")
+=======
+>>>>>>> Added player spawning state
     self.canControl = true
     self:gotoState(STATE.RUN)
   end
@@ -701,6 +727,14 @@ function FallingPlayer:enteredState()
 end
 
 -----------------------
+-- Spawning State
+local SpawningPlayer = Player:addState(STATE.SPAWNING)
+function SpawningPlayer:enteredState()
+  self.sprite:changeAnim('Spawning')
+  self.canControl = false
+end
+
+-----------------------
 -- Throwing State
 
 -----------------------
@@ -711,8 +745,5 @@ end
 
 -----------------------
 -- Equipped && Equipping State
-
------------------------
--- Spawning State
 
 return Player
