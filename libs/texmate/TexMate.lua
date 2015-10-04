@@ -140,7 +140,17 @@ function _M:update (dt)
 
 end
 
-function _M:draw (isFlipped)
+function _M:draw(isFlipped, userScale)
+  if userScale ~= nil then
+    print('using default scale')
+  	userScale.x = userScale
+  	userScale.y = userScale
+    if isFlipped then
+      userScale.x = userScale.x *-1
+    end
+  else
+    userScale = self.scale
+  end
 
   local flipped = self.flip
   if isFlipped ~= nil then
@@ -174,8 +184,8 @@ function _M:draw (isFlipped)
 						self.x, --x
 						self.y, --y
 						math.rad(self.rot), -- rot
-						self.scale.x*flipped, -- scale x
-						self.scale.y, -- scale y
+						userScale.x*flipped, -- scale x
+						userScale.y, -- scale y
 						-extra[1]+tempWidth-self.offset.x, --pivotx, needs to add in the trimming data here.
 						-extra[2]+tempHeight-self.offset.y -- pivoty
 					)

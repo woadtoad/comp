@@ -69,7 +69,18 @@ function _M:getLoc()
 	return self.x,self.y
 end
 
-function _M:draw ()
+function _M:draw (userScale)
+
+  if userScale ~= nil then
+    scale = {}
+  	scale.x = userScale
+  	scale.y = userScale
+    if isFlipped then
+      scale.x = scale.x *-1
+    end
+  else
+    scale = self.scale
+  end
 
 	--Reset graphics colour back to white
 	love.graphics.setColor(255,255,255,255)
@@ -93,8 +104,8 @@ function _M:draw ()
 						self.x, --x
 						self.y, --y
 						math.rad(self.rot), -- rot
-						self.scale.x*self.flip, -- scale x
-						self.scale.y, -- scale y
+						scale.x*self.flip, -- scale x
+						scale.y, -- scale y
 						-extra[1]+tempWidth-self.offset.x, --pivotx,
 						-extra[2]+tempHeight-self.offset.y -- pivoty
 					)

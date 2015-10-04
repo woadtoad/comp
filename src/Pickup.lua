@@ -7,27 +7,55 @@ local TexMateStatic = require("texmate.TexMateStatic")
 Pickup:include(require('stateful'))
 local Vector = require('hump.vector')
 
-local isActive
+local MAX_SPAWN_HEIGHT = 50
 
 function Pickup:initialize(x,y)
   x = x or 300
   y = y or 300
-  foodOffsetX = 130
-  foodOffsetY = 130
-  shadowOffsetX = 275
-  shadowOffsetY = 210
-  foodScale = 0.6
-  self.frames = {TexMateStatic(TEAMASSETS,"food/Chicken_0000",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale),
-                TexMateStatic(TEAMASSETS,"food/Ham_0001",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale),
-                TexMateStatic(TEAMASSETS,"food/Ribs_0002",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale)}
-  self.shadow = TexMateStatic(TEAMASSETS,"mockup_toad_new/Shadow_0000",0,0,shadowOffsetX,shadowOffsetY,0,false,foodScale,foodScale)
+  self.foodOffsetX = 130
+  self.foodOffsetY = 130
+  self.shadowOffsetX = 275
+  self.shadowOffsetY = 215
+  self.foodScale = 0.6
+  self.spawningFrames = {
+    Falling = {
+      framerate = 14,
+      frames = {
+        "food/Droplet_0000"
+      }
+    },
+    Bursting = {
+      framerate = 14,
+      frames = {
+        TexMate:frameCounter("food/Droplet_",0,3,4)
+      }
+    }
+  }
+  self.sprite = TexMate:new(TEAMASSETS, self.spawningFrames, "Falling" , 0, 0, 0, 0, 0, false, self.foodScale * 1.2, self.foodScale * 1.2)
+
+  self.sprite.endCallback['Bursting'] = function()
+    self:gotoState('Active')
+  end
+
+  self.frames = {
+    TexMateStatic(TEAMASSETS,"food/Chicken_0000",0,0,self.foodOffsetX,self.foodOffsetY,0,false,self.foodScale,self.foodScale),
+    TexMateStatic(TEAMASSETS,"food/Ham_0001",0,0,self.foodOffsetX,self.foodOffsetY,0,false,self.foodScale,self.foodScale),
+    TexMateStatic(TEAMASSETS,"food/Ribs_0002",0,0,self.foodOffsetX,self.foodOffsetY,0,false,self.foodScale,self.foodScale)
+  }
+  self.shadow = TexMateStatic(TEAMASSETS,"mockup_toad_new/Shadow_0000",0,0,self.shadowOffsetX,self.shadowOffsetY,0,false,self.foodScale,self.foodScale)
+
   self.food = love.math.random(1,3)
   self.collider = WorldManager.world:newCircleCollider(x, y, 30, {collision_class='Pickup'})
   self.collider.body:setFixedRotation(true)
   self.collider.parent = self
   self.collider.body:setLinearDamping(1.5)
   self.collider.fixtures['main']:setRestitution(0.3)
-  isActive = true
+  self.isActive = true
+  self.activeScale = 0.25
+
+  self.spawnDropHeight = MAX_SPAWN_HEIGHT
+
+  self:gotoState('Spawning')
 end
 
 function Pickup:update(dt)
@@ -48,10 +76,6 @@ function Pickup:update(dt)
 end
 
 function Pickup:draw()
-  if isActive then
-    self.shadow:draw()
-    self.frames[self.food]:draw()
-  end
 end
 
 function Pickup:makeActive(x,y,velx,vely)
@@ -60,14 +84,73 @@ function Pickup:makeActive(x,y,velx,vely)
   self.collider.body:setPosition(x+vec.x*100,y+vec.y*100)
   self.collider.body:setLinearVelocity(velx,vely)
   self.collider.body:setActive(true)
-  isActive = true
+  self.isActive = true
 end
 
 function Pickup:deactivate()
-  print("deact")
   self.collider.body:setActive(false)
-  isActive = false
+  self.isActive = false
 end
 
+----------------------------------------------
+
+local PickupSpawning = Pickup:addState('Spawning')
+function PickupSpawning:enteredState()
+  self.sprite:changeAnim('Falling')
+end
+
+function PickupSpawning:update(dt)
+  if self.spawnDropHeight > 0  then
+    self.sprite:changeLoc(self.collider.body:getX(),self.collider.body:getY() - self.spawnDropHeight)
+    self.spawnDropHeight = self.spawnDropHeight - dt * 50
+  else
+    self:gotoState('Bursting')
+  end
+  self.sprite:update(dt)
+end
+
+function PickupSpawning:draw()
+  self.sprite:draw()
+end
+
+local PickupBursting = Pickup:addState('Bursting')
+function PickupBursting:enteredState()
+  self.sprite:changeAnim('Bursting')
+end
+
+function PickupBursting:update(dt)
+  self.sprite:update(dt)
+end
+
+function PickupBursting:draw()
+  self.sprite:draw()
+end
+
+
+local PickupActive = Pickup:addState('Active')
+function PickupActive:enteredState()
+end
+
+function PickupActive:update(dt)
+  self.sprite:update(dt)
+  -- TODO: attempt at scaling the food when it is created
+  if self.activeScale < self.foodScale then
+    self.activeScale = self.activeScale + (dt * 1.8)
+  else
+    self.activeScale = self.foodScale
+  end
+
+  self.frames[self.food]:changeLoc(self.collider.body:getX(),self.collider.body:getY())
+  self.frames[self.food]:changeRot(math.deg(self.collider.body:getAngle()))
+  self.shadow:changeLoc(self.collider.body:getX(),self.collider.body:getY())
+  self.shadow:changeRot(math.deg(self.collider.body:getAngle()))
+end
+
+function PickupActive:draw()
+  if self.isActive then
+    self.shadow:draw()
+    self.frames[self.food]:draw(self.activeScale)
+  end
+end
 
 return Pickup
