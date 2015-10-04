@@ -72,12 +72,17 @@ local STATE = {
 }
 Player.static.STATES = STATE
 
+local RESPAWN_TIME = 2
+
 function Player:initialize(x, y, scale, id, facing)
   print('    Player '..id)
   print('      scale: '..scale)
   print('          x: '..x)
   print('          y: '..y)
   print('')
+
+  self.spawnX = x
+  self.spawnY = y
 
   self.Health = 10
   self.scale = scale or 1
@@ -295,8 +300,8 @@ function Player:initialize(x, y, scale, id, facing)
   self.damagerAmount = 1
   self.effort = 1
   self.canControl = true
-  self.spawnSpinnerCount = 3
-
+  self.spawnSpinnerCount = 2
+  self.respawnTimer = RESPAWN_TIME
   self:gotoState(STATE.SPAWNING)
 end
 
@@ -336,11 +341,11 @@ function Player:update(dt)
 end
 
 function Player:updateSprites(dt)
-  self.shadowSprite:update(dt)
   self.sprite:update(dt)
+  self.shadowSprite:update(dt)
 
-  self.shadowSprite:changeLoc(self.feet.body:getX(),self.feet.body:getY())
   self.sprite:changeLoc(self.collider.body:getX(),self.collider.body:getY())
+  self.shadowSprite:changeLoc(self.feet.body:getX(),self.feet.body:getY())
 end
 
 function Player:draw()
@@ -724,6 +729,20 @@ function FallingPlayer:enteredState()
 
   self.collider.body:setLinearDamping(10)
   self.canControl = false
+  self.hasFallen = true
+  self.respawnTimer = RESPAWN_TIME -- ms
+end
+
+function FallingPlayer:updateStates(dt)
+  if self.hasFallen then
+    self.respawnTimer = self.respawnTimer - dt
+    if self.respawnTimer < 0 then
+      print('Respawning player')
+      self.hasFallen = false
+      self.collider.body:setPosition(self.spawnX + self.radius, self.spawnY)
+      self:gotoState(STATE.SPAWNING)
+    end
+  end
 end
 
 -----------------------
