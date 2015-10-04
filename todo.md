@@ -25,4 +25,5 @@
 - [ ] food spawn anim
 - [ ] food respawns
 - [ ] end screen
+  - [x] Entering/exit functionality
 - [ ] big chunky timer
