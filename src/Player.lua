@@ -16,6 +16,49 @@ Player.static.RUNNING_FPS = 12
 
 Player.transformDelay = 0
 
+
+
+Player.Vars = {
+  --control is a value from 0-1 of how much influence the player has over the movement. going above one will give more control... use with caution
+  --boost is some arbitrary number given to box2d. around 1000 is a good place to start.
+  --friction is a linear dampener, 1 is a lot but can go higher.
+  FAT_MAX_SPEED = 0,
+  SKINNY_MAX_SPEED = 0,
+
+  FAT_STUN_AT_SPEED = 100,
+  SKINNY_STUN_AT_SPEED = 300,
+
+  SKINNY_FRICTION_RUN = 0.3,
+  FAT_FRICTION_RUN = 0.3,
+
+  SKINNY_SLIDE_RECOVER = 0,
+  FAT_SLIDE_RECOVER = 0,
+  FAT_SLIDE_CONTROL = 0.5,
+  SKINNY_SLIDE_CONTROL = 0.5,
+
+  FAT_POST_JUMP_FRICTION = 0,
+  SKINNY_POST_JUMP_FRICTION = 0,
+  FAT_POST_JUMP_CONTROL = 0.5,
+  SKINNY_POST_JUMP_CONTROL = 0.5,
+
+  FAT_JUMP_BOOST = 0,
+  SKINNY_JUMP_BOOST = 0,
+
+  FAT_SLIDE_FRICTION = 0,
+  SKINNY_SLIDE_FRICTION = 0,
+  FAT_SLIDE_CONTROL = 0.9,
+  SKINNY_SLIDE_CONTROL = 0.9,
+
+  EAT_BOOST = 1200,
+  SPIT_BOOST = 800,
+
+  EAT_FRICTION = 0.2,
+  SPIT_FRICTION = 0.2,
+
+}
+
+
+
 local STATE = {
   RUN = 'run',
   SLIDE = 'slide',
@@ -247,11 +290,20 @@ function Player:update(dt)
 
       if self.collider:enter('PlayerBody') then
 
-       -- local a, collider = self.collider:enter('Pickup')
-       print("STUNNERMATE")
+        local a, collider = self.collider:enter('PlayerBody')
+       --print("STUNNERMATE")
 
+        local velx,vely = collider.body:getLinearVelocity()
+        local vec = Vector(velx,vely)
+        local vel = vec:len()
 
-        self:gotoState(STATE.STUN)
+        print("vel",vel)
+        if vel > self.Vars.FAT_STUN_AT_SPEED and collider.parent.fat then
+
+          self:gotoState(STATE.STUN)
+        elseif vel > self.Vars.SKINNY_STUN_AT_SPEED then
+          self:gotoState(STATE.STUN)
+        end
       end
 
   end
@@ -387,41 +439,7 @@ end
 
 Player.ControlInfluence = 1
 
-Player.Vars = {
-  --control is a value from 0-1 of how much influence the player has over the movement. going above one will give more control... use with caution
-  --boost is some arbitrary number given to box2d. around 1000 is a good place to start.
-  --friction is a linear dampener, 1 is a lot but can go higher.
-  FAT_MAX_SPEED = 0,
-  SKINNY_MAX_SPEED = 0,
 
-  SKINNY_FRICTION_RUN = 0.3,
-  FAT_FRICTION_RUN = 0.3,
-
-  SKINNY_SLIDE_RECOVER = 0,
-  FAT_SLIDE_RECOVER = 0,
-  FAT_SLIDE_CONTROL = 0.5,
-  SKINNY_SLIDE_CONTROL = 0.5,
-
-  FAT_POST_JUMP_FRICTION = 0,
-  SKINNY_POST_JUMP_FRICTION = 0,
-  FAT_POST_JUMP_CONTROL = 0.5,
-  SKINNY_POST_JUMP_CONTROL = 0.5,
-
-  FAT_JUMP_BOOST = 0,
-  SKINNY_JUMP_BOOST = 0,
-
-  FAT_SLIDE_FRICTION = 0,
-  SKINNY_SLIDE_FRICTION = 0,
-  FAT_SLIDE_CONTROL = 0.9,
-  SKINNY_SLIDE_CONTROL = 0.9,
-
-  EAT_BOOST = 1200,
-  SPIT_BOOST = 800,
-
-  EAT_FRICTION = 0.2,
-  SPIT_FRICTION = 0.2,
-
-}
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
