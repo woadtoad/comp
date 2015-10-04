@@ -38,6 +38,10 @@ UI = require('thranduil.ui')
 ATLAS = require('texmate.AtlasImporter').loadAtlasTexturePacker( 'assets.entities.entitiesC', 'assets/entities/entitiesC.png' )
 PROTOTYPEASSETS = require('texmate.AtlasImporter').loadAtlasTexturePacker( 'assets.entities.TileAssets', 'assets/entities/TileAssets.png' )
 TEAMASSETS = require('texmate.AtlasImporter').loadAtlasTexturePacker( 'assets.entities.TeamAssets', 'assets/entities/TeamAssets.png' )
+PINKATLAS = require('texmate.AtlasImporter').loadAtlasTexturePacker( 'assets.entities.pink', 'assets/entities/pink.png' )
+ORANGEATLAS = require('texmate.AtlasImporter').loadAtlasTexturePacker( 'assets.entities.orange', 'assets/entities/orange.png' )
+GREENATLAS = require('texmate.AtlasImporter').loadAtlasTexturePacker( 'assets.entities.green', 'assets/entities/green.png' )
+BLUEATLAS = require('texmate.AtlasImporter').loadAtlasTexturePacker( 'assets.entities.blue', 'assets/entities/blue.png' )
 -- Setup our UI framework with a offshelf theme
 UI.DefaultTheme = require('thranduil.Theme')
 

@@ -19,7 +19,7 @@ return  {
     Skidding = {
       framerate = 14,
       frames = {
-        'mockup_toad_new/ToadIdle_0000'
+        'toad_animations_Orange/ToadIdle_0000'
       }
     },
 
@@ -89,7 +89,7 @@ return  {
 
       }
     },
-    FatSpawn = {
+    Spawning = {
       framerate = 14,
       frames = {"toad_animations_Orange/Fat_0000","toad_animations_Orange/Fat_0001","toad_animations_Orange/Fat_0002","toad_animations_Orange/Fat_0003",
 
@@ -109,7 +109,7 @@ return  {
     },
     Blank = {
       framerate = 7,
-      frames = {"icetile2/Blank_0000"
+      frames = {"toad_animations_Orange/Dust_0007"
 
       }
     },

@@ -99,6 +99,7 @@ function Player:initialize(x, y, scale, id, facing)
   self.feetRadius = self.scale * (Player.static.BASE_RADIUS / 4)
   self.spriteScale = self.scale / 1.4
 
+
   local playerAnims = {
     Idle = {
       framerate = 14,
@@ -234,8 +235,39 @@ function Player:initialize(x, y, scale, id, facing)
     }
   }
 
+--[[
+  local PinkAnims = require('src.PinkAnims')
+  local GreenAnims = require('src.GreenAnims')
+  local OrangeAnims = require('src.OrangeAnims')
+  local BlueAnims = require('src.BlueAnims')
+]]
+  --print("does thi work,",PinkAnims['Idle'].framerate)
+
+  local PinkAnims = require('src.PinkAnims')
+  local GreenAnims = require('src.GreenAnims')
+  local OrangeAnims = require('src.OrangeAnims')
+  local BlueAnims = require('src.BlueAnims')
+
+ -- self.sprite = TexMate:new(TEAMASSETS, playerAnims, "Idle" , nil, nil, 0, 30 + self.scale, nil, nil, self.spriteScale)
+  if self.id == 1 then
+
+
+
+
+
+    self.sprite = TexMate:new(PINKATLAS, PinkAnims, "Idle" , nil, nil, 0, 30 + self.scale, nil, nil, self.spriteScale)
+
+  elseif self.id == 2 then
+    self.sprite = TexMate:new(GREENATLAS,  GreenAnims, "Idle" , nil, nil, 0, 30 + self.scale, nil, nil, self.spriteScale)
+  elseif self.id == 3 then
+    self.sprite = TexMate:new(ORANGEATLAS,  OrangeAnims, "Idle" , nil, nil, 0, 30 + self.scale, nil, nil, self.spriteScale)
+  else
+    self.sprite = TexMate:new(BLUEATLAS,  BlueAnims, "Idle" , nil, nil, 0, 30 + self.scale, nil, nil, self.spriteScale)
+  end
+
+
   --make the sprite , args: atlas, animation dataformat, default animation.
-  self.sprite = TexMate:new(TEAMASSETS, playerAnims, "Idle" , nil, nil, 0, 30 + self.scale, nil, nil, self.spriteScale)
+
 
   self.sprite.endCallback['Jumping'] = function()
         self.sprite:changeAnim("JumpIdle")
@@ -450,6 +482,11 @@ function Player:move(xd, yd)
     self.isFacingRight = xd > 0
     self.effort = angle / 360 + 1
 
+    local x = Player.static.BASE_SPEED * xd * self.ControlInfluence
+    local y = Player.static.BASE_SPEED * yd * self.ControlInfluence
+
+    self.collider.body:applyLinearImpulse(x, y, self.collider.body:getX(), self.collider.body:getY())
+
     local velx2,vely2 = self.collider.body:getLinearVelocity()
     if velx2 < 0 then
       velx2 = velx2 * -1
@@ -473,9 +510,11 @@ function Player:move(xd, yd)
       y = 0
     end
     self.collider.body:applyLinearImpulse(x, y, self.collider.body:getX(), self.collider.body:getY())
+      print("SPEEDING FINE")
+
   end
 
-  --print(self.collider.body:getLinearVelocity())
+  print(self.collider.body:getLinearVelocity())
 end
 
 function Player:stateInput(xd, yd)

@@ -18,7 +18,7 @@ local anims = {
     Skidding = {
       framerate = 14,
       frames = {
-        'mockup_toad_new/ToadIdle_0000'
+        'toad_animations_Pink/ToadIdle_0000'
       }
     },
 
@@ -88,7 +88,7 @@ local anims = {
 
       }
     },
-    FatSpawn = {
+    Spawning = {
       framerate = 14,
       frames = {"toad_animations_Pink/Fat_0000","toad_animations_Pink/Fat_0001","toad_animations_Pink/Fat_0002","toad_animations_Pink/Fat_0003",
 
@@ -108,7 +108,7 @@ local anims = {
     },
     Blank = {
       framerate = 7,
-      frames = {"icetile2/Blank_0000"
+      frames = {"toad_animations_Pink/Dust_0007"
 
       }
     },
