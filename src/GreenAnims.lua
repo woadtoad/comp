@@ -96,6 +96,12 @@ return  {
 
       }
     },
+        FatSpawn = {
+      framerate = 14,
+      frames = {"toad_animations_Green/Fat_0000","toad_animations_Green/Fat_0001","toad_animations_Green/Fat_0002","toad_animations_Green/Fat_0003",
+
+      }
+    },
     Fall = {
       framerate = 7,
       frames = {TexMate:frameCounter("toad_animations_Green/Fall_",0,3,4)
@@ -110,7 +116,7 @@ return  {
     },
     Blank = {
       framerate = 7,
-      frames = {"toad_animations_Pink/Dust_0007"
+      frames = {"toad_animations_Green/Dust_0007"
 
       }
     },
