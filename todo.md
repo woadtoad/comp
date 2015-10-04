@@ -24,7 +24,7 @@
 - [x] high friction on bases for pickups.
 - [ ] end conditions food in bases
 - [x] food spawn anim
-- [ ] food respawns
+- [x] food respawns
 - [ ] start scene
   - [x] Entering/exit functionality
   - [ ] Enable players based on if they press a
