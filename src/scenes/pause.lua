@@ -47,15 +47,16 @@ return function(PauseScene)
   function PauseScene:draw()
     Camera.parent:draw(
     function(l, t, w, h)
-      for i, v in pairs(self.drawList) do
-        self.drawList[i]:draw()
-      end
+      -- local w, h = love.graphics.getWidth(), love.graphics.getHeight()
 
-      love.graphics.setColor(20, 20, 20, 180)
-      love.graphics.rectangle('fill', l, t, w, h)
+      love.graphics.setColor(20, 120, 20, 80)
+      love.graphics.rectangle('fill', l, t, l+w, l+h)
 
       love.graphics.setColor(255, 255, 255, 255)
-      love.graphics.printf('PAUSED', w / 2, h / 2, 100, 'center')
+      love.graphics.setDefaultFilter( 'nearest', 'nearest' )
+      love.graphics.printf('PAUSE SCREEN', (l+w) / 2 - (100 / 2), 50, t + 100, 'center')
+      love.graphics.printf('START to unpause', (l+w) / 2 - (200 / 2), t + 100, 200, 'center')
+      love.graphics.printf('BACK for new game', (l+w) / 2 - (200 / 2), t + 120, 200, 'center')
     end
     )
   end
@@ -69,13 +70,21 @@ return function(PauseScene)
   end
 
   function PauseScene:keypressed(key, isrepeat)
-    if key =="e" then
-      self:popState()
-    end
   end
 
   function PauseScene:input(input)
-
+    for k,joystick in pairs(love.joystick.getJoysticks()) do
+      -- Pause the game!
+      if input:pressed(INPUTS.UNPAUSE) then
+        print('Player ' .. joystick:getID() .. ' unpaused the game')
+        self:popState()
+      end
+      -- Restart the game!
+      if input:pressed(INPUTS.RESTART) then
+        print('Player ' .. joystick:getID() .. ' restart the game')
+        self:gotoState(SCENES.START)
+      end
+    end
   end
 
   function PauseScene:destroy()

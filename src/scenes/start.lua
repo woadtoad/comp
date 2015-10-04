@@ -75,7 +75,7 @@ return function(StartScene)
   function StartScene:input(input)
     for k,joystick in pairs(love.joystick.getJoysticks()) do
       -- Join the game!
-      if input:pressed(INPUTS.JOIN) then
+      if input:pressed(INPUTS.JOIN, joystick:getID()) then
         print('Player ' .. joystick:getID() .. ' joined')
       end
     end

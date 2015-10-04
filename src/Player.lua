@@ -1,5 +1,7 @@
 local TexMate = require("texmate.TexMate")
 local Vector = require('hump.vector')
+local SCENES = require('src.config.SCENES')
+local SceneManager = require('src.SceneManager')
 local Input = require('src.Input')
 local WorldManager = require('src.WorldManager')
 local Effects = require('src.Effects')
@@ -275,6 +277,12 @@ function Player:ddraw()
 end
 
 function Player:input(input)
+  if input:pressed(INPUTS.PAUSE, self.id) then
+    print('Player ' .. self.id .. ' paused the game')
+    SceneManager:pushState(SCENES.PAUSE)
+    return
+  end
+
   if self.canControl then
     local xDir = input:down(INPUTS.MOVEX, self.id)
     local yDir = input:down(INPUTS.MOVEY, self.id)
