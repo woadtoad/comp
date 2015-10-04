@@ -25,14 +25,14 @@
 - [ ] food spawn anim
 - [ ] food respawns
 - [ ] start scene
-  - [ ] Entering/exit functionality
+  - [x] Entering/exit functionality
   - [ ] Enable players based on if they press a
-  - [ ] push gamescene ontop for free wins
+  - [x] push gamescene ontop for free wins
 - [ ] game scene
-  - [ ] start to pause
+  - [x] start to pause
 - [ ] pause scene
-  - [ ] back to go to the start screen
-  - [ ] start to unpause
+  - [x] back to go to the start screen
+  - [x] start to unpause
 - [ ] end scene
   - [x] Entering/exit functionality
   - [ ] Show players animated
