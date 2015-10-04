@@ -38,9 +38,13 @@ function Pickup:update(dt)
  --[[ if self.collider:enter('Player') then
       --player collision logic here
   end
+  ]]
   if self.collider:enter('Base') then
-      print("base hit")
-  end]]
+      self.collider.body:setLinearDamping(5)
+  end
+  if self.collider:enter('Base') then
+    self.collider.body:setLinearDamping(1.5)
+  end
 end
 
 function Pickup:draw()
