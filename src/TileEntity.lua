@@ -24,6 +24,12 @@ function Tile:initialize (x,y,i,v,scale,filled,typetile)
     self.type = Tile.static.TILE_TYPES.NONE
   end
 
+  -- Shaker state
+  self.shakermag = 0
+  self.togoalshaker = 0
+  self.shakertime = 0
+  self.shakeDebounce = 0
+
   self.health = 4
   self.regenRate = 1
 
@@ -188,6 +194,8 @@ function Tile:draw()
 end
 
 function Tile:update(dt)
+  self:updateShake(dt)
+
   if self.filled and self.type == 1 then
     if self.collider:enter('PlayerFeet') then
       local a, pushingPlayer = self.collider:enter('PlayerFeet')
@@ -256,6 +264,34 @@ end
 
 function Tile:getLoc()
   return self.x,self.y
+end
+
+function Tile:shaker(magnitude, time)
+  self.shakermag = magnitude
+  self.togoalshaker = 0
+  self.shakertime = 1 / time
+end
+
+function Tile:updateShake(dt)
+  local randx,randy = 0,0
+
+  if self.togoalshaker < 1 then
+    self.togoalshaker = self.togoalshaker + self.shakertime * dt
+    self.shakeAmount = _.smooth( self.shakermag, -5,  self.togoalshaker)
+  else
+    self.shakeAmount = nil
+  end
+
+  self.shakeDebounce = self.shakeDebounce + dt
+  if self.shakeDebounce > 0.045 then
+    self.shakeDebounce = 0
+    if self.shakeAmount then
+      -- randx =  math.random(-self.shakeAmount,self.shakeAmount)
+      randy =  math.random(-self.shakeAmount ,self.shakeAmount)
+    end
+  end
+
+  self.sprite:changeLoc(self.x + randx, self.y + randy)
 end
 
 
@@ -337,6 +373,7 @@ end
 local DamageOne = Tile:addState("DamageOne")
 
 function DamageOne:enteredState(dt)
+  self:shaker(3, 0.4)
   self.health = 3
   self.sprite:changeAnim("DamageOne")
 end
@@ -360,6 +397,7 @@ end
 local DamageTwo = Tile:addState('DamageTwo')
 
 function DamageTwo:enteredState(dt)
+  self:shaker(7, 0.4)
   self.health = 2
   self.sprite:changeAnim("DamageTwo")
 end
@@ -382,14 +420,15 @@ end
 local DamageThree = Tile:addState('DamageThree')
 
 function DamageThree:enteredState(dt)
+  self:shaker(10, 0.4)
   self.health = 1
 
   self.sprite:changeAnim("DamageThree")
 end
 
 function DamageThree:updateStates(dt)
-    self.sprite:update(dt)
-  self:regenHealth(dt)
+  self.sprite:update(dt)
+  -- self:regenHealth(dt)
 
   if self.health <= 1 then
     self:gotoState("Destroyed")
