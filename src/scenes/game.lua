@@ -55,6 +55,9 @@ return function(GameScene)
     self.updateList = {}
     self.drawList = {}
 
+    self.spawnTimes = {5,5,5,6,7,9,10,15,20,26,30}
+    self.spawnTimesPos = 1
+
     self.paused = false
     self.timer = 0
     self.maxTime = 60
@@ -266,7 +269,14 @@ return function(GameScene)
       table.insert(self.pickupPool, ThePickup:new(self.theTile.x,self.theTile.y))
       table.insert(self.updateList,self.pickupPool[#self.pickupPool])
       table.insert(self.drawList,self.pickupPool[#self.pickupPool])
-      self.thePickupTimer = love.math.random(3, 20)
+      --[[ random timing
+      self.thePickupTimer = love.math.random(3, 20)]]
+      -- table timing
+      if self.spawnTimesPos <= #self.spawnTimes then
+        self.thePickupTimer = self.spawnTimes[self.spawnTimesPos]
+      else
+        self.thePickupTimer = self.spawnTimes[#self.spawnTimes]
+      end
     end
   end
 
