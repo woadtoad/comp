@@ -452,6 +452,12 @@ function Destroyed:enteredState(dt)
 end
 
 function Destroyed:updateStates(dt)
+    if self.collider:enter('PlayerTail') then
+      local a, player = self.collider:enter('PlayerTail')
+      player = player.parent
+
+      player:gotoState(PLAYER_STATES.FALL)
+    end
     self.sprite:update(dt)
     self.resetTimer =  self.resetTimer - 1 * dt
 
