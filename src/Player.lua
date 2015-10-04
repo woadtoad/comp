@@ -22,7 +22,8 @@ local STATE = {
   JUMP = 'jump',
   FALL = 'fall',
   LAND = 'land',
-  EAT = 'eat'
+  EAT = 'eat',
+  TRANSFORM = 'transform',
 }
 Player.static.STATES = STATE
 
@@ -482,22 +483,27 @@ function EatingPlayer:updateStates(dt)
   end
 
   if self.fat == false and self.transformDelay < 0  then
-    if self.collider:enter('Pickup') then
+    if self.pickedUpFood == nil then
+      if self.collider:enter('Pickup') then
 
-      local a, collider = self.collider:enter('Pickup')
-     -- pushingPlayer = pushingPlayer.parent
-      self.fat = true
-      self.transformDelay = 0.5
+        local a, collider = self.collider:enter('Pickup')
+       -- pushingPlayer = pushingPlayer.parent
+        self.fat = true
+        self.transformDelay = 0.1
 
-      collider.parent:deactivate()
-      self.pickedUpFood = collider.parent
-    end
+        collider.parent:deactivate()
+        self.pickedUpFood = collider.parent
+
+        self:gotoState(STATE.TRANSFORM)
+      end
+   end
   elseif self.fat == true and self.transformDelay < 0 then
       self.fat = false
-      self.transformDelay = 0.5
+      self.transformDelay = 0.1
       local x,y = self.collider.body:getPosition()
       local velx,vely = self.collider.body:getLinearVelocity()
       self.pickedUpFood:makeActive(x,y,velx,vely)
+      self.pickedUpFood = nil
   end
 
 end
@@ -515,6 +521,32 @@ function SlidingPlayer:enteredState()
 
   self.collider.body:setLinearDamping(6)
 end
+
+-- Transform State
+local Transform = Player:addState(STATE.TRANSFORM)
+function Transform:enteredState()
+  -- TODO: remove this when not using running anim
+ -- self.sprite.animlist['Running'].framerate = Player.static.RUNNING_FPS
+  self.canControl = false
+  self.sprite:changeAnim('FatSpawn')
+
+  self.collider.body:setLinearDamping(10)
+
+  self.timerj = 0.4
+end
+
+
+function Transform:updateStates(dt)
+
+  self.timerj = self.timerj - 1 *dt
+
+  if self.timerj < 0 then
+    print("extit")
+    self.canControl = true
+    self:gotoState(STATE.RUN)
+  end
+end
+
 
 -----------------------
 -- Jumping State
