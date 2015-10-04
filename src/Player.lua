@@ -2,6 +2,7 @@ local TexMate = require("texmate.TexMate")
 local Vector = require('hump.vector')
 local Input = require('src.Input')
 local WorldManager = require('src.WorldManager')
+local Effects = require('src.Effects')
 
 local Player = class('Player')
 Player:include(require('stateful'))
@@ -138,8 +139,20 @@ function Player:initialize(x, y, scale, id, facing)
       }
     },
     Fall = {
-      framerate = 14,
+      framerate = 7,
       frames = {TexMate:frameCounter("toad_animations/Fall_",0,3,4)
+
+      }
+    },
+    FatFall = {
+      framerate = 7,
+      frames = {TexMate:frameCounter("toad_animations/Fat_Fall_",0,3,4)
+
+      }
+    },
+    Blank = {
+      framerate = 7,
+      frames = {"icetile2/Blank_0000"
 
       }
     },
@@ -166,6 +179,25 @@ function Player:initialize(x, y, scale, id, facing)
   self.sprite.endCallback['Jumping'] = function()
         self.sprite:changeAnim("JumpIdle")
   end
+
+  self.sprite.endCallback['Fall'] = function()
+        self.sprite:changeAnim("Blank")
+
+        local x,y = self.collider.body:getPosition()
+
+        Effects:makeEffect("Splash",x,y+70)
+
+  end
+
+  self.sprite.endCallback['FatFall'] = function()
+        self.sprite:changeAnim("Blank")
+
+        local x,y = self.collider.body:getPosition()
+
+        Effects:makeEffect("Splash",x,y+70)
+
+  end
+
 
   self.collider = WorldManager.world:newCircleCollider(x, y, self.radius, {collision_class = 'PlayerBody'})
   self.collider.parent = self
@@ -328,6 +360,7 @@ Player.ControlInfluence = 1
 Player.Vars = {
   --control is a value from 0-1 of how much influence the player has over the movement. going above one will give more control... use with caution
   --boost is some arbitrary number given to box2d. around 1000 is a good place to start.
+  --friction is a linear dampener, 1 is a lot but can go higher.
   FAT_MAX_SPEED = 0,
   SKINNY_MAX_SPEED = 0,
 
@@ -355,8 +388,8 @@ Player.Vars = {
   EAT_BOOST = 1200,
   SPIT_BOOST = 800,
 
-  EAT_FRICTION = 0,
-  SPIT_FRICTION = 0,
+  EAT_FRICTION = 0.2,
+  SPIT_FRICTION = 0.2,
 
 }
 
@@ -368,10 +401,10 @@ local RunningPlayer = Player:addState(STATE.RUN)
 function RunningPlayer:enteredState()
   if self.fat == false then
     self.sprite:changeAnim('Running')
-    self.collider.body:setLinearDamping(Player.Vars.SKINNY_FRICTION_RUN)
+    self.collider.body:setLinearDamping(self.Vars.SKINNY_FRICTION_RUN)
   else
     self.sprite:changeAnim('FatRun')
-    self.collider.body:setLinearDamping(Player.Vars.FAT_FRICTION_RUN)
+    self.collider.body:setLinearDamping(self.Vars.FAT_FRICTION_RUN)
   end
 end
 
@@ -386,15 +419,14 @@ function EatingPlayer:enteredState()
   if self.fat == false then
     self.sprite:changeAnim('Eat')
       local impulse = player.vars.EAT_BOOST
+      self.collider.body:setLinearDamping(self.Vars.EAT_FRICTION)
   else
     self.sprite:changeAnim('Spit')
       local impulse = player.vars.SPIT_BOOST
+      self.collider.body:setLinearDamping(self.Vars.SPIT_FRICTION)
   end
 
   self.timerj = 0.5
-
-
-  --self.collider.body:setLinearDamping(0)
 
   linear = Vector(self.xd,self.yd)
     print("pre",linear.x,linear.y)
@@ -499,9 +531,15 @@ end
 local FallingPlayer = Player:addState(STATE.FALL)
 function FallingPlayer:enteredState()
   print('Player fell!')
-  --self.sprite:changeAnim('Fall')
-  -- self.collider.body:setLinearDamping(10)
-  -- self.canControl = false
+
+  if self.fat == false then
+    self.sprite:changeAnim('Fall')
+  else
+    self.sprite:changeAnim('FatFall')
+  end
+
+  self.collider.body:setLinearDamping(10)
+  self.canControl = false
 end
 
 -----------------------

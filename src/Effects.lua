@@ -42,4 +42,4 @@ function Effects:update(dt)
   self.Pool:update(dt)
 end
 
-return Effects
+return Effects:new()

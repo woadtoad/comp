@@ -91,7 +91,7 @@ return function(GameScene)
     -- create a pool of pickups
     self.pickupPool = {}
 
-    self.EffectTest = Effects:new()
+    self.Effects = Effects
 
     self:resetCameraPosition()
     Camera:moveTo(love.window.getWidth() / 2+50, love.window.getHeight() / 2+350,1,1)
@@ -135,7 +135,7 @@ return function(GameScene)
         self.updateList[i]:update(dt)
       end
 
-      self.EffectTest:update(dt)
+      self.Effects:update(dt)
     end
   end
 
@@ -146,7 +146,7 @@ return function(GameScene)
         self.drawList[i]:draw()
       end
       --need to put this in draw list.
-      self.EffectTest:draw()
+      self.Effects:draw()
 
       if love.joystick.getJoystickCount() < 1 then
         love.graphics.printf('NO PLAYERS DETECTED', w / 2 - 50, 50, 100, 'center')
@@ -215,7 +215,7 @@ return function(GameScene)
 
     if key == "s" then
       print("anim")
-      self.EffectTest:makeEffect("Splash",self.TileTest.Tiles[6][10]:getLoc())
+      self.Effects:makeEffect("Splash",self.TileTest.Tiles[6][10]:getLoc())
     end
   end
 
