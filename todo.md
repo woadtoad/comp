@@ -23,7 +23,7 @@
 - [ ] high friction on bases for players.
 - [x] high friction on bases for pickups.
 - [ ] end conditions food in bases
-- [ ] food spawn anim
+- [x] food spawn anim
 - [ ] food respawns
 - [ ] start scene
   - [x] Entering/exit functionality
