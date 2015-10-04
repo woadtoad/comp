@@ -16,9 +16,9 @@ function Pickup:initialize(x,y)
   shadowOffsetX = 275
   shadowOffsetY = 215
   foodScale = .4
-  self.frames = {TexMateStatic(TEAMASSETS,"food/Item_0000",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale),
-                TexMateStatic(TEAMASSETS,"food/Item_0001",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale),
-                TexMateStatic(TEAMASSETS,"food/Item_0002",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale)}
+  self.frames = {TexMateStatic(TEAMASSETS,"food/Chicken_0000",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale),
+                TexMateStatic(TEAMASSETS,"food/Ham_0001",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale),
+                TexMateStatic(TEAMASSETS,"food/Ribs_0002",0,0,foodOffsetX,foodOffsetY,0,false,foodScale,foodScale)}
   self.shadow = TexMateStatic(TEAMASSETS,"mockup_toad_new/Shadow_0000",0,0,shadowOffsetX,shadowOffsetY,0,false,foodScale,foodScale)
   self.food = love.math.random(1,3)
   self.collider = WorldManager.world:newCircleCollider(x, y, 15, {collision_class='Pickup'})
