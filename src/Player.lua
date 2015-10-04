@@ -14,7 +14,7 @@ Player.static.BASE_VEC = Vector(0, 0)
 Player.static.BASE_RADIUS = 25
 Player.static.RUNNING_FPS = 12
 
-
+Player.transformDelay = 0
 
 local STATE = {
   RUN = 'run',
@@ -37,7 +37,7 @@ function Player:initialize(x, y, scale, id, facing)
   self.scale = scale or 1
   self.id = id or 1
   self.isFacingRight = facing or false
-  self.isFat = trues
+  self.fat = false
 
   --flag to not override specific states
   self.doingState = false
@@ -318,6 +318,9 @@ function Player:input(input)
     if self.effort > 1.3 then
       self.effort = 1.3
     end
+
+    self:stateInput(input)
+
     --self.sprite.animlist['Running'].framerate = Player.static.RUNNING_FPS * (self.effort)
   end
 end
@@ -357,9 +360,12 @@ function Player:move(xd, yd)
     self.collider.body:applyLinearImpulse(x, y, self.collider.body:getX(), self.collider.body:getY())
   end
 
-  print(self.collider.body:getLinearVelocity())
+  --print(self.collider.body:getLinearVelocity())
 end
 
+function Player:stateInput(xd, yd)
+
+end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -417,6 +423,19 @@ function RunningPlayer:enteredState()
 end
 
 
+--[[
+function EaingPlayer:stateInput(input)
+  local shouldGobble = false
+
+  if  type == 'food' then
+      if self.fat == false then
+        self.fat = true
+        self.shouldGobble = true
+      end
+  end
+
+  --return shouldGobble
+end]]
 -----------------------
 -- eating State
 local EatingPlayer = Player:addState(STATE.EAT)
@@ -424,34 +443,61 @@ function EatingPlayer:enteredState()
   -- TODO: remove this when not using running anim
   self.doingState = true
 
+    local impulse = self.Vars.EAT_BOOST
+
+
+
+
   if self.fat == false then
     self.sprite:changeAnim('Eat')
-      local impulse = player.vars.EAT_BOOST
-      self.collider.body:setLinearDamping(self.Vars.EAT_FRICTION)
+    impulse = self.Vars.EAT_BOOST
+    self.collider.body:setLinearDamping(self.Vars.EAT_FRICTION)
+
+
   else
     self.sprite:changeAnim('Spit')
-      local impulse = player.vars.SPIT_BOOST
+       impulse = self.Vars.SPIT_BOOST
       self.collider.body:setLinearDamping(self.Vars.SPIT_FRICTION)
   end
 
   self.timerj = 0.5
 
   linear = Vector(self.xd,self.yd)
-    print("pre",linear.x,linear.y)
+    --print("pre",linear.x,linear.y)
   linear:normalize_inplace()
 
-  print(linear.x,linear.y)
+  --print(linear.x,linear.y)
   self.collider.body:applyLinearImpulse(linear.x*impulse,linear.y*impulse)
 
 end
 
 function EatingPlayer:updateStates(dt)
   self.timerj = self.timerj - 1 *dt
+  self.transformDelay = self.transformDelay - 1 *dt
+
 
   if self.timerj < 0 then
     self.doingState = false
     self:gotoState(STATE.IDLE)
   end
+
+  if self.fat == false and self.transformDelay < 0  then
+    if self.collider:enter('Pickup') then
+
+      local a, collider = self.collider:enter('Pickup')
+     -- pushingPlayer = pushingPlayer.parent
+      print("EAT MEMEMEME")
+      self.fat = true
+      self.transformDelay = 0.5
+
+      collider.parent:deactivate()
+    end
+  elseif self.fat == true and self.transformDelay < 0 then
+      print("skinny")
+      self.fat = false
+      self.transformDelay = 0.5
+  end
+
 end
 -----------------------
 -- Slide State
@@ -525,7 +571,7 @@ function LandPlayer:enteredState()
 end
 
 function LandPlayer:updateStates(dt)
-  print(self.timerj,"timer")
+  --print(self.timerj,"timer")
   self.timerl = self.timerl - 1 *dt
 
   if self.timerl < 0 then

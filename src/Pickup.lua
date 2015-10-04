@@ -23,6 +23,7 @@ function Pickup:initialize(x,y)
   self.food = love.math.random(1,3)
   self.collider = WorldManager.world:newCircleCollider(x, y, 15, {collision_class='Pickup'})
   self.collider.body:setFixedRotation(true)
+  self.collider.parent = self
   self.collider.body:setLinearDamping(1.5)
   self.collider.fixtures['main']:setRestitution(0.3)
   isActive = true
@@ -55,6 +56,7 @@ function Pickup:makeActive(x,y)
 end
 
 function Pickup:deactivate()
+  print("deact")
   self.collider.body:setActive(false)
   isActive = false
 end
