@@ -24,6 +24,18 @@
 - [ ] end conditions food in bases
 - [ ] food spawn anim
 - [ ] food respawns
-- [ ] end screen
+- [ ] start scene
+  - [ ] Entering/exit functionality
+  - [ ] Enable players based on if they press a
+  - [ ] push gamescene ontop for free wins
+- [ ] game scene
+  - [ ] start to pause
+- [ ] pause scene
+  - [ ] back to go to the start screen
+  - [ ] start to unpause
+- [ ] end scene
   - [x] Entering/exit functionality
+  - [ ] Show players animated
+  - [ ] Show zoomed winner
+  - [ ] Show scores
 - [ ] big chunky timer
