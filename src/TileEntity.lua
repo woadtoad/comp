@@ -18,7 +18,7 @@ Tile.static.TILE_TYPES = {
 
 function Tile:initialize (x,y,i,v,scale,filled,typetile)
   self.filled = filled
-  self.resetTime = 8
+  self.resetTime = 25
   self.type = typetile
   if filled == false then
     self.type = Tile.static.TILE_TYPES.NONE
