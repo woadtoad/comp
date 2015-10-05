@@ -25,7 +25,6 @@ return function(EndScene)
 
   function EndScene:exitedState()
     print('  EndScene:exitedState')
-    self:destroy()
   end
 
   function EndScene:pausedState()
@@ -34,8 +33,6 @@ return function(EndScene)
 
   function EndScene:continuedState()
     print('  EndScene:continuedState')
-    self:destroy()
-    self:reset()
   end
 
   function EndScene:reset()
@@ -73,7 +70,7 @@ return function(EndScene)
       Text.huge('PLAYER ' .. i .. ': ' .. self.bases[i]:getcurrentPoints(), (l+w) / 2 - (limit / 2), yStart + 200 + (i - 1)*50, limit, 'center')
     end
 
-    Text.huge('START to new game', (l+w) / 2 - (limit / 2), yStart + 300 + #self.bases*20, limit, 'center')
+    Text.huge('PRESS START', (l+w) / 2 - (limit / 2), yStart + 300 + #self.bases*50, limit, 'center')
   end
 
   function EndScene:ddraw()
@@ -91,11 +88,13 @@ return function(EndScene)
   end
 
   function EndScene:input(input)
-    for k,player in pairs(self.players) do
-      -- Pause the game!
-      if input:pressed(INPUTS.NEW_GAME, player.id) then
-        print('Player ' .. player.id .. ' unpaused the game')
-        self:gotoState(SCENES.GAME)
+    for id,isPlaying in pairs(self.joinedPlayers) do
+      if isPlaying then
+        -- New game
+        if input:pressed(INPUTS.NEW_GAME, id) then
+          print('Player ' .. id .. ' wanted a new game')
+          self:gotoState(SCENES.START)
+        end
       end
     end
   end

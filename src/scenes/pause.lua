@@ -83,16 +83,18 @@ return function(PauseScene)
   end
 
   function PauseScene:input(input)
-    for k,joystick in pairs(love.joystick.getJoysticks()) do
-      -- Pause the game!
-      if input:pressed(INPUTS.UNPAUSE) then
-        print('Player ' .. joystick:getID() .. ' unpaused the game')
-        self:popState()
-      end
-      -- Restart the game!
-      if input:pressed(INPUTS.RESTART) then
-        print('Player ' .. joystick:getID() .. ' restart the game')
-        self:gotoState(SCENES.START)
+    for id,isPlaying in pairs(self.joinedPlayers) do
+      if isPlaying then
+        -- Pause the game!
+        if input:pressed(INPUTS.UNPAUSE, id) then
+          print('Player ' .. id .. ' unpaused the game')
+          self:popState()
+        end
+        -- Restart the game!
+        if input:pressed(INPUTS.RESTART, id) then
+          print('Player ' .. id .. ' restart the game')
+          self:gotoState(SCENES.START)
+        end
       end
     end
   end

@@ -22,7 +22,6 @@ return function(GameScene)
       return
     end
 
-    Camera:setScale(CAMERA_SCALE)
     love.graphics.setBackgroundColor( 100, 110, 200 )
     self.initialized = true
   end
@@ -30,6 +29,7 @@ return function(GameScene)
   function GameScene:enteredState()
     print('  GameScene:enteredState')
     self:initialize()
+    self:destroy()
     self:reset()
   end
 
@@ -46,18 +46,21 @@ return function(GameScene)
 
   function GameScene:continuedState()
     print('  GameScene:continuedState')
-    self:destroy()
-    self:reset()
+    Sounds.loop({SOUNDS.BATTLE})
+    self:unpause()
   end
 
   function GameScene:pause()
     self.paused = true
   end
 
+  function GameScene:unpause()
+    self.paused = false
+  end
+
   function GameScene:reset()
     Sounds.loop({SOUNDS.BATTLE})
 
-    Camera:setScale(CAMERA_SCALE)
     -- DIRTY reset for the game.
     -- TODO: make sure GC cleans up all the games objects
     self.updateList = {}
@@ -79,7 +82,7 @@ return function(GameScene)
     self.tileSystem = TileSystem:new()
     self.spawnTiles = self.tileSystem:spawnBases()
     --instantiate a new player and their bases.
-    for id,isPlaying in pairs(self.joiningPlayers) do
+    for id,isPlaying in pairs(self.joinedPlayers) do
       if isPlaying then
         local player = Player:new(
           self.spawnTiles[id][1],

@@ -44,7 +44,7 @@ return function(StartScene)
 
   function StartScene:reset()
     Sounds.loop({SOUNDS.INTRO})
-    self.joiningPlayers = {}
+    self.joinedPlayers = {}
     self.rocks = {}
 
     local rockW = JoiningRock.static.WIDTH
@@ -54,11 +54,12 @@ return function(StartScene)
     local rockY = love.window.getHeight() / 2 + rockH / 2 + 80
 
     for id=1, MAX_PLAYERS do
-      self.joiningPlayers[id] = false
+      self.joinedPlayers[id] = false
+
+      -- Setup the position for the joining rocks
       local padding = (id - 1) * rockPadding
       local offset = id * rockW
       local rockX = rockStartX + padding + (rockW * (id - 1) + rockW/2)
-
       self.rocks[id] = JoiningRock:new(rockX, rockY, id)
     end
     self.textScale = 1
@@ -92,7 +93,7 @@ return function(StartScene)
     love.graphics.setColor(69, 64, 74, 255)
     Text.massive('WOAD TOADS', w / 2 - (limit / 2), yStart, limit, 'center')
 
-    if _.any(self.joiningPlayers) then
+    if _.any(self.joinedPlayers) then
       Text.huge('A to start', w / 2 - (limit / 2) * self.textScale, yStart + 250, limit, 'center', 0, self.textScale)
     end
 
@@ -121,8 +122,8 @@ return function(StartScene)
       local id = joystick:getID()
       -- Join the game!
       if input:pressed(INPUTS.JOIN_GAME, id) then
-        self.joiningPlayers[id] = not self.joiningPlayers[id]
-        if self.joiningPlayers[id] then
+        self.joinedPlayers[id] = not self.joinedPlayers[id]
+        if self.joinedPlayers[id] then
           print('Player ' .. joystick:getID() .. ' joined')
           self.rocks[id]:join()
         else
@@ -135,7 +136,7 @@ return function(StartScene)
     -- Player 1 starts the game
     -- Start the game!
     if input:pressed(INPUTS.START_GAME) then
-      if _.any(self.joiningPlayers) then
+      if _.any(self.joinedPlayers) then
         self:pushState(SCENES.GAME)
       end
     end
