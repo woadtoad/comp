@@ -52,17 +52,25 @@ return function(EndScene)
       for i, v in pairs(self.drawList) do
         self.drawList[i]:draw()
       end
-
-      love.graphics.setColor(20, 20, 20, 180)
-      love.graphics.rectangle('fill', l, t, w, h)
-
-      love.graphics.setColor(255, 255, 255, 255)
-      love.graphics.printf('END SCENE', w / 2, h / 2, 100, 'center')
-      for i=1,#self.bases do
-        love.graphics.printf("Player "..i.." Score: "..self.bases[i]:getcurrentPoints(), w / 2, h/2 + (10*i), 200, 'center')
-      end
     end
     )
+
+    local l = 0
+    local t = 0
+    local w = love.graphics.getWidth()
+    local h = love.graphics.getHeight()
+    local limit = 200
+
+    love.graphics.setColor(20, 20, 20, 180)
+    love.graphics.rectangle('fill', l, t, w, h)
+
+    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.printf('END SCENE', w / 2 - limit / 2, h / 2, limit, 'center')
+
+    local smh = h / 2 + 20
+    for i=1,#self.bases do
+      love.graphics.printf("Player "..i..":  "..self.bases[i]:getcurrentPoints(), w / 2 - limit / 2, smh + (20*i), limit, 'center')
+    end
   end
 
   function EndScene:ddraw()

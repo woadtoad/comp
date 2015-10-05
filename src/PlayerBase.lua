@@ -9,7 +9,6 @@ function PlayerBase:initialize(x,y,playerId,radius)
   self.theRadius = radius
   self.player = playerId
   self.collider = WorldManager.world:newCircleCollider(x,y,radius,{collision_class='Base'})
-  --self.collider.body:setActive(false)
   self.currentPoints = 0
 end
 
@@ -20,10 +19,6 @@ function PlayerBase:update(dt)
   if self.collider:exit('Pickup') then
     self.currentPoints = self.currentPoints - 1
   end
- --[[colliders = WorldManager.world:queryCircleArea(self.theX, self.theY, self.theRadius,{'Pickup'})
- for i,v in pairs(colliders) do
-    print("hehe")
-  end]]
 end
 
 function PlayerBase:getcurrentPoints()

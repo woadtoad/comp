@@ -235,28 +235,13 @@ function Player:initialize(x, y, scale, id, facing)
     }
   }
 
---[[
-  local PinkAnims = require('src.PinkAnims')
-  local GreenAnims = require('src.GreenAnims')
-  local OrangeAnims = require('src.OrangeAnims')
-  local BlueAnims = require('src.BlueAnims')
-]]
-  --print("does thi work,",PinkAnims['Idle'].framerate)
-
   local PinkAnims = require('src.PinkAnims')
   local GreenAnims = require('src.GreenAnims')
   local OrangeAnims = require('src.OrangeAnims')
   local BlueAnims = require('src.BlueAnims')
 
- -- self.sprite = TexMate:new(TEAMASSETS, playerAnims, "Idle" , nil, nil, 0, 30 + self.scale, nil, nil, self.spriteScale)
   if self.id == 1 then
-
-
-
-
-
     self.sprite = TexMate:new(PINKATLAS, PinkAnims, "Idle" , nil, nil, 0, 30 + self.scale, nil, nil, self.spriteScale)
-
   elseif self.id == 2 then
     self.sprite = TexMate:new(GREENATLAS,  GreenAnims, "Idle" , nil, nil, 0, 30 + self.scale, nil, nil, self.spriteScale)
   elseif self.id == 3 then
@@ -348,13 +333,11 @@ function Player:update(dt)
 
       if self.collider:enter('PlayerBody') then
         local a, collider = self.collider:enter('PlayerBody')
-       --print("STUNNERMATE")
 
         local velx,vely = collider.body:getLinearVelocity()
         local vec = Vector(velx,vely)
         local vel = vec:len()
 
-       -- print("vel",vel)
         if vel > self.Vars.FAT_STUN_AT_SPEED and collider.parent.fat then
 
           self:gotoState(STATE.STUN)
@@ -392,13 +375,13 @@ end
 
 --debug draww
 function Player:ddraw()
-  -- Print player name
+  -- Show player name
   local x, y = self.collider.body:getPosition()
   love.graphics.setColor(255, 255, 255, 100)
   love.graphics.printf('player '..self.id, x - (self.radius * self.scale), y-(50 * self.scale), self.radius * 2, 'center')
 
   if self:getStateStackDebugInfo()[1] then
-    -- Print player state
+    -- Show player state
     love.graphics.setColor(220, 20, 20, 180)
     love.graphics.printf(self:getStateStackDebugInfo()[1], x - (self.radius * self.scale), y-(60 * self.scale), self.radius * 2, 'center')
   end
@@ -432,10 +415,7 @@ function Player:input(input)
       end
     end
 
-    --print(input:pressed(INPUTS.JUMP))
-
     if input:pressed(INPUTS.JUMP, self.id) then
-      --print("inputJump")
       self:gotoState(STATE.JUMP)
     end
 
@@ -510,11 +490,8 @@ function Player:move(xd, yd)
       y = 0
     end
     self.collider.body:applyLinearImpulse(x, y, self.collider.body:getX(), self.collider.body:getY())
-      print("SPEEDING FINE")
-
   end
 
-  print(self.collider.body:getLinearVelocity())
 end
 
 function Player:stateInput(xd, yd)
@@ -583,10 +560,8 @@ function EatingPlayer:enteredState()
   self.timerj = 0.5
 
   linear = Vector(self.xd,self.yd)
-    --print("pre",linear.x,linear.y)
   linear:normalize_inplace()
 
-  --print(linear.x,linear.y)
   self.collider.body:applyLinearImpulse(linear.x*impulse,linear.y*impulse)
 
 end
@@ -606,7 +581,6 @@ function EatingPlayer:updateStates(dt)
       if self.collider:enter('Pickup') then
 
         local a, collider = self.collider:enter('Pickup')
-       -- pushingPlayer = pushingPlayer.parent
         self.fat = true
         self.transformDelay = 0.1
 
@@ -631,7 +605,6 @@ end
 local SlidingPlayer = Player:addState(STATE.SLIDE)
 function SlidingPlayer:enteredState()
   -- TODO: remove this when not using running anim
- -- self.sprite.animlist['Running'].framerate = Player.static.RUNNING_FPS
   if self.fat == false then
     self.sprite:changeAnim('Running')
   else
@@ -645,7 +618,6 @@ end
 local Transform = Player:addState(STATE.TRANSFORM)
 function Transform:enteredState()
   -- TODO: remove this when not using running anim
- -- self.sprite.animlist['Running'].framerate = Player.static.RUNNING_FPS
   self.canControl = false
   self.sprite:changeAnim('FatSpawn')
 
@@ -674,10 +646,6 @@ end
 local JumpingPlayer = Player:addState(STATE.JUMP)
 function JumpingPlayer:enteredState()
   self.canControl = false
-
-  --this should probably be the control vector not the current velocity
-  --local linear = Vector(self.collider.body:getLinearVelocity())
-
   local impulse = 1200
 
   if self.fat == false then
@@ -692,15 +660,12 @@ function JumpingPlayer:enteredState()
   linear = Vector(self.xd,self.yd)
   linear:normalize_inplace()
   self.collider.body:applyLinearImpulse(linear.x*impulse,linear.y*impulse)
-
-
 end
 
 function JumpingPlayer:updateStates(dt)
   self.timerj = self.timerj - 1 *dt
 
   if self.timerj < 0 then
-
     self:gotoState(STATE.LAND)
   end
 end
@@ -715,14 +680,11 @@ function StunState:enteredState()
     self.timerl = 0.86
     self.canControl = false
   else
-   -- self.sprite:changeAnim('FatLand')
-   -- self.timerl = 0.4
    --DO SPIT
   end
 end
 
 function StunState:updateStates(dt)
-  --print(self.timerj,"timer")
   self.timerl = self.timerl - 1 *dt
 
   if self.timerl < 0 then
@@ -743,11 +705,9 @@ function LandPlayer:enteredState()
     self.sprite:changeAnim('FatLand')
     self.timerl = 0.4
   end
-  --self.canControl = false
 end
 
 function LandPlayer:updateStates(dt)
-  --print(self.timerj,"timer")
   self.timerl = self.timerl - 1 *dt
 
   if self.timerl < 0 then
@@ -776,7 +736,6 @@ function FallingPlayer:updateStates(dt)
   if self.hasFallen then
     self.respawnTimer = self.respawnTimer - dt
     if self.respawnTimer < 0 then
-      print('Respawning player')
       self.hasFallen = false
       self.collider.body:setPosition(self.spawnX + self.radius, self.spawnY)
       self:gotoState(STATE.SPAWNING)

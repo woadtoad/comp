@@ -158,12 +158,26 @@ return function(GameScene)
       end
       --need to put this in draw list.
       self.Effects:draw()
-
-      if love.joystick.getJoystickCount() < 1 then
-        love.graphics.printf('NO PLAYERS DETECTED', w / 2 - 50, 50, 100, 'center')
-      end
     end
     )
+
+    local l = 0
+    local t = 0
+    local w = love.graphics.getWidth()
+    local h = love.graphics.getHeight()
+    local limit = 200
+
+    -- Draw ui box
+    love.graphics.setColor(20, 20, 20, 150)
+    love.graphics.rectangle('fill', w / 2 - limit / 2, 50 / 2 + 10, limit, 40)
+
+    if love.joystick.getJoystickCount() < 1 then
+      love.graphics.printf('NO PLAYERS DETECTED', w / 2 - limit / 2, 50, limit, 'center')
+    else
+      --draw the timer
+      love.graphics.setColor(255, 255, 255, 255)
+      love.graphics.printf('Time: '..string.format("%.0f",self.maxTime - self.timer), w / 2 - limit / 2, 50, limit, 'center')
+    end
   end
 
   function GameScene:ddraw()
@@ -173,10 +187,6 @@ return function(GameScene)
       WorldManager.world:draw()
 
       self:drawDebugPoints()
-
-      --draw the timer
-      love.graphics.setColor(255, 255, 255, 100)
-      love.graphics.printf('Time: '..string.format("%.0f",self.timer), 650, 50, 50, 'center')
 
       for k,player in pairs(self.players) do
         player:ddraw()
@@ -204,11 +214,13 @@ return function(GameScene)
   function GameScene:keypressed(key, isrepeat)
 
     --Test stuff
-    if key == "g" then
-      SceneManager:gotoState(SCENES.GAME)
-    elseif key =="m" then
-      SceneManager:gotoState(SCENES.MENU)
+    if key == "q" then
+      SceneManager:gotoState(SCENES.START)
+    elseif key =="w" then
+      self:pushState(SCENES.PAUSE)
     elseif key =="e" then
+      SceneManager:gotoState(SCENES.GAME)
+    elseif key =="r" then
       self:pushState(SCENES.END)
     end
 
@@ -220,7 +232,6 @@ return function(GameScene)
     end
 
     if key == "s" then
-      print("anim")
       self.Effects:makeEffect("Splash",self.TileTest.Tiles[6][10]:getLoc())
     end
   end
