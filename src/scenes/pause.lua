@@ -61,7 +61,7 @@ return function(PauseScene)
     local h = love.graphics.getHeight()
     local limit = 200
 
-    love.graphics.setColor(20, 120, 20, 80)
+    love.graphics.setColor(20, 90, 40, 180)
     love.graphics.rectangle('fill', l, t, l+w, l+h)
 
     love.graphics.setColor(255, 255, 255, 255)

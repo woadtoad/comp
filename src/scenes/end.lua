@@ -65,9 +65,9 @@ return function(EndScene)
     love.graphics.rectangle('fill', l, t, w, h)
 
     love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.printf('END SCENE', w / 2 - limit / 2, h / 2, limit, 'center')
+    love.graphics.printf('END SCENE', w / 2 - limit / 2, 50, limit, 'center')
 
-    local smh = h / 2 + 20
+    local smh = 50 + 20
     for i=1,#self.bases do
       love.graphics.printf("Player "..i..":  "..self.bases[i]:getcurrentPoints(), w / 2 - limit / 2, smh + (20*i), limit, 'center')
     end
