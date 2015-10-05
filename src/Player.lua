@@ -249,7 +249,7 @@ function Player:initialize(x, y, scale, id, facing)
     self.sprite = TexMate:new(GREENATLAS,  GreenAnims, "Idle" , nil, nil, 0, 30 + self.scale, nil, nil, self.spriteScale)
   elseif self.id == 3 then
     self.sprite = TexMate:new(ORANGEATLAS,  OrangeAnims, "Idle" , nil, nil, 0, 30 + self.scale, nil, nil, self.spriteScale)
-  else
+  elseif self.id == 4 then
     self.sprite = TexMate:new(BLUEATLAS,  BlueAnims, "Idle" , nil, nil, 0, 30 + self.scale, nil, nil, self.spriteScale)
   end
 

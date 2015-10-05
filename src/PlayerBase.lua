@@ -1,8 +1,6 @@
 local PlayerBase = class('PlayerBase')
 local WorldManager = require('src.WorldManager')
 
-local theX,theY,theRadius,player
-
 function PlayerBase:initialize(x,y,playerId,radius)
   self.theX = x
   self.theY = y

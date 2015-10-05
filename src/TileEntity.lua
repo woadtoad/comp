@@ -5,7 +5,7 @@ local PLAYER_STATES = require('src.Player').static.STATES
 local Camera = require('src.Camera')
 local TexMateStatic = require("texmate.TexMateStatic")
 
-local Tile = class('Tile')
+local Tile = class('TileEntity')
 Tile:include(require('stateful'))
 
 Tile.static.PLAYER_DAMAGE_INTERVAL = 0.25
@@ -38,6 +38,34 @@ function Tile:initialize (x,y,i,v,scale,filled,typetile)
   anims["Spawn"] = {
     framerate = 8,
     frames = {TexMate:frameCounter("icetile2/TileRespawn_",0,10,4)}
+  }
+
+  anims["Player1Base"] = {
+    framerate = 8,
+    frames = {
+      "goals/TileStatue_0002"
+    }
+  }
+
+  anims["Player2Base"] = {
+    framerate = 8,
+    frames = {
+      "goals/TileStatue_0001"
+    }
+  }
+
+  anims["Player3Base"] = {
+    framerate = 8,
+    frames = {
+      "goals/TileStone_0000"
+    }
+  }
+
+  anims["Player4Base"] = {
+    framerate = 8,
+    frames = {
+      "goals/TileStatue_0003"
+    }
   }
 
   anims["Stone1"] = {
@@ -303,7 +331,12 @@ function Tile:updateShake(dt)
   self.sprite:changeLoc(self.x + randx, self.y + randy)
 end
 
+function Tile:addPlayerBase(id)
+  self.playerId = id
+  self:gotoState('PlayerBase')
+end
 
+--------------------------------------------------------
 
 local Empty = Tile:addState('Empty')
 
@@ -326,6 +359,16 @@ function Stone:enteredState(dt)
 end
 
 function Stone:updateStates(dt)
+  self.sprite:update(dt)
+end
+
+local PlayerBase = Tile:addState('PlayerBase')
+
+function PlayerBase:enteredState(dt)
+    self.sprite:changeAnim("Player"..self.playerId..'Base')
+end
+
+function PlayerBase:updateStates(dt)
   self.sprite:update(dt)
 end
 ------------------------------------------------------------------------------

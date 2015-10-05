@@ -19,10 +19,10 @@ function TileSystem:initialize ()
     self.newTileMap[i] = _.slice(TileMap.layers[1].data, s, e)
   end
 
-  self.Tiles = {}
+  self.tiles = {}
   self.scale = 0.6
   for i=1, self.mapWidth do
-    self.Tiles[i] = {}
+    self.tiles[i] = {}
     for v=1, self.mapHeight do
       self.isTileFilled = false
       local offset = 0
@@ -33,20 +33,21 @@ function TileSystem:initialize ()
           self.isTileFilled = true
         end
 
+        local newTile = Tile:new(
+          ( 128*self.scale)*v+offset*self.scale,
+          (self.scale*110)*i,
+          i,
+          v,
+          self.scale,
+          self.isTileFilled,
+          self.newTileMap[i][v]
+        )
         table.insert(
-          self.Tiles[i],
-          Tile:new(( 128*self.scale)*v+offset*self.scale,
-          (
-            self.scale*110)*i,
-            i,
-            v,
-            self.scale,
-            self.isTileFilled,
-            self.newTileMap[i][v]
-          )
+          self.tiles[i],
+          newTile
         )
         if self.newTileMap[i][v] == 3 then
-          table.insert(self.spawnTable,{i,v})
+          table.insert(self.spawnTable,{i,v,newTile})
         end
         if self.newTileMap[i][v] == 1 then
           table.insert(self.viableTable,{i,v})
@@ -58,9 +59,9 @@ end
 
 function TileSystem:draw()
   --Tiles need the table drawn backwards so that overlapping looks correct
-  for i=1,#self.Tiles do
-    for v=1,#self.Tiles[i] do
-      self.Tiles[i][v]:draw()
+  for i=1,#self.tiles do
+    for v=1,#self.tiles[i] do
+      self.tiles[i][v]:draw()
     end
   end
 
@@ -68,9 +69,9 @@ end
 
 function TileSystem:update(dt)
 
-  for i=1,#self.Tiles do
-    for v=1,#self.Tiles[i] do
-      self.Tiles[i][v]:update(dt)
+  for i=1,#self.tiles do
+    for v=1,#self.tiles[i] do
+      self.tiles[i][v]:update(dt)
     end
   end
 end
@@ -80,25 +81,29 @@ function TileSystem:viableBuffet()
   local viableXandY = {}
 
   for i=1,#self.viableTable do
-    local x,y = self.Tiles[self.viableTable[i][1]][self.viableTable[i][2]]:getLoc()
+    local x,y = self.tiles[self.viableTable[i][1]][self.viableTable[i][2]]:getLoc()
     table.insert(viableXandY,{x,y})
   end
   return viableXandY
 end
 
-function TileSystem:spawnBuffet()
+function TileSystem:spawnBases()
   local spawnXandY = {}
 
   for i=1,#self.spawnTable do
-    local x,y = self.Tiles[self.spawnTable[i][1]][self.spawnTable[i][2]]:getLoc()
+    local x,y = self.tiles[self.spawnTable[i][1]][self.spawnTable[i][2]]:getLoc()
     table.insert(spawnXandY,{x,y})
   end
 
   return spawnXandY
 end
 
+function TileSystem:getBaseTiles()
+  return self.spawnTable
+end
+
 function TileSystem:toWorld(x,y)
-  return self.Tiles[x][y]:getLoc()
+  return self.tiles[x][y]:getLoc()
 end
 
 return TileSystem

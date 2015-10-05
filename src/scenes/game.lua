@@ -1,15 +1,15 @@
 local SceneManager = require('src.SceneManager')
-local SCENES = require('src.config.SCENES')
-local hxdx = require("hxdx")
+local SCENES       = require('src.config.SCENES')
+local hxdx         = require("hxdx")
 local WorldManager = require('src.WorldManager')
-local Camera = require('src.Camera')
-local Sounds = require('src.Sound')
-local Player = require('src.Player')
-local Tile = require('src.TileEntity')
-local ThePickup = require('src.Pickup')
-local TileSystem = require('src.TileSystem')
-local Effects = require('src.Effects')
-local PlayerBase = require('src.PlayerBase')
+local Camera       = require('src.Camera')
+local Sounds       = require('src.Sound')
+local Player       = require('src.Player')
+local Tile         = require('src.TileEntity')
+local ThePickup    = require('src.Pickup')
+local TileSystem   = require('src.TileSystem')
+local Effects      = require('src.Effects')
+local PlayerBase   = require('src.PlayerBase')
 
 local CAMERA_SCALE = 0.8
 
@@ -74,27 +74,28 @@ return function(GameScene)
     self.bases = {}
     self.players = {}
 
-    self.TileTest = TileSystem:new()
-    self.spawnTiles = self.TileTest:spawnBuffet()
+    self.tileSystem = TileSystem:new()
+    self.spawnTiles = self.tileSystem:spawnBases()
     --instantiate a new player and their bases.
     for i,joystick in pairs(love.joystick.getJoysticks()) do
       local id = joystick:getID()
       local player = Player:new(
-      self.spawnTiles[id][1],
-      self.spawnTiles[id][2],
-      1,
-      id
+        self.spawnTiles[id][1],
+        self.spawnTiles[id][2],
+        1,
+        id
       )
 
       table.insert(self.players, player)
 
       -- generate a base for each player
       local base = PlayerBase:new(
-        self.spawnTiles[id][1],
-        self.spawnTiles[id][2],
-        id,
-        100
+          self.spawnTiles[id][1],
+          self.spawnTiles[id][2],
+          id,
+          100
       )
+      self.tileSystem:getBaseTiles()[id][3]:addPlayerBase(id)
       table.insert(self.bases, base)
     end
 
@@ -109,8 +110,7 @@ return function(GameScene)
 
     -- UPDATE list
     table.insert(self.updateList,Camera)
-    table.insert(self.updateList,self.TileTest)
-    table.insert(self.updateList, self.BaseTest)
+    table.insert(self.updateList,self.tileSystem)
     for i, base in ipairs(self.bases) do
       table.insert(self.updateList, base)
     end
@@ -120,8 +120,7 @@ return function(GameScene)
 
     -- DRAW list
     table.insert(self.drawList,Camera)
-    table.insert(self.drawList,self.TileTest)
-    table.insert(self.drawList, self.BaseTest)
+    table.insert(self.drawList,self.tileSystem)
     for i, base in ipairs(self.bases) do
       table.insert(self.drawList, base)
     end
@@ -232,7 +231,7 @@ return function(GameScene)
     end
 
     if key == "s" then
-      self.Effects:makeEffect("Splash",self.TileTest.Tiles[6][10]:getLoc())
+      self.Effects:makeEffect("Splash",self.tileSystem.Tiles[6][10]:getLoc())
     end
   end
 
@@ -280,7 +279,7 @@ return function(GameScene)
     -- decrement the pickup timer
     self.thePickupTimer = self.thePickupTimer - dt
     if self.thePickupTimer <=0 then
-      self.viableTiles = self.TileTest:viableBuffet()
+      self.viableTiles = self.tileSystem:viableBuffet()
       self.theRandom = love.math.random(1,#self.viableTiles)
       self.theTile = {}
       self.theTile.x = self.viableTiles[self.theRandom][1]
