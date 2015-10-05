@@ -4,7 +4,7 @@ local EffectsPool = class('effectsPool')
 
 function EffectsPool:initialize()
   animlist = {TexMate:frameCounter("Explosion",1,26,3,".png")}
-  self.sprite = TexMate:new(PROTOTYPEASSETS,explosion)
+  self.sprite = TexMate:new(TEAMASSETS,explosion)
   self.addEffect("explosion",self.sprite)
   self.activeEffects = {self.sprite}
 end

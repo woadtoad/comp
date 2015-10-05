@@ -11,7 +11,8 @@ INPUTS = {
   -- Menuish inputs
   PAUSE = 'pause',
   UNPAUSE = 'unpause',
-  JOIN = 'join',
+  JOIN_GAME = 'join',
+  START_GAME = 'startgame',
   NEW_GAME = 'newgame',
   RESTART = 'restart',
 
@@ -42,8 +43,9 @@ return function(input)
   input:bind('back', INPUTS.RESTART)
   input:bind('start', INPUTS.PAUSE)
   input:bind('start', INPUTS.UNPAUSE)
+  input:bind('fdown', INPUTS.START_GAME)
   input:bind('start', INPUTS.NEW_GAME)
-  input:bind('fdown', INPUTS.JOIN)
+  input:bind('start', INPUTS.JOIN_GAME)
 
   -- Debugging
   input:bind('dpdown', INPUTS.ZOOM_OUT)

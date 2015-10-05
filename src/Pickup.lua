@@ -19,7 +19,7 @@ function Pickup:initialize(x,y)
   self.shadowOffsetY = 215
   self.foodScale = 0.6
   self.spawningFrames = {
-    Falling = {
+    Spawning = {
       framerate = 14,
       frames = {
         "food/Droplet_0000"
@@ -32,7 +32,7 @@ function Pickup:initialize(x,y)
       }
     }
   }
-  self.sprite = TexMate:new(TEAMASSETS, self.spawningFrames, "Falling" , 0, 0, 0, 0, 0, false, self.foodScale * 1.2, self.foodScale * 1.2)
+  self.sprite = TexMate:new(TEAMASSETS, self.spawningFrames, "Spawning" , 0, 0, 0, 0, 0, false, self.foodScale * 1.2, self.foodScale * 1.2)
 
   self.sprite.endCallback['Bursting'] = function()
     self:gotoState('Active')
@@ -100,7 +100,7 @@ end
 
 local PickupSpawning = Pickup:addState('Spawning')
 function PickupSpawning:enteredState()
-  self.sprite:changeAnim('Falling')
+  self.sprite:changeAnim('Spawning')
 end
 
 function PickupSpawning:update(dt)
