@@ -78,26 +78,27 @@ return function(GameScene)
     self.tileSystem = TileSystem:new()
     self.spawnTiles = self.tileSystem:spawnBases()
     --instantiate a new player and their bases.
-    for i,joystick in pairs(love.joystick.getJoysticks()) do
-      local id = joystick:getID()
-      local player = Player:new(
-        self.spawnTiles[id][1],
-        self.spawnTiles[id][2],
-        1,
-        id
-      )
-
-      table.insert(self.players, player)
-
-      -- generate a base for each player
-      local base = PlayerBase:new(
+    for id,isPlaying in pairs(self.joiningPlayers) do
+      if isPlaying then
+        local player = Player:new(
           self.spawnTiles[id][1],
           self.spawnTiles[id][2],
-          id,
-          100
-      )
-      self.tileSystem:getBaseTiles()[id][3]:addPlayerBase(id)
-      table.insert(self.bases, base)
+          1,
+          id
+        )
+
+        table.insert(self.players, player)
+
+        -- generate a base for each player
+        local base = PlayerBase:new(
+            self.spawnTiles[id][1],
+            self.spawnTiles[id][2],
+            id,
+            100
+        )
+        self.tileSystem:getBaseTiles()[id][3]:addPlayerBase(id)
+        table.insert(self.bases, base)
+      end
     end
 
     -- create a pool of pickups

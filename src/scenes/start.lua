@@ -77,10 +77,11 @@ return function(StartScene)
     love.graphics.setColor(20, 120, 20, 120)
     love.graphics.rectangle('fill', 0, 0, w, h)
 
+    -- Text.huge('START SCREEN', w / 2 - (limit / 2), yStart, limit, 'center')
+    if _.any(self.joiningPlayers) then
     love.graphics.setColor(255, 255, 255, 255)
-    Text.huge('START SCREEN', w / 2 - (limit / 2), yStart, limit, 'center')
-    Text.huge('START to join', w / 2 - (limit / 2), yStart + 200, limit, 'center')
-    Text.huge('A to start', w / 2 - (limit / 2), yStart + 250, limit, 'center')
+      Text.huge('A to start', w / 2 - (limit / 2), yStart + 250, limit, 'center')
+    end
 
     for k,rock in pairs(self.rocks) do
       rock:draw()
@@ -121,7 +122,9 @@ return function(StartScene)
     -- Player 1 starts the game
     -- Start the game!
     if input:pressed(INPUTS.START_GAME) then
-      self:pushState(SCENES.GAME)
+      if _.any(self.joiningPlayers) then
+        self:pushState(SCENES.GAME)
+      end
     end
   end
 

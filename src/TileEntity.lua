@@ -51,7 +51,7 @@ function Tile:initialize (x,y,i,v,scale,filled,typetile)
   anims["Player2Base"] = {
     framerate = 8,
     frames = {
-      "goals/GreenGoal_0000"
+      "goals/GeenGoal_0000"
     }
   }
 
