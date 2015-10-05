@@ -58,8 +58,11 @@ Player.Vars = {
 
   RESPAWN_TIME = 2,
 
-  FAT_MASS = 2.5,
+  FAT_MASS = 2,
   SKINNY_MASS = 1,
+
+  FAT_MASS_JUMP = 2.5,
+  SKINNY_MASS_JUMP = 2,
 
 
 

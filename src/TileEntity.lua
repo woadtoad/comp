@@ -19,7 +19,7 @@ Tile.static.TILE_TYPES = {
 
 function Tile:initialize (x,y,i,v,scale,filled,typetile)
   self.filled = filled
-  self.resetTime = 25
+  self.resetTime = 40
   self.type = typetile
   if filled == false then
     self.type = Tile.static.TILE_TYPES.NONE
@@ -264,9 +264,9 @@ function Tile:addPlayerAsDamager(player)
   })
   if player.instantDamage then
     if player.fat == true then
-      self:damage(player.Vars.FAT_MASS)
+      self:damage(player.Vars.FAT_MASS_JUMP)
     else
-      self:damage(player.Vars.SKINNY_MASS)
+      self:damage(player.Vars.SKINNY_MASS_JUMP)
     end
   end
 end
@@ -293,7 +293,11 @@ function Tile:applyPlayerDamages(dt)
         conf.tick = 0
 
         -- if conf.player:isMoving() then
-          self:damage(conf.player.damageWeight)
+        if conf.player.fat == false then
+          self:damage(conf.player.Vars.SKINNY_MASS)
+        else
+          self:damage(conf.player.Vars.FAT_MASS)
+        end
         -- end
       end
     end
@@ -353,6 +357,10 @@ function Empty:updateStates(dt)
     if player:getStateStackDebugInfo()[1] ~= PLAYER_STATES.FALL then
       player:gotoState(PLAYER_STATES.FALL)
     end
+  end
+
+  if self.collider:enter('Pickup') then
+    print("pickup fall")
   end
 end
 
