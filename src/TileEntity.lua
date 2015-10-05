@@ -44,28 +44,28 @@ function Tile:initialize (x,y,i,v,scale,filled,typetile)
   anims["Player1Base"] = {
     framerate = 8,
     frames = {
-      "goals/TileStatue_0002"
+      "goals/PinkGoal_0000"
     }
   }
 
   anims["Player2Base"] = {
     framerate = 8,
     frames = {
-      "goals/TileStatue_0001"
+      "goals/GreenGoal_0000"
     }
   }
 
   anims["Player3Base"] = {
     framerate = 8,
     frames = {
-      "goals/TileStone_0000"
+      "goals/OrangeGoal_0000"
     }
   }
 
   anims["Player4Base"] = {
     framerate = 8,
     frames = {
-      "goals/TileStatue_0003"
+      "goals/BlueGoal_0000"
     }
   }
 
