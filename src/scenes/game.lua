@@ -177,8 +177,10 @@ return function(GameScene)
 
       --draw the timer
       love.graphics.setColor(255, 255, 255, 220)
-      Text.large('Time Remaining '..string.format("%.0f",self.maxTime - self.timer), w / 2 - limit / 2, 50, limit, 'center')
+      Text.large('Time Remaining\n'..string.format("%.0f",self.maxTime - self.timer), w / 2 - limit / 2, 50, limit, 'center')
     end
+
+    self:drawScores()
   end
 
   function GameScene:ddraw()
@@ -196,6 +198,35 @@ return function(GameScene)
       end
     end
     )
+  end
+
+  function GameScene:drawScores()
+    for k,base in pairs(self.bases) do
+      local width = 80
+      local height = 100
+      local x = 0
+      local y = 0
+      local score = base:getcurrentPoints()
+      if base:getCurrentPlayer() == 1 then
+        score = 'P1\n' .. score
+      elseif base:getCurrentPlayer() == 2 then
+        x = love.graphics.getWidth() - width
+        score = 'P2\n' .. score
+      elseif base:getCurrentPlayer() == 3 then
+        y = love.graphics.getHeight() - height
+        score = score .. '\nP3'
+      elseif base:getCurrentPlayer() == 4 then
+        x = love.graphics.getWidth() - width
+        y = love.graphics.getHeight() - height
+        score = score .. '\nP4'
+      end
+
+      love.graphics.setColor(20, 20, 20, 40)
+      love.graphics.rectangle('fill', x, y, width, height)
+
+      love.graphics.setColor(255, 255, 255, 220)
+      Text.large(score, x, y + 20 / 2, width, 'center')
+    end
   end
 
   function GameScene:drawDebugPoints()

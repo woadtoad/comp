@@ -1,5 +1,6 @@
 local PlayerBase = class('PlayerBase')
 local WorldManager = require('src.WorldManager')
+local Text = require('src.Text')
 
 function PlayerBase:initialize(x,y,playerId,radius)
   self.theX = x
@@ -28,8 +29,6 @@ function PlayerBase:getCurrentPlayer()
 end
 
 function PlayerBase:draw()
-  love.graphics.setColor(255, 255, 255, 100)
-  -- love.graphics.printf('points '..self.currentPoints, self.theX,self.theY - 10, 20, 'center')
 end
 
 return PlayerBase
