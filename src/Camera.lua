@@ -74,17 +74,17 @@ function Camera:update(dt)
 end
 
 function Camera:follow(positions)
-  self.targetX, self.targetY = 0,0
+  local targetX, targetY = 0,0
   local prevX, prevY = self.parent:getPosition()
   for i, v in pairs(positions) do
-    self.targetX = self.targetX + positions[i][1]
-    self.targetY = self.targetY + positions[i][2]
+    targetX = targetX + positions[i][1]
+    targetY = targetY + positions[i][2]
   end
-  self.targetX = self.targetX / #positions
-  self.targetY = self.targetY / #positions
-  self.targetX = _.lerp(self.targetX, prevX, self.lerpAmt)
-  self.targetY = _.lerp(self.targetY, prevY, self.lerpAmt)
-  self.parent:setPosition(self.targetX, self.targetY)
+  targetX = targetX / #positions
+  targetY = targetY / #positions
+  targetX = _.lerp(targetX, prevX, self.lerpAmt)
+  targetY = _.lerp(targetY, prevY, self.lerpAmt)
+  self.parent:setPosition(targetX, targetY)
 end
 
 function Camera:draw()
