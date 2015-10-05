@@ -100,15 +100,30 @@ function JoiningRock:initialize(x, y, playerId)
 
   self.hasJoined = false
   self.changeToadTimer = 0
+
+  self.rockRot = 0
+  self.rockRotVariation = 4
+  self.rockRotLimit = self.rockRotVariation
 end
 
 function JoiningRock:update(dt)
+  local ceil = 0 + self.rockRotVariation - 0.1
+  local floor = 0 - self.rockRotVariation + 0.1
+  if self.rockRot > ceil then
+    self.rockRotLimit = 0-self.rockRotVariation
+  elseif self.rockRot < floor then
+    self.rockRotLimit = 0+self.rockRotVariation
+  end
+  self.rockRot = _.smooth(self.rockRot, self.rockRotLimit, dt*10)
+
   self.toadSprite:update(dt)
   self.toadSprite:changeLoc(self.x,self.y + 65)
   if not self.hasJoined then
     self.rockSprite:update(dt)
     self.rockSprite:changeLoc(self.x,self.y)
+    self.rockSprite:changeLoc(self.x,self.y)
   end
+  self.rockSprite:changeRot(self.rockRot)
 end
 
 function JoiningRock:draw()

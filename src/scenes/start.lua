@@ -49,7 +49,7 @@ return function(StartScene)
 
     local rockW = JoiningRock.static.WIDTH
     local rockH = JoiningRock.static.HEIGHT
-    local rockPadding = 20
+    local rockPadding = 80
     local rockStartX = (love.graphics.getWidth() / 2) - (rockW * 2) - (rockPadding + rockPadding / 2)
     local rockY = love.window.getHeight() / 2 + rockH / 2 + 80
 
@@ -62,8 +62,7 @@ return function(StartScene)
       self.rocks[id] = JoiningRock:new(rockX, rockY, id)
     end
     self.textScale = 1
-    self.textDir = true
-    self.v = 1.3
+    self.textScaleLimit = 1.3
   end
 
   function StartScene:update(dt)
@@ -71,14 +70,12 @@ return function(StartScene)
     local ceil = 1 + vari - 0.02
     local floor = 1 - vari + 0.02
     if self.textScale > ceil then
-      self.textDir = false
-      self.v = 1-vari
+      self.textScaleLimit = 1-vari
     elseif self.textScale < floor then
-      self.textDir = true
-      self.v = 1+vari
+      self.textScaleLimit = 1+vari
     end
 
-    self.textScale = _.smooth(self.textScale, self.v, dt*9)
+    self.textScale = _.smooth(self.textScale, self.textScaleLimit, dt*9)
     for k,rock in pairs(self.rocks) do
       rock:update(dt)
     end
