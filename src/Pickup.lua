@@ -6,6 +6,7 @@ local Pickup = class('Pickup')
 local TexMateStatic = require("texmate.TexMateStatic")
 Pickup:include(require('stateful'))
 local Vector = require('hump.vector')
+local Effects = require('src.Effects')
 
 local MAX_SPAWN_HEIGHT = 50
 
@@ -35,6 +36,7 @@ function Pickup:initialize(x,y)
 
   self.sprite.endCallback['Bursting'] = function()
     self:gotoState('Active')
+    self.sprite:pause()
   end
 
   self.frames = {
@@ -129,6 +131,7 @@ function PickupBursting:draw()
 end
 
 
+
 local PickupActive = Pickup:addState('Active')
 function PickupActive:enteredState()
 end
@@ -158,8 +161,6 @@ end
 
 local Falling = Pickup:addState('Falling')
 function Falling:enteredState()
-  print("falling")
-
   self.fallt = 1
 
   self.collider.body:setActive(false)
@@ -177,12 +178,14 @@ end
 function Falling:update(dt)
   self.sprite:update(dt)
 
-  print(self.fallt)
+
   --timer to control the falling.
-  self.fallt = self.fallt - 1 *dt
+  self.fallt = self.fallt - 4 *dt
 
 
   local fall = _.smooth(100,0,self.fallt)
+
+  print("fall",fall)
 
   -- TODO: attempt at scaling the food when it is created
   if self.activeScale < self.foodScale then
@@ -195,12 +198,12 @@ function Falling:update(dt)
   self.frames[self.food]:changeRot(math.deg(self.collider.body:getAngle()))
   --self.shadow:changeLoc(self.collider.body:getX(),self.collider.body:getY())
   --self.shadow:changeRot(math.deg(self.collider.body:getAngle()))
+  if self.fallt < 0.5 then
+      self:gotoState("Active")
+      self:deactivate()
+      Effects:makeEffect("Splash",self.collider.body:getX(),self.collider.body:getY()+fall)
+  end
 
-end
-
-
-function Falling:exitedState()
-  print("exiting state",self:getStateStackDebugInfo()[1])
 end
 
 return Pickup
