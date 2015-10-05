@@ -146,8 +146,8 @@ function PickupActive:update(dt)
     local tileType = tile.parent:getStateStackDebugInfo()[1]
     local tileType2 = tile2.parent:getStateStackDebugInfo()[1]
 
-    print(tileType,tileType2)
-    self:gotoState('Falling')
+  --  print(tileType,tileType2)
+ --   self:gotoState('Falling')
 
   end
   if b and not a then
