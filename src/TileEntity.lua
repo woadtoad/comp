@@ -162,6 +162,8 @@ function Tile:initialize (x,y,i,v,scale,filled,typetile)
   end
 
   if self.type >= Tile.static.TILE_TYPES.STATUES then
+
+    self.collider:changeCollisionClass('Statue')
     self:gotoState("Statue")
 
   end

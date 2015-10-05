@@ -39,6 +39,13 @@ local COLLISION_CLASSES = {
       ignores = {"All"},
     }
   },
+
+    {
+    name = "Statue",
+    config = {
+      --ignores = {"All"},
+    }
+  },
 }
 
 return function(world)
