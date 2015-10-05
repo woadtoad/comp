@@ -3,6 +3,7 @@ local TexMate = require("texmate.TexMate")
 local WorldManager = require('src.WorldManager')
 local PLAYER_STATES = require('src.Player').static.STATES
 local Camera = require('src.Camera')
+local Text = require('src.Text')
 local TexMateStatic = require("texmate.TexMateStatic")
 
 local Tile = class('TileEntity')
@@ -215,15 +216,14 @@ end
 
 function Tile:draw()
   if self.filled and self.type >= 1 then
-
     self.sprite:draw()
-
-    if DEBUG.MODE == DEBUG.MODES.SHOW_GAME_AND_COLLISION or DEBUG.MODE == DEBUG.MODES.SHOW_ONLY_COLLISION then
-      love.graphics.setColor(0,0,0,255) --Add this line
-      love.graphics.print(self.xcoor..","..self.ycoor,self.x-20,self.y-20)
-      love.graphics.setColor(255,255,255,255) --Add this line
-    end
   end
+end
+
+function Tile:ddraw()
+    local limit = 100
+    love.graphics.setColor(0, 0, 0, 255) --Add this line
+    Text.debug(self.xcoor..","..self.ycoor, self.x - limit / 2, self.y - 10, limit, 'center')
 end
 
 function Tile:update(dt)
@@ -305,7 +305,7 @@ function Tile:getLoc()
 end
 
 function Tile:showText(text)
-  
+
 end
 
 function Tile:shaker(magnitude, time)

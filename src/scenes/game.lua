@@ -4,6 +4,7 @@ local hxdx         = require("hxdx")
 local WorldManager = require('src.WorldManager')
 local Camera       = require('src.Camera')
 local Sounds       = require('src.Sound')
+local Text         = require('src.Text')
 local Player       = require('src.Player')
 local Tile         = require('src.TileEntity')
 local ThePickup    = require('src.Pickup')
@@ -164,18 +165,19 @@ return function(GameScene)
     local t = 0
     local w = love.graphics.getWidth()
     local h = love.graphics.getHeight()
-    local limit = 200
-
-    -- Draw ui box
-    love.graphics.setColor(20, 20, 20, 150)
-    love.graphics.rectangle('fill', w / 2 - limit / 2, 50 / 2 + 10, limit, 40)
 
     if love.joystick.getJoystickCount() < 1 then
-      love.graphics.printf('NO PLAYERS DETECTED', w / 2 - limit / 2, 50, limit, 'center')
+      local limit = 400
+      Text.large('NO PLAYERS DETECTED', w / 2 - limit / 2, 50, limit, 'center')
     else
+      local limit = 250
+      -- Draw ui box
+      love.graphics.setColor(20, 20, 20, 40)
+      love.graphics.rectangle('fill', w / 2 - limit / 2, 50 / 2 + 10, limit, 105)
+
       --draw the timer
-      love.graphics.setColor(255, 255, 255, 255)
-      love.graphics.printf('Time: '..string.format("%.0f",self.maxTime - self.timer), w / 2 - limit / 2, 50, limit, 'center')
+      love.graphics.setColor(255, 255, 255, 220)
+      Text.large('Time Remaining '..string.format("%.0f",self.maxTime - self.timer), w / 2 - limit / 2, 50, limit, 'center')
     end
   end
 
@@ -186,6 +188,8 @@ return function(GameScene)
       WorldManager.world:draw()
 
       self:drawDebugPoints()
+
+      self.tileSystem:ddraw()
 
       for k,player in pairs(self.players) do
         player:ddraw()

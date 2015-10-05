@@ -67,6 +67,16 @@ function TileSystem:draw()
 
 end
 
+function TileSystem:ddraw()
+  --Tiles need the table drawn backwards so that overlapping looks correct
+  for i=1,#self.tiles do
+    for v=1,#self.tiles[i] do
+      self.tiles[i][v]:ddraw()
+    end
+  end
+
+end
+
 function TileSystem:update(dt)
 
   for i=1,#self.tiles do

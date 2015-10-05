@@ -29,7 +29,7 @@ end
 
 function PlayerBase:draw()
   love.graphics.setColor(255, 255, 255, 100)
-  love.graphics.printf('points '..self.currentPoints, self.theX,self.theY - 10, 20, 'center')
+  -- love.graphics.printf('points '..self.currentPoints, self.theX,self.theY - 10, 20, 'center')
 end
 
 return PlayerBase

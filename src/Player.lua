@@ -3,6 +3,7 @@ local Vector = require('hump.vector')
 local SCENES = require('src.config.SCENES')
 local SceneManager = require('src.SceneManager')
 local Input = require('src.Input')
+local Text = require('src.Text')
 local WorldManager = require('src.WorldManager')
 local Effects = require('src.Effects')
 
@@ -275,12 +276,12 @@ function Player:ddraw()
   -- Show player name
   local x, y = self.collider.body:getPosition()
   love.graphics.setColor(255, 255, 255, 100)
-  love.graphics.printf('player '..self.id, x - (self.radius * self.scale), y-(50 * self.scale), self.radius * 2, 'center')
+  Text.debug('player '..self.id, x - (self.radius * self.scale), y-(50 * self.scale), self.radius * 2, 'center')
 
   if self:getStateStackDebugInfo()[1] then
     -- Show player state
     love.graphics.setColor(220, 20, 20, 180)
-    love.graphics.printf(self:getStateStackDebugInfo()[1], x - (self.radius * self.scale), y-(60 * self.scale), self.radius * 2, 'center')
+    Text.debug(self:getStateStackDebugInfo()[1], x - (self.radius * self.scale), y-(60 * self.scale), self.radius * 2, 'center')
   end
 end
 

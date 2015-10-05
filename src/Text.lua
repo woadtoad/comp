@@ -16,6 +16,7 @@ Text.static.FONT_SIZES = {
 -- Collections of love2d fonts
 -- Text.static.FONTS['main']['md']
 Text.static.FONTS = {}
+Text.static.FONTS['debug'] = love.graphics.getFont()
 for family,path in pairs(Text.static.FONT_FAMILIES) do
   Text.static.FONTS[family] = {}
   for sizeName,size in pairs(Text.static.FONT_SIZES) do
@@ -32,7 +33,7 @@ function Text.print(family, size, text, x, y, ...)
   local r, g, b, a = love.graphics.getColor()
 
   -- Print the undershadow text
-  love.graphics.setColor(0, 0, 0, 50)
+  love.graphics.setColor(0, 0, 0, 50 * (a / 255))
   love.graphics.printf(text, x + 3, y + 3, ...)
 
   -- Print the actual text
@@ -54,6 +55,11 @@ end
 
 function Text.huge(...)
   Text.print('main', 'xlg', ...)
+end
+
+function Text.debug(...)
+  love.graphics.setFont(Text.static.FONTS['debug'])
+  love.graphics.printf(...)
 end
 
 
