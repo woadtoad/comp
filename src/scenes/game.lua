@@ -74,7 +74,8 @@ return function(GameScene)
     --instantiate a new player and their bases.
     self.bases = {}
     self.players = {}
-
+    self.cameraPosX = 0
+    self.cameraPosY = 0
     self.tileSystem = TileSystem:new()
     self.spawnTiles = self.tileSystem:spawnBases()
     --instantiate a new player and their bases.
@@ -96,20 +97,26 @@ return function(GameScene)
             id,
             100
         )
+        self.cameraPosX = self.cameraPosX + self.spawnTiles[id][1]
+        self.cameraPosY = self.cameraPosY + self.spawnTiles[id][2]
         self.tileSystem:getBaseTiles()[id][3]:addPlayerBase(id)
         table.insert(self.bases, base)
       end
     end
+
+    self.cameraPosX = (self.cameraPosX * 0.5)
+    self.cameraPosY = (self.cameraPosY * 0.5)
 
     -- create a pool of pickups
     self.pickupPool = {}
 
     self.Effects = Effects
 
+
     self:resetCameraPosition()
     Camera:setScale(CAMERA_SCALE)
-    Camera:moveTo(love.window.getWidth() / 2+120, love.window.getHeight() / 2 + 140,1,1)
-
+    --Camera:moveTo(love.window.getWidth() / 2+120, love.window.getHeight() / 2 + 140,1,1)
+    Camera:moveTo(self.cameraPosX, self.cameraPosY,1,1)
     -- UPDATE list
     table.insert(self.updateList,Camera)
     table.insert(self.updateList,self.tileSystem)
@@ -146,7 +153,11 @@ return function(GameScene)
       for i, v in pairs(self.updateList) do
         self.updateList[i]:update(dt)
       end
-
+      self.positions = {}
+      for i, v in pairs(self.players) do
+        self.positions[i] = {v.collider.body:getPosition()}
+      end
+      Camera:follow(self.positions)
       self.Effects:update(dt)
     end
   end

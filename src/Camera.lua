@@ -7,6 +7,7 @@ function Camera:initialize ()
   -- We make the canvas very large so we can effectively use zoom
   -- to debug
   self.canvas = 5000
+  self.lerpAmt = .2
 
   self.parent = Gamera.new(-self.canvas, -self.canvas, self.canvas*2, self.canvas*2)
 
@@ -70,6 +71,20 @@ function Camera:update(dt)
 
 
   self.parent:setPosition(animposx+randx,animposy+randy)
+end
+
+function Camera:follow(positions)
+  self.targetX, self.targetY = 0,0
+  local prevX, prevY = self.parent:getPosition()
+  for i, v in pairs(positions) do
+    self.targetX = self.targetX + positions[i][1]
+    self.targetY = self.targetY + positions[i][2]
+  end
+  self.targetX = self.targetX / #positions
+  self.targetY = self.targetY / #positions
+  self.targetX = _.lerp(self.targetX, prevX, self.lerpAmt)
+  self.targetY = _.lerp(self.targetY, prevY, self.lerpAmt)
+  self.parent:setPosition(self.targetX, self.targetY)
 end
 
 function Camera:draw()
