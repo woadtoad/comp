@@ -2,9 +2,6 @@
 io.stdout:setvbuf("no")
 print("\n~ Love Boilerplate ~\n")
 
--- Add libs/ and assets/entities to the require() path
-package.path = './libs/?.lua;./libs/?/init.lua;./assets/entities/?.lua;' .. package.path
-
 -- Checks before enabling debugging features
 require('src.debug')
 

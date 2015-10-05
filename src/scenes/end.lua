@@ -80,7 +80,13 @@ return function(EndScene)
   end
 
   function EndScene:input(input)
-
+    for k,player in pairs(self.players) do
+      -- Pause the game!
+      if input:pressed(INPUTS.NEW_GAME, player.id) then
+        print('Player ' .. player.id .. ' unpaused the game')
+        self:gotoState(SCENES.GAME)
+      end
+    end
   end
 
   function EndScene:destroy()

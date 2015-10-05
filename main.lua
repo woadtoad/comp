@@ -1,5 +1,3 @@
-require('TESound')
-
 toad = [[
 
                                  ,▄▄▄▄▄,
@@ -30,6 +28,9 @@ toad = [[
 -- Begin!
 ---------
 
+-- Add libs/ and assets/entities to the require() path
+package.path = './libs/?.lua;./libs/?/init.lua;./assets/entities/?.lua;' .. package.path
+
 -- Enable classes as a global 'keyword'
 class = require('middleclass')
 
@@ -57,10 +58,13 @@ SceneManager:init()
 -- Start the game in the menu
 SceneManager:gotoState(SCENES.START)
 
-local input = nils
+local input
 
 -- Start the game loops
 function love.load()
+  -- Exposes TEsound as a global var
+  require('libs.TESound')
+
   UI.registerEvents()
 
   input = require('src.Input')
@@ -70,7 +74,9 @@ function love.load()
 end
 
 function love.update(dt)
+  -- Required by TEsound
   TEsound.cleanup()
+
   -- Our input functions will handle boipushy events
   if love.joystick.getJoystickCount() > 0 then
     SceneManager:input(input)
