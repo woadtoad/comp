@@ -445,8 +445,6 @@ function EatingPlayer:enteredState()
     local impulse = self.Vars.EAT_BOOST
 
 
-
-
   if self.fat == false then
     self.sprite:changeAnim('Eat')
     impulse = self.Vars.EAT_BOOST
@@ -455,7 +453,7 @@ function EatingPlayer:enteredState()
 
   else
     self.sprite:changeAnim('Spit')
-       impulse = self.Vars.SPIT_BOOST
+      impulse = 0
       self.collider.body:setLinearDamping(self.Vars.SPIT_FRICTION)
   end
 

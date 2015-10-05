@@ -155,4 +155,52 @@ function PickupActive:draw()
   end
 end
 
+
+local Falling = Pickup:addState('Falling')
+function Falling:enteredState()
+  print("falling")
+
+  self.fallt = 1
+
+  self.collider.body:setActive(false)
+
+end
+
+
+function Falling:draw()
+  if self.isActive then
+    self.shadow:draw()
+    self.frames[self.food]:draw(self.activeScale)
+  end
+end
+
+function Falling:update(dt)
+  self.sprite:update(dt)
+
+  print(self.fallt)
+  --timer to control the falling.
+  self.fallt = self.fallt - 1 *dt
+
+
+  local fall = _.smooth(100,0,self.fallt)
+
+  -- TODO: attempt at scaling the food when it is created
+  if self.activeScale < self.foodScale then
+    self.activeScale = self.activeScale + (dt * 1.8)
+  else
+    self.activeScale = self.foodScale
+  end
+
+  self.frames[self.food]:changeLoc(self.collider.body:getX(),self.collider.body:getY()+fall)
+  self.frames[self.food]:changeRot(math.deg(self.collider.body:getAngle()))
+  --self.shadow:changeLoc(self.collider.body:getX(),self.collider.body:getY())
+  --self.shadow:changeRot(math.deg(self.collider.body:getAngle()))
+
+end
+
+
+function Falling:exitedState()
+  print("exiting state",self:getStateStackDebugInfo()[1])
+end
+
 return Pickup
