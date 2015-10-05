@@ -170,9 +170,8 @@ function Tile:initialize (x,y,i,v,scale,filled,typetile)
 end
 
 function Tile:damage(amt)
-
-    self.health  = self.health - 1
-
+    amt = amt or 1
+    self.health  = self.health - amt
 end
 
 function Tile:updateStates()
@@ -180,6 +179,10 @@ end
 
 function Tile:regenHealth(dt)
   self.health = self.health + (self.regenRate*dt)
+end
+
+function Tile:bleedHealth(dt)
+  self.health = self.health - (0.5*dt)
 end
 
 function Tile:draw()
@@ -231,7 +234,11 @@ function Tile:addPlayerAsDamager(player)
     tick = 0
   })
   if player.instantDamage then
-    self:damage(player.damageWeight)
+    if player.fat == true then
+      self:damage(player.Vars.FAT_MASS)
+    else
+      self:damage(player.Vars.SKINNY_MASS)
+    end
   end
 end
 
@@ -376,7 +383,7 @@ local DamageOne = Tile:addState("DamageOne")
 
 function DamageOne:enteredState(dt)
   self:shaker(3, 0.4)
-  self.health = 3
+  --self.health = 3
   self.sprite:changeAnim("DamageOne")
 end
 
@@ -400,7 +407,7 @@ local DamageTwo = Tile:addState('DamageTwo')
 
 function DamageTwo:enteredState(dt)
   self:shaker(7, 0.4)
-  self.health = 2
+  --self.health = 2
   self.sprite:changeAnim("DamageTwo")
 end
 
@@ -422,15 +429,16 @@ end
 local DamageThree = Tile:addState('DamageThree')
 
 function DamageThree:enteredState(dt)
-  self:shaker(10, 0.4)
-  self.health = 1
+  self:shaker(10, 0.5)
+  --self.health = 1
 
   self.sprite:changeAnim("DamageThree")
 end
 
 function DamageThree:updateStates(dt)
   self.sprite:update(dt)
-  -- self:regenHealth(dt)
+  --self:regenHealth(dt)
+  self:bleedHealth(dt)
 
   if self.health <= 1 then
     self:gotoState("Destroyed")

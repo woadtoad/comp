@@ -16,14 +16,12 @@ Player.static.RUNNING_FPS = 12
 
 Player.transformDelay = 0
 
-
+Player.instantDamage = false
 
 Player.Vars = {
   --control is a value from 0-1 of how much influence the player has over the movement. going above one will give more control... use with caution
   --boost is some arbitrary number given to box2d. around 1000 is a good place to start.
   --friction is a linear dampener, 1 is a lot but can go higher.
-  FAT_MAX_SPEED = 0,
-  SKINNY_MAX_SPEED = 0,
 
   FAT_STUN_AT_SPEED = 100,
   SKINNY_STUN_AT_SPEED = 280,
@@ -44,8 +42,8 @@ Player.Vars = {
   FAT_JUMP_BOOST = 0,
   SKINNY_JUMP_BOOST = 0,
 
-  FAT_SLIDE_FRICTION = 0,
-  SKINNY_SLIDE_FRICTION = 0,
+  FAT_SLIDE_FRICTION = 8,
+  SKINNY_SLIDE_FRICTION = 8,
   FAT_SLIDE_CONTROL = 0.9,
   SKINNY_SLIDE_CONTROL = 0.9,
 
@@ -57,7 +55,12 @@ Player.Vars = {
 
   MAX_SPEED = 350,
 
-  RESPAWN_TIME = 2
+  RESPAWN_TIME = 2,
+
+  FAT_MASS = 2.5,
+  SKINNY_MASS = 1,
+
+
 
 }
 
@@ -607,11 +610,13 @@ function SlidingPlayer:enteredState()
   -- TODO: remove this when not using running anim
   if self.fat == false then
     self.sprite:changeAnim('Running')
+    self.collider.body:setLinearDamping(self.Vars.SKINNY_SLIDE_FRICTION)
   else
     self.sprite:changeAnim('FatRun')
+      self.collider.body:setLinearDamping(self.Vars.FAT_SLIDE_FRICTION)
   end
 
-  self.collider.body:setLinearDamping(6)
+
 end
 
 -- Transform State
@@ -671,7 +676,7 @@ function JumpingPlayer:updateStates(dt)
 end
 
 -----------------------
--- landing State
+--Stun state
 local StunState = Player:addState(STATE.STUN)
 function StunState:enteredState()
   self.collider.body:setLinearDamping(0.3)
@@ -680,6 +685,8 @@ function StunState:enteredState()
     self.timerl = 0.86
     self.canControl = false
   else
+
+
    --DO SPIT
   end
 end
@@ -705,6 +712,7 @@ function LandPlayer:enteredState()
     self.sprite:changeAnim('FatLand')
     self.timerl = 0.4
   end
+    self.instantDamage = true
 end
 
 function LandPlayer:updateStates(dt)
@@ -716,6 +724,10 @@ function LandPlayer:updateStates(dt)
   end
 end
 
+function LandPlayer:exitedState ()
+
+  self.instantDamage = false
+end
 -----------------------
 -- Falling State
 local FallingPlayer = Player:addState(STATE.FALL)
