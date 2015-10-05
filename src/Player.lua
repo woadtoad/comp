@@ -413,6 +413,7 @@ function Player:input(input)
         self:gotoState(STATE.RUN)
       end
     elseif not self.doingState then
+
       if self:getStateStackDebugInfo()[1] ~= STATE.SLIDE then
         self:gotoState(STATE.SLIDE)
       end
