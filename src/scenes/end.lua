@@ -2,6 +2,7 @@ local SceneManager = require('src.SceneManager')
 local SCENES = require('src.config.SCENES')
 local Camera = require('src.Camera')
 local Player = require('src.Player')
+local Text = require('src.Text')
 local Sounds = require('src.Sound')
 local PlayerBase = require('src.PlayerBase')
 
@@ -39,7 +40,6 @@ return function(EndScene)
 
   function EndScene:reset()
     Sounds.loop({SOUNDS.END})
-
   end
 
   function EndScene:update(dt)
@@ -59,18 +59,21 @@ return function(EndScene)
     local t = 0
     local w = love.graphics.getWidth()
     local h = love.graphics.getHeight()
-    local limit = 200
+    local limit = 500
+    local yStart = 100
 
     love.graphics.setColor(20, 20, 20, 180)
     love.graphics.rectangle('fill', l, t, w, h)
 
     love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.printf('END SCENE', w / 2 - limit / 2, 50, limit, 'center')
+    Text.huge('END SCENE', (l+w) / 2 - (limit / 2), yStart, limit, 'center')
 
     local smh = 50 + 20
     for i=1,#self.bases do
-      love.graphics.printf("Player "..i..":  "..self.bases[i]:getcurrentPoints(), w / 2 - limit / 2, smh + (20*i), limit, 'center')
+      Text.huge('PLAYER ' .. i .. ': ' .. self.bases[i]:getcurrentPoints(), (l+w) / 2 - (limit / 2), yStart + 200 + (i - 1)*50, limit, 'center')
     end
+
+    Text.huge('START to new game', (l+w) / 2 - (limit / 2), yStart + 300 + #self.bases*20, limit, 'center')
   end
 
   function EndScene:ddraw()

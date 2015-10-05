@@ -3,6 +3,7 @@ local SCENES = require('src.config.SCENES')
 local Camera = require('src.Camera')
 local Player = require('src.Player')
 local Sounds = require('src.Sound')
+local Text = require('src.Text')
 local PlayerBase = require('src.PlayerBase')
 
 return function(StartScene)
@@ -40,7 +41,6 @@ return function(StartScene)
 
   function StartScene:reset()
     Sounds.loop({SOUNDS.INTRO})
-
   end
 
   function StartScene:update(dt)
@@ -49,14 +49,17 @@ return function(StartScene)
 
   function StartScene:draw()
     local w, h = love.graphics.getWidth(), love.graphics.getHeight()
+    local limit = 300
+    local yStart = 100
 
     love.graphics.setColor(20, 120, 20, 120)
     love.graphics.rectangle('fill', 0, 0, w, h)
 
     love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.printf('START SCREEN', w / 2 - (100 / 2), 50, 100, 'center')
-    love.graphics.printf('A to join', w / 2 - (200 / 2), 100, 200, 'center')
-    love.graphics.printf('START to start', w / 2 - (200 / 2), 120, 200, 'center')
+    Text.huge('START SCREEN', w / 2 - (limit / 2), yStart, limit, 'center')
+    Text.huge('A to join', w / 2 - (limit / 2), yStart + 200, limit, 'center')
+    Text.huge('START to start', w / 2 - (limit / 2), yStart + 250, limit, 'center')
+
     Camera.parent:draw(
     function(l, t, w, h)
     end

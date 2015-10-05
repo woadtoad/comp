@@ -3,6 +3,7 @@ local SCENES = require('src.config.SCENES')
 local Camera = require('src.Camera')
 local Player = require('src.Player')
 local Sounds = require('src.Sound')
+local Text = require('src.Text')
 local PlayerBase = require('src.PlayerBase')
 
 return function(PauseScene)
@@ -39,7 +40,6 @@ return function(PauseScene)
 
   function PauseScene:reset()
     Sounds.loop({SOUNDS.MENU_DRUMS})
-
   end
 
   function PauseScene:update(dt)
@@ -59,16 +59,16 @@ return function(PauseScene)
     local t = 0
     local w = love.graphics.getWidth()
     local h = love.graphics.getHeight()
-    local limit = 200
+    local limit = 500
+    local yStart = 100
 
     love.graphics.setColor(20, 90, 40, 180)
     love.graphics.rectangle('fill', l, t, l+w, l+h)
 
     love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.setDefaultFilter( 'nearest', 'nearest' )
-    love.graphics.printf('PAUSE SCREEN', (l+w) / 2 - (100 / 2), 50, t + 100, 'center')
-    love.graphics.printf('START to unpause', (l+w) / 2 - (200 / 2), t + 100, 200, 'center')
-    love.graphics.printf('BACK for new game', (l+w) / 2 - (200 / 2), t + 120, 200, 'center')
+    Text.huge('PAUSE SCREEN', (l+w) / 2 - (limit / 2), yStart, limit, 'center')
+    Text.huge('START to unpause', (l+w) / 2 - (limit / 2), yStart + 200, limit, 'center')
+    Text.huge('BACK for new game', (l+w) / 2 - (limit / 2), yStart + 250, limit, 'center')
   end
 
   function PauseScene:ddraw()

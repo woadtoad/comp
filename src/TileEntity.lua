@@ -304,6 +304,10 @@ function Tile:getLoc()
   return self.x,self.y
 end
 
+function Tile:showText(text)
+  
+end
+
 function Tile:shaker(magnitude, time)
   self.shakermag = magnitude
   self.togoalshaker = 0
