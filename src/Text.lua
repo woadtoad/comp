@@ -11,6 +11,7 @@ Text.static.FONT_SIZES = {
   md = 20,
   lg = 32,
   xlg = 48,
+  xxlg = 120,
 }
 
 -- Collections of love2d fonts
@@ -55,6 +56,10 @@ end
 
 function Text.huge(...)
   Text.print('main', 'xlg', ...)
+end
+
+function Text.massive(...)
+  Text.print('main', 'xxlg', ...)
 end
 
 function Text.debug(...)

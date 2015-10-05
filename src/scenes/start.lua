@@ -61,9 +61,24 @@ return function(StartScene)
 
       self.rocks[id] = JoiningRock:new(rockX, rockY, id)
     end
+    self.textScale = 1
+    self.textDir = true
+    self.v = 1.3
   end
 
   function StartScene:update(dt)
+    local vari = 0.07
+    local ceil = 1 + vari - 0.02
+    local floor = 1 - vari + 0.02
+    if self.textScale > ceil then
+      self.textDir = false
+      self.v = 1-vari
+    elseif self.textScale < floor then
+      self.textDir = true
+      self.v = 1+vari
+    end
+
+    self.textScale = _.smooth(self.textScale, self.v, dt*9)
     for k,rock in pairs(self.rocks) do
       rock:update(dt)
     end
@@ -71,16 +86,17 @@ return function(StartScene)
 
   function StartScene:draw()
     local w, h = love.graphics.getWidth(), love.graphics.getHeight()
-    local limit = 300
+    local limit = 800
     local yStart = 100
 
-    love.graphics.setColor(20, 120, 20, 120)
+    love.graphics.setColor(144, 126, 114, 255)
     love.graphics.rectangle('fill', 0, 0, w, h)
 
-    -- Text.huge('START SCREEN', w / 2 - (limit / 2), yStart, limit, 'center')
+    love.graphics.setColor(69, 64, 74, 255)
+    Text.massive('WOAD TOADS', w / 2 - (limit / 2), yStart, limit, 'center')
+
     if _.any(self.joiningPlayers) then
-    love.graphics.setColor(255, 255, 255, 255)
-      Text.huge('A to start', w / 2 - (limit / 2), yStart + 250, limit, 'center')
+      Text.huge('A to start', w / 2 - (limit / 2) * self.textScale, yStart + 250, limit, 'center', 0, self.textScale)
     end
 
     for k,rock in pairs(self.rocks) do
