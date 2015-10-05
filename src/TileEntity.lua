@@ -362,7 +362,6 @@ function Empty:updateStates(dt)
   if self.collider:enter('Pickup') then
     local a, pickup = self.collider:enter('Pickup')
     pickup.parent:gotoState('Falling')
-
   end
 end
 

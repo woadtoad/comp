@@ -44,7 +44,7 @@ function Pickup:initialize(x,y)
     TexMateStatic(TEAMASSETS,"food/Ham_0001",0,0,self.foodOffsetX,self.foodOffsetY,0,false,self.foodScale,self.foodScale),
     TexMateStatic(TEAMASSETS,"food/Ribs_0002",0,0,self.foodOffsetX,self.foodOffsetY,0,false,self.foodScale,self.foodScale)
   }
-  self.shadow = TexMateStatic(TEAMASSETS,"mockup_toad_new/Shadow_0000",0,0,self.shadowOffsetX,self.shadowOffsetY,0,false,self.foodScale,self.foodScale)
+  self.shadow = TexMateStatic(TEAMASSETS,"food/Shadow_0000",0,0,self.shadowOffsetX,self.shadowOffsetY,0,false,self.foodScale,self.foodScale)
 
   self.food = love.math.random(1,3)
   self.collider = WorldManager.world:newCircleCollider(x, y, 30, {collision_class='Pickup'})
@@ -137,6 +137,23 @@ function PickupActive:enteredState()
 end
 
 function PickupActive:update(dt)
+
+  local a,tile = self.collider:enter('Tile')
+  local b,tile2 = self.collider:exit('Tile')
+
+  if self.collider:enter('Tile') and self.collider:exit('Tile') then
+
+    local tileType = tile.parent:getStateStackDebugInfo()[1]
+    local tileType2 = tile2.parent:getStateStackDebugInfo()[1]
+
+    print(tileType,tileType2)
+    self:gotoState('Falling')
+
+  end
+  if b and not a then
+    --self:gotoState('Falling')
+  end
+
   self.sprite:update(dt)
   -- TODO: attempt at scaling the food when it is created
   if self.activeScale < self.foodScale then
@@ -180,7 +197,7 @@ function Falling:update(dt)
 
 
   --timer to control the falling.
-  self.fallt = self.fallt - 4 *dt
+  self.fallt = self.fallt - 2 *dt
 
 
   local fall = _.smooth(100,0,self.fallt)

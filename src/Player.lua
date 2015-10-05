@@ -111,7 +111,7 @@ function Player:initialize(x, y, scale, id, facing)
     Idle = {
       framerate = 1,
       frames = {
-        'mockup_toad_new/Shadow_0000'
+        'food/Shadow_0002'
       }
     }
   }
@@ -176,8 +176,8 @@ function Player:initialize(x, y, scale, id, facing)
   self.collider.fixtures['main']:setRestitution(0.3)
   self.collider.body:setLinearDamping(1.5)
   self.collider.body:setFixedRotation(true)
-
-  self.shadowSprite = TexMate:new(TEAMASSETS, playerShadow, "Idle" , nil, nil, 0, -(self.radius), nil, nil, self.spriteScale)
+  --Atlas, animlist, defaultanim, x, y, pivotx, pivoty, rot, flip, scale
+  self.shadowSprite = TexMate:new(TEAMASSETS, playerShadow, "Idle" , nil, nil, 0, -(self.radius)+30, nil, nil, 0.6)
 
   self.feetWidth = self.feetRadius * 4
   self.feetHeight = self.feetRadius * 2
