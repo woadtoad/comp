@@ -81,7 +81,9 @@ end
 function Pickup:makeActive(x,y,velx,vely)
   local vec = Vector(velx,vely)
   vec:normalize_inplace()
-  self.collider.body:setPosition(x+vec.x*100,y+vec.y*100)
+  local offsetx = vec.x * 100
+  local offsety = vec.y * 100
+  self.collider.body:setPosition(x+vec.x+offsetx,y+vec.y+offsety)
   self.collider.body:setLinearVelocity(velx,vely)
   self.collider.body:setActive(true)
   self.isActive = true

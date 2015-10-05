@@ -248,6 +248,7 @@ function Tile:update(dt)
       end
     end
 
+
     self:updatePlayerTicks(dt)
     self:applyPlayerDamages(dt)
 

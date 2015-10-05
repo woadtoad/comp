@@ -5,7 +5,7 @@ return  {
     Idle = {
       framerate = 14,
       frames = {
-        'toad_animations_Orange/ToadIdle_0000'
+        'toad_animations_Orange/Run_0000'
       }
     },
 
@@ -19,7 +19,7 @@ return  {
     Skidding = {
       framerate = 14,
       frames = {
-        'toad_animations_Orange/ToadIdle_0000'
+        "toad_animations_Orange/Toad_Skid_0000","toad_animations_Orange/Toad_Skid_0001","toad_animations_Orange/Toad_Skid_0002"
       }
     },
 

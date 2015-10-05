@@ -4,7 +4,7 @@ local anims = {
     Idle = {
       framerate = 14,
       frames = {
-        'toad_animations_Pink/ToadIdle_0000'
+        'toad_animations_Pink/Run_0000'
       }
     },
 
@@ -18,7 +18,7 @@ local anims = {
     Skidding = {
       framerate = 14,
       frames = {
-        'toad_animations_Pink/ToadIdle_0000'
+        "toad_animations_Pink/Toad_Skid_0000","toad_animations_Pink/Toad_Skid_0001","toad_animations_Pink/Toad_Skid_0002"
       }
     },
 

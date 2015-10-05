@@ -34,8 +34,8 @@ Player.Vars = {
   FAT_SLIDE_CONTROL = 0.5,
   SKINNY_SLIDE_CONTROL = 0.5,
 
-  FAT_POST_JUMP_FRICTION = 0,
-  SKINNY_POST_JUMP_FRICTION = 0,
+  FAT_POST_JUMP_FRICTION = 2,
+  SKINNY_POST_JUMP_FRICTION = 6,
   FAT_POST_JUMP_CONTROL = 0.5,
   SKINNY_POST_JUMP_CONTROL = 0.5,
 
@@ -103,132 +103,6 @@ function Player:initialize(x, y, scale, id, facing)
   self.spriteScale = self.scale / 1.4
 
 
-  local playerAnims = {
-    Idle = {
-      framerate = 14,
-      frames = {
-        'mockup_toad_new/ToadIdle_0000'
-      }
-    },
-
-    Running = {
-      framerate = Player.static.RUNNING_FPS,
-      frames = {
-        "toad_animations/Run_0000","toad_animations/Run_0001","toad_animations/Run_0002"
-      }
-    },
-
-    Skidding = {
-      framerate = 14,
-      frames = {
-        'mockup_toad_new/ToadIdle_0000'
-      }
-    },
-
-    Jumping = {
-      framerate = 17,
-      frames = {
-        TexMate:frameCounter("toad_animations/Jump_",0,6,4)
-      }
-    },
-    JumpIdle = {
-      framerate = 14,
-      frames = {
-        "toad_animations/Jump_0006"
-      }
-    },
-    Landing = {
-      framerate = 12,
-      frames = {
-        "toad_animations/Run_Land_0000","toad_animations/Run_Land_0001"
-      }
-    },
-    FatRun = {
-      framerate = 14,
-      frames = {
-        TexMate:frameCounter("toad_animations/Fat_Run_",0,4,4)
-      }
-    },
-    FatJump = {
-      framerate = 17,
-      frames = {
-        TexMate:frameCounter("toad_animations/Fat_Jump_",0,7,4)
-      }
-    },
-    Spit = {
-      framerate = 14,
-      frames = {
-        TexMate:frameCounter("toad_animations/Spit_",0,2,4)
-      }
-    },
-    Eat = {
-      framerate = 14,
-      frames = {
-        TexMate:frameCounter("toad_animations/Eat_",0,3,4)
-      }
-    },
-    Stun = {
-      framerate = 14,
-      frames = {
-        TexMate:frameCounter("toad_animations/Spin_",0,12,4)
-      }
-    },
-    Spawning = {
-      framerate = 14,
-      frames = {
-        TexMate:frameCounter("toad_animations/Spin_",0,12,4)
-      }
-    },
-    FatIdle = {
-      framerate = 14,
-      frames = {"toad_animations/Fat_0003"
-
-      }
-    },
-    FatLand = {
-      framerate = 14,
-      frames = {TexMate:frameCounter("toad_animations/Fat_Land_",0,10,4)
-
-      }
-    },
-    RunLand = {
-      framerate = 14,
-      frames = {TexMate:frameCounter("toad_animations/Run_Land_",0,1,4)
-
-      }
-    },
-    FatSpawn = {
-      framerate = 14,
-      frames = {"toad_animations/Fat_0000","toad_animations/Fat_0001","toad_animations/Fat_0002","toad_animations/Fat_0003",
-
-      }
-    },
-    Fall = {
-      framerate = 7,
-      frames = {TexMate:frameCounter("toad_animations/Fall_",0,3,4)
-
-      }
-    },
-    FatFall = {
-      framerate = 7,
-      frames = {TexMate:frameCounter("toad_animations/Fat_Fall_",0,3,4)
-
-      }
-    },
-    Blank = {
-      framerate = 7,
-      frames = {"icetile2/Blank_0000"
-
-      }
-    },
-    eat = {
-      framerate = 14,
-      frames = {"toad_animations/Eat_0000","toad_animations/Eat_0001","toad_animations/Eat_0002","toad_animations/Eat_0003",
-
-      }
-    },
-  }
-
   local playerShadow = {
     Idle = {
       framerate = 1,
@@ -286,6 +160,10 @@ function Player:initialize(x, y, scale, id, facing)
 
       self:gotoState(STATE.LAND)
     end
+  end
+
+  self.sprite.endCallback['Skidding'] = function()
+    self.sprite:pause()
   end
 
 
@@ -351,6 +229,22 @@ function Player:update(dt)
 
   end
 
+--[[
+  local velx2,vely2 = self.collider.body:getLinearVelocity()
+  if velx2 < 0 then
+    velx2 = velx2 * -1
+  end
+  if vely2 < 0 then
+    vely2 = vely2 * -1
+  end
+
+  if velx2 < 30 and vely2 < 30 then
+    if self.fat == false then
+
+        self.sprite:changeAnim("Idle")
+    end
+  end
+]]
 
 
 end
@@ -478,22 +372,22 @@ function Player:move(xd, yd)
     if vely2 < 0 then
       vely2 = vely2 * -1
     end
-    local vec2 = Vector(velx,vely)
-    local vel2 = vec2:len()
+
     local maxSpeed = self.Vars.MAX_SPEED
 
     local x = Player.static.BASE_SPEED * xd * self.ControlInfluence
     local y = Player.static.BASE_SPEED * yd * self.ControlInfluence
 
     if velx2 > maxSpeed then
-      --self.collider.body:setLinearVelocity()
       x = 0
     end
     if vely2 > maxSpeed then
-      --self.collider.body:setLinearVelocity()
       y = 0
     end
     self.collider.body:applyLinearImpulse(x, y, self.collider.body:getX(), self.collider.body:getY())
+
+
+
   end
 
 end
@@ -610,7 +504,7 @@ local SlidingPlayer = Player:addState(STATE.SLIDE)
 function SlidingPlayer:enteredState()
   -- TODO: remove this when not using running anim
   if self.fat == false then
-    self.sprite:changeAnim('Running')
+    self.sprite:changeAnim('Skidding')
     self.collider.body:setLinearDamping(self.Vars.SKINNY_SLIDE_FRICTION)
   else
     self.sprite:changeAnim('FatRun')
@@ -654,6 +548,9 @@ function JumpingPlayer:enteredState()
   self.canControl = false
   local impulse = 1200
 
+  self.tail:changeCollisionClass('PlayerJump')
+  self.collider:changeCollisionClass('PlayerBodyJump')
+
   if self.fat == false then
     self.sprite:changeAnim('Jumping')
     self.timerj = 0.4
@@ -675,7 +572,10 @@ function JumpingPlayer:updateStates(dt)
     self:gotoState(STATE.LAND)
   end
 end
-
+function JumpingPlayer:exitedState ()
+  self.collider:changeCollisionClass('PlayerBody')
+  self.tail:changeCollisionClass('PlayerTail')
+end
 -----------------------
 --Stun state
 local StunState = Player:addState(STATE.STUN)
@@ -705,13 +605,15 @@ end
 -- landing State
 local LandPlayer = Player:addState(STATE.LAND)
 function LandPlayer:enteredState()
-  self.collider.body:setLinearDamping(0.3)
+
   if self.fat == false then
     self.sprite:changeAnim('Landing')
     self.timerl = 0.2
+    self.collider.body:setLinearDamping(self.Vars.FAT_POST_JUMP_FRICTION)
   else
     self.sprite:changeAnim('FatLand')
     self.timerl = 0.4
+    self.collider.body:setLinearDamping(self.Vars.SKINNY_POST_JUMP_FRICTION)
   end
     self.instantDamage = true
 end
@@ -721,7 +623,7 @@ function LandPlayer:updateStates(dt)
 
   if self.timerl < 0 then
     self.canControl = true
-    self:gotoState(STATE.IDLE)
+    self:gotoState(STATE.RUN)
   end
 end
 
@@ -763,8 +665,18 @@ local SpawningPlayer = Player:addState(STATE.SPAWNING)
 function SpawningPlayer:enteredState()
   self.sprite:changeAnim('Spawning')
   self.canControl = false
+
+  self.timerj = 0.2
 end
 
+function SpawningPlayer:updateStates(dt)
+  self.timerj = self.timerj - 1 *dt
+
+  if self.timerj < 0 then
+    self.canControl = true
+    self:gotoState(STATE.RUN)
+  end
+end
 -----------------------
 -- Throwing State
 

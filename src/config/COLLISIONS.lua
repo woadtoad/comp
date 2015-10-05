@@ -6,10 +6,16 @@ local COLLISION_CLASSES = {
     name = "PlayerBody"
   },
 
+
   {
     name = "PlayerFeet"
   },
-
+  {
+    name = "PlayerJump",
+    config = {
+      ignores = {"All"}
+    }
+  },
   {
     name = "PlayerTail",
     config = {
@@ -44,6 +50,12 @@ local COLLISION_CLASSES = {
     name = "Statue",
     config = {
       --ignores = {"All"},
+    }
+  },
+  {
+    name = "PlayerBodyJump",
+    config = {
+      ignores = {"Pickup"}
     }
   },
 }
