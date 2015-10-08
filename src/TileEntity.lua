@@ -287,7 +287,7 @@ end
 
 function Tile:applyPlayerDamages(dt)
   self.damageCheckTick = self.damageCheckTick + dt
-  if self.damageCheckTick > 0.01 then -- 10ms
+  if self.damageCheckTick > 0.1 then -- 10ms
     self.damageCheckTick = 0
 
     for id,conf in pairs(self.players) do
@@ -299,7 +299,8 @@ function Tile:applyPlayerDamages(dt)
           self:damage(conf.player.Vars.SKINNY_MASS)
         else
           self:damage(conf.player.Vars.FAT_MASS)
-        end
+        end]]
+        self:damage(1)
         -- end
       end
     end
