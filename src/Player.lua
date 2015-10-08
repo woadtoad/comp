@@ -65,6 +65,8 @@ Player.Vars = {
   FAT_MASS_JUMP = 2.5,
   SKINNY_MASS_JUMP = 2,
 
+  TAIL_SIZE = 40,
+
 
 
 }
@@ -191,7 +193,7 @@ function Player:initialize(x, y, scale, id, facing)
   self.feet:addShape('left', 'CircleShape', -(self.feetWidth / 2), 0, self.feetRadius)
   self.feet:addShape('right', 'CircleShape', (self.feetWidth / 2), 0, self.feetRadius)
 
-  self.tailWidth = self.feetRadius / 2
+  self.tailWidth = self.Vars.TAIL_SIZE
   self.tailHeight = self.tailWidth
   local tailX = x - self.tailWidth / 2
   local tailY = y + (self.feetRadius * 4) - self.tailWidth
@@ -234,23 +236,57 @@ function Player:update(dt)
 
   end
 
---[[
-  local velx2,vely2 = self.collider.body:getLinearVelocity()
-  if velx2 < 0 then
-    velx2 = velx2 * -1
-  end
-  if vely2 < 0 then
-    vely2 = vely2 * -1
-  end
+  --function World:queryRectangleArea(x, y, w, h, collision_class_names)
+    local x,y = self.collider.body:getPosition()
+    local w,h = 10,10
 
-  if velx2 < 30 and vely2 < 30 then
-    if self.fat == false then
+    local colliders = WorldManager.world:queryRectangleArea(x-w/2,20+y-h/2,w,h,{"Tile"})
 
-        self.sprite:changeAnim("Idle")
+    --print(#colliders)
+    if #colliders == 0 then
+     if self:getStateStackDebugInfo()[1] ~= STATE.FALL and self:getStateStackDebugInfo()[1] ~= STATE.JUMP then
+        self:gotoState(STATE.FALL)
+     end
     end
-  end
-]]
 
+--[[
+    w,h = 30,30
+    local iceColliders = WorldManager.world:queryRectangleArea(x-w/2,20+y-h/2,w,h,{"Tile"})
+
+
+    for _, collider in ipairs(iceColliders) do
+      --collider.body:applyLinearImpulse(500, 0)
+
+      --print(collider.parent.type)
+      if collider.parent.type == 1 then
+
+        if collider.parent.players[self.id] == nil then
+          collider.parent:addPlayerAsDamager(self)
+        end
+      end
+    end
+
+]]
+--[[
+    if self.collider:enter('PlayerFeet') then
+      local a, pushingPlayer = self.collider:enter('PlayerFeet')
+      pushingPlayer = pushingPlayer.parent
+
+      if self.players[pushingPlayer.id] == nil then
+        self:addPlayerAsDamager(pushingPlayer)
+      end
+    end
+
+    if self.collider:exit('PlayerFeet') then
+      local a, poppingPlayer = self.collider:exit('PlayerFeet')
+      poppingPlayer = poppingPlayer.parent
+
+      if self.players[poppingPlayer.id] then
+        self:removePlayerAsDamager(poppingPlayer)
+      end
+    end
+
+]]
 
 end
 
@@ -390,8 +426,6 @@ function Player:move(xd, yd)
       y = 0
     end
     self.collider.body:applyLinearImpulse(x, y, self.collider.body:getX(), self.collider.body:getY())
-
-
 
   end
 

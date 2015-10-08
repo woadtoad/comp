@@ -46,7 +46,14 @@ local COLLISION_CLASSES = {
     }
   },
 
-    {
+  {
+    name = "Water",
+    config = {
+      ignores = {"All"},
+    }
+  },
+
+  {
     name = "Statue",
     config = {
       --ignores = {"All"},

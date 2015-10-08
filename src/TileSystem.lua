@@ -24,14 +24,9 @@ function TileSystem:initialize ()
   for i=1, self.mapWidth do
     self.tiles[i] = {}
     for v=1, self.mapHeight do
-      self.isTileFilled = false
       local offset = 0
 
         if i % 2 == 0 then offset = 65 end
-
-        if self.newTileMap[i][v] >= 1 then
-          self.isTileFilled = true
-        end
 
         local newTile = Tile:new(
           ( 128*self.scale)*v+offset*self.scale,
@@ -39,7 +34,6 @@ function TileSystem:initialize ()
           i,
           v,
           self.scale,
-          self.isTileFilled,
           self.newTileMap[i][v]
         )
         table.insert(
@@ -51,8 +45,9 @@ function TileSystem:initialize ()
         end
         if self.newTileMap[i][v] == 1 then
           table.insert(self.viableTable,{i,v})
-
         end
+
+
       end
   end
 end

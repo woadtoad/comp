@@ -104,7 +104,7 @@ function World:draw()
         if query_draw.type == 'circle' then
             love.graphics.circle('line', query_draw.x, query_draw.y, query_draw.r)
         elseif query_draw.type == 'rectangle' then
-            love.graphics.rectangle('line', query_draw.x, query_draw.x, query_draw.w, query_draw.h)
+            love.graphics.rectangle('line', query_draw.x, query_draw.y, query_draw.w, query_draw.h)
         elseif query_draw.type == 'line' then
             love.graphics.line(query_draw.x1, query_draw.y1, query_draw.x2, query_draw.y2)
         elseif query_draw.type == 'polygon' then
@@ -672,6 +672,11 @@ function World:queryRectangleArea(x, y, w, h, collision_class_names)
             for _, fixture in ipairs(collider.body:getFixtureList()) do
                 if self.hx.Math.polygon.isPolygonInside({x, y, x+w, y, x+w, y+h, x, y+h}, {collider.body:getWorldPoints(fixture:getShape():getPoints())}) then
                     table.insert(outs, collider)
+                   -- break
+                end
+
+                if self.hx.Math.polygon.isPolygonCompletelyInside({x, y, x+w, y, x+w, y+h, x, y+h}, {collider.body:getWorldPoints(fixture:getShape():getPoints())}) then
+                    table.insert(outs, collider)
                     break
                 end
             end
@@ -704,6 +709,10 @@ function World:queryPolygonArea(vertices, collision_class_names)
         if self:collisionClassInCollisionClassesList(collider.collision_class, collision_class_names) then
             for _, fixture in ipairs(collider.body:getFixtureList()) do
                 if self.hx.Math.polygon.isPolygonInside(vertices, {collider.body:getWorldPoints(fixture:getShape():getPoints())}) then
+                    table.insert(outs, collider)
+                   -- break
+                end
+                if self.hx.Math.polygon.isPolygonCompletelyInside({x, y, x+w, y, x+w, y+h, x, y+h}, {collider.body:getWorldPoints(fixture:getShape():getPoints())}) then
                     table.insert(outs, collider)
                     break
                 end

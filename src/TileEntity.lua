@@ -17,13 +17,11 @@ Tile.static.TILE_TYPES = {
   STATUES = 4,
 }
 
-function Tile:initialize (x,y,i,v,scale,filled,typetile)
-  self.filled = filled
+function Tile:initialize (x,y,i,v,scale,typetile)
+  if typetile == 0 then self.filled = false else self.filled = true end
+
   self.resetTime = 40
   self.type = typetile
-  if filled == false then
-    self.type = Tile.static.TILE_TYPES.NONE
-  end
 
   -- Shaker state
   self.shakermag = 0
@@ -187,7 +185,7 @@ function Tile:initialize (x,y,i,v,scale,filled,typetile)
 
   if self.type == Tile.static.TILE_TYPES.NONE then
     self:gotoState("Empty")
-
+    self.collider:changeCollisionClass('Water')
   end
 
   if self.type >= Tile.static.TILE_TYPES.STATUES then
@@ -215,7 +213,7 @@ function Tile:bleedHealth(dt)
 end
 
 function Tile:draw()
-  if self.filled and self.type >= 1 then
+  if self.type >= 1 then
     self.sprite:draw()
   end
 end
@@ -229,7 +227,7 @@ end
 function Tile:update(dt)
   self:updateShake(dt)
 
-  if self.filled and self.type == 1 then
+  if self.filled == true and self.type == 1 then
     if self.collider:enter('PlayerFeet') then
       local a, pushingPlayer = self.collider:enter('PlayerFeet')
       pushingPlayer = pushingPlayer.parent
@@ -239,22 +237,26 @@ function Tile:update(dt)
       end
     end
 
+  --  print(self.collider:exit('PlayerFeet') )
+
     if self.collider:exit('PlayerFeet') then
       local a, poppingPlayer = self.collider:exit('PlayerFeet')
       poppingPlayer = poppingPlayer.parent
 
       if self.players[poppingPlayer.id] then
         self:removePlayerAsDamager(poppingPlayer)
+
       end
     end
-
 
     self:updatePlayerTicks(dt)
     self:applyPlayerDamages(dt)
 
+    self:updateStates(dt)
+
   end
 
-  self:updateStates(dt)
+
 end
 
 function Tile:addPlayerAsDamager(player)
@@ -350,14 +352,6 @@ end
 local Empty = Tile:addState('Empty')
 
 function Empty:updateStates(dt)
-  if self.collider:enter('PlayerTail') then
-    local a, player = self.collider:enter('PlayerTail')
-    player = player.parent
-
-    if player:getStateStackDebugInfo()[1] ~= PLAYER_STATES.FALL then
-      player:gotoState(PLAYER_STATES.FALL)
-    end
-  end
 
   if self.collider:enter('Pickup') then
     local a, pickup = self.collider:enter('Pickup')
@@ -405,7 +399,6 @@ end
 local Spawn = Tile:addState('Spawn')
 
 function Spawn:enteredState(dt)
-
     self.sprite:changeAnim("Spawn")
 end
 
@@ -440,7 +433,6 @@ local DamageOne = Tile:addState("DamageOne")
 
 function DamageOne:enteredState(dt)
   self:shaker(3, 0.4)
-  --self.health = 3
   self.sprite:changeAnim("DamageOne")
 end
 
@@ -464,7 +456,6 @@ local DamageTwo = Tile:addState('DamageTwo')
 
 function DamageTwo:enteredState(dt)
   self:shaker(7, 0.4)
-  --self.health = 2
   self.sprite:changeAnim("DamageTwo")
 end
 
@@ -487,14 +478,12 @@ local DamageThree = Tile:addState('DamageThree')
 
 function DamageThree:enteredState(dt)
   self:shaker(10, 0.5)
-  --self.health = 1
 
   self.sprite:changeAnim("DamageThree")
 end
 
 function DamageThree:updateStates(dt)
   self.sprite:update(dt)
-  --self:regenHealth(dt)
   self:bleedHealth(dt)
 
   if self.health <= 1 then
@@ -509,22 +498,16 @@ end
 
 ------------------------------------------------------------------------------
 
-
 local Destroyed = Tile:addState('Destroyed')
 
 function Destroyed:enteredState(dt)
   Camera:shaker(2,0.3)
   self.sprite:changeAnim("Destroy")
   self.resetTimer = self.resetTime
+  self.collider:changeCollisionClass('Water')
 end
 
 function Destroyed:updateStates(dt)
-    if self.collider:enter('PlayerTail') then
-      local a, player = self.collider:enter('PlayerTail')
-      player = player.parent
-
-      player:gotoState(PLAYER_STATES.FALL)
-    end
     self.sprite:update(dt)
     self.resetTimer =  self.resetTimer - 1 * dt
 
@@ -534,6 +517,8 @@ function Destroyed:updateStates(dt)
 end
 
 
-
+function Destroyed:exitedState ()
+  self.collider:changeCollisionClass('Tile')
+end
 
 return Tile
