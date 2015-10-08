@@ -1,4 +1,5 @@
-local class = require('middleclass')
+local path = string.gsub(..., 'TexMate', '')
+local class = require(path .. 'middleclass')
 
 local _M = class("texmate")
 --pass in the atlas, and it will make a deck, and preseve offset data.
