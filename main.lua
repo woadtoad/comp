@@ -86,7 +86,7 @@ function love.update(dt)
     SceneManager:input(input)
     input:update()
   end
-
+  love.window.setTitle( "WOAD TOAD ARENA ".. love.timer.getFPS() )
   SceneManager:update(dt)
 end
 

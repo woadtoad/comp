@@ -47,7 +47,7 @@ function love.conf(t)
   }
   -------------------------------
 
-  t.window.title = "Woad Toad Arena"          -- The window title (string)
+  t.window.title = "Woad Toad Arena "         -- The window title (string)
   t.window.icon = "assets/woadtoad-icon.png"  -- Filepath to an image to use as the window's icon (string)
   t.window.width = 1440                       -- The window width (number)
   t.window.height = 900                       -- The window height (number)
