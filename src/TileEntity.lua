@@ -299,9 +299,8 @@ function Tile:applyPlayerDamages(dt)
           self:damage(conf.player.Vars.SKINNY_MASS)
         else
           self:damage(conf.player.Vars.FAT_MASS)
-        end]]
-        self:damage(1)
-        -- end
+        end
+
       end
     end
   end

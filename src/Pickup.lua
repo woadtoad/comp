@@ -61,20 +61,21 @@ function Pickup:initialize(x,y)
 end
 
 function Pickup:update(dt)
-  self.frames[self.food]:changeLoc(self.collider.body:getX(),self.collider.body:getY())
+  local x,y = self.collider.body:getPosition()
+  self.frames[self.food]:changeLoc(x,y)
   self.frames[self.food]:changeRot(math.deg(self.collider.body:getAngle()))
   self.shadow:changeLoc(self.collider.body:getX(),self.collider.body:getY())
   self.shadow:changeRot(math.deg(self.collider.body:getAngle()))
- --[[ if self.collider:enter('Player') then
-      --player collision logic here
-  end
-  ]]
+
   if self.collider:enter('Base') then
       self.collider.body:setLinearDamping(5)
   end
   if self.collider:enter('Base') then
     self.collider.body:setLinearDamping(1.5)
   end
+
+
+
 end
 
 function Pickup:draw()
@@ -137,7 +138,8 @@ function PickupActive:enteredState()
 end
 
 function PickupActive:update(dt)
-
+  local x,y = self.collider.body:getPosition()
+  local rot = math.deg(self.collider.body:getAngle())
   local a,tile = self.collider:enter('Tile')
   local b,tile2 = self.collider:exit('Tile')
 
@@ -162,10 +164,22 @@ function PickupActive:update(dt)
     self.activeScale = self.foodScale
   end
 
-  self.frames[self.food]:changeLoc(self.collider.body:getX(),self.collider.body:getY())
-  self.frames[self.food]:changeRot(math.deg(self.collider.body:getAngle()))
-  self.shadow:changeLoc(self.collider.body:getX(),self.collider.body:getY())
-  self.shadow:changeRot(math.deg(self.collider.body:getAngle()))
+  self.frames[self.food]:changeLoc(x,y)
+  self.frames[self.food]:changeRot(rot)
+  self.shadow:changeLoc(x,y)
+  self.shadow:changeRot(rot)
+
+
+  local w,h = 10,10
+
+  local colliders = WorldManager.world:queryRectangleArea(x-w/2,20+y-h/2,w,h,{"Tile"})
+
+  if #colliders == 0 then
+    --if self:getStateStackDebugInfo()[1] ~= 'Falling'  then
+        self:gotoState('Falling')
+        print('falling')
+    --end
+  end
 end
 
 function PickupActive:draw()
@@ -202,7 +216,7 @@ function Falling:update(dt)
 
   local fall = _.smooth(100,0,self.fallt)
 
-  print("fall",fall)
+ -- print("fall",fall)
 
   -- TODO: attempt at scaling the food when it is created
   if self.activeScale < self.foodScale then
@@ -216,10 +230,26 @@ function Falling:update(dt)
   --self.shadow:changeLoc(self.collider.body:getX(),self.collider.body:getY())
   --self.shadow:changeRot(math.deg(self.collider.body:getAngle()))
   if self.fallt < 0.5 then
-      self:gotoState("Active")
+
       self:deactivate()
+      self:gotoState("Dead")
       Effects:makeEffect("Splash",self.collider.body:getX(),self.collider.body:getY()+fall)
   end
+
+end
+
+local Dead = Pickup:addState('Dead')
+function Dead:enteredState()
+
+  self.collider.body:setActive(false)
+
+end
+
+function Dead:update()
+
+end
+
+function Dead:draw()
 
 end
 

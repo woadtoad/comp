@@ -249,45 +249,6 @@ function Player:update(dt)
      end
     end
 
---[[
-    w,h = 30,30
-    local iceColliders = WorldManager.world:queryRectangleArea(x-w/2,20+y-h/2,w,h,{"Tile"})
-
-
-    for _, collider in ipairs(iceColliders) do
-      --collider.body:applyLinearImpulse(500, 0)
-
-      --print(collider.parent.type)
-      if collider.parent.type == 1 then
-
-        if collider.parent.players[self.id] == nil then
-          collider.parent:addPlayerAsDamager(self)
-        end
-      end
-    end
-
-]]
---[[
-    if self.collider:enter('PlayerFeet') then
-      local a, pushingPlayer = self.collider:enter('PlayerFeet')
-      pushingPlayer = pushingPlayer.parent
-
-      if self.players[pushingPlayer.id] == nil then
-        self:addPlayerAsDamager(pushingPlayer)
-      end
-    end
-
-    if self.collider:exit('PlayerFeet') then
-      local a, poppingPlayer = self.collider:exit('PlayerFeet')
-      poppingPlayer = poppingPlayer.parent
-
-      if self.players[poppingPlayer.id] then
-        self:removePlayerAsDamager(poppingPlayer)
-      end
-    end
-
-]]
-
 end
 
 function Player:updateSprites(dt)
@@ -685,9 +646,12 @@ function FallingPlayer:enteredState()
   if self.fat == false then
     Sounds.play(SOUNDS.FALL, {}, 1, 1)
     self.sprite:changeAnim('Fall')
+
   else
     Sounds.play(SOUNDS.FALL, {}, 1, 0.9)
     self.sprite:changeAnim('FatFall')
+    self.fat = false
+    self.pickedUpFood  = nil
   end
 
   self.collider.body:setLinearDamping(10)
