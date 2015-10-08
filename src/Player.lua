@@ -36,18 +36,23 @@ Player.Vars = {
   FAT_SLIDE_CONTROL = 0.5,
   SKINNY_SLIDE_CONTROL = 0.5,
 
-  FAT_POST_JUMP_FRICTION = 2,
-  SKINNY_POST_JUMP_FRICTION = 6,
+  FAT_POST_JUMP_FRICTION = 1,
+  SKINNY_POST_JUMP_FRICTION = 2,
   FAT_POST_JUMP_CONTROL = 0.5,
   SKINNY_POST_JUMP_CONTROL = 0.5,
 
   FAT_JUMP_BOOST = 0,
   SKINNY_JUMP_BOOST = 0,
 
-  FAT_SLIDE_FRICTION = 8,
-  SKINNY_SLIDE_FRICTION = 8,
+  FAT_SLIDE_FRICTION = 3,
+  SKINNY_SLIDE_FRICTION = 3,
   FAT_SLIDE_CONTROL = 0.9,
   SKINNY_SLIDE_CONTROL = 0.9,
+
+  TRANSFORM_FRICTION = 1,
+
+  FAT_ACCEL = 100,
+  SKINNY_ACCEL = 100,
 
   EAT_BOOST = 1200,
   SPIT_BOOST = 800,
@@ -359,10 +364,6 @@ function Player:move(xd, yd)
     self.isFacingRight = xd > 0
     self.effort = angle / 360 + 1
 
-    local x = Player.static.BASE_SPEED * xd * self.ControlInfluence
-    local y = Player.static.BASE_SPEED * yd * self.ControlInfluence
-
-    self.collider.body:applyLinearImpulse(x, y, self.collider.body:getX(), self.collider.body:getY())
 
     local velx2,vely2 = self.collider.body:getLinearVelocity()
     if velx2 < 0 then
@@ -374,8 +375,8 @@ function Player:move(xd, yd)
 
     local maxSpeed = self.Vars.MAX_SPEED
 
-    local x = Player.static.BASE_SPEED * xd * self.ControlInfluence
-    local y = Player.static.BASE_SPEED * yd * self.ControlInfluence
+    local x = Player.Vars.SKINNY_ACCEL * xd * self.ControlInfluence
+    local y = Player.Vars.SKINNY_ACCEL * yd * self.ControlInfluence
 
     if velx2 > maxSpeed then
       x = 0
@@ -383,6 +384,7 @@ function Player:move(xd, yd)
     if vely2 > maxSpeed then
       y = 0
     end
+
     self.collider.body:applyLinearImpulse(x, y, self.collider.body:getX(), self.collider.body:getY())
 
   end
@@ -518,7 +520,7 @@ function Transform:enteredState()
   self.canControl = false
   self.sprite:changeAnim('FatSpawn')
 
-  self.collider.body:setLinearDamping(10)
+  self.collider.body:setLinearDamping(self.Vars.TRANSFORM_FRICTION)
 
   self.timerj = 0.4
 end

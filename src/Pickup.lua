@@ -227,8 +227,6 @@ function Falling:update(dt)
 
   self.frames[self.food]:changeLoc(self.collider.body:getX(),self.collider.body:getY()+fall)
   self.frames[self.food]:changeRot(math.deg(self.collider.body:getAngle()))
-  --self.shadow:changeLoc(self.collider.body:getX(),self.collider.body:getY())
-  --self.shadow:changeRot(math.deg(self.collider.body:getAngle()))
   if self.fallt < 0.5 then
 
       self:deactivate()
