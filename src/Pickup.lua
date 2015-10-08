@@ -139,22 +139,12 @@ end
 
 function PickupActive:update(dt)
   local x,y = self.collider.body:getPosition()
+
+  if x == lastx and y == lasty then return end
+
+  lastx,lasty = x,y
+
   local rot = math.deg(self.collider.body:getAngle())
-  local a,tile = self.collider:enter('Tile')
-  local b,tile2 = self.collider:exit('Tile')
-
-  if self.collider:enter('Tile') and self.collider:exit('Tile') then
-
-    local tileType = tile.parent:getStateStackDebugInfo()[1]
-    local tileType2 = tile2.parent:getStateStackDebugInfo()[1]
-
-  --  print(tileType,tileType2)
- --   self:gotoState('Falling')
-
-  end
-  if b and not a then
-    --self:gotoState('Falling')
-  end
 
   self.sprite:update(dt)
   -- TODO: attempt at scaling the food when it is created
@@ -168,7 +158,6 @@ function PickupActive:update(dt)
   self.frames[self.food]:changeRot(rot)
   self.shadow:changeLoc(x,y)
   self.shadow:changeRot(rot)
-
 
   local w,h = 10,10
 
