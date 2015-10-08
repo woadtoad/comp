@@ -15,7 +15,7 @@ end
 function WorldManager:create()
   self.world = hxdx.newWorld({
     gravity_y = GRAVITY,
-    draw_query_for_n_frames = 10,
+    draw_query_for_n_frames = 1,
     debug_drawing_enabled =  true,
   })
 -- Load in collision classes
