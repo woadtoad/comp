@@ -43,7 +43,11 @@ return function(StartScene)
   end
 
   function StartScene:reset()
-    Sounds.loop({SOUNDS.INTRO})
+    Sounds.play(SOUNDS.INTRO, function()
+      if self:current() == SCENES.START then
+        Sounds.loop({SOUNDS.MENU_DRUMS})
+      end
+    end)
     self.joinedPlayers = {}
     self.rocks = {}
 

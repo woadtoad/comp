@@ -46,7 +46,11 @@ return function(GameScene)
 
   function GameScene:continuedState()
     print('  GameScene:continuedState')
-    Sounds.loop({SOUNDS.BATTLE})
+    if self.hasStartClosingMusic then
+      Sounds.loop({SOUNDS.TIME})
+    else
+      Sounds.loop({SOUNDS.BATTLE})
+    end
     self:unpause()
   end
 
@@ -72,6 +76,8 @@ return function(GameScene)
     self.paused = false
     self.timer = 0
     self.maxTime = 60
+    self.closeToEndTime = self.maxTime - 10
+    self.hasStartClosingMusic = false
     self.thePickupTimer = 2
 
     --instantiate a new player and their bases.
@@ -145,6 +151,12 @@ return function(GameScene)
     if not self.paused then
       -- ************** TIMER STUFF ***************
       self.timer = self.timer + dt
+      if self.timer >= self.closeToEndTime then
+        if not self.hasStartClosingMusic then
+          Sounds.loop({SOUNDS.TIME})
+          self.hasStartClosingMusic = true
+        end
+      end
       if self.timer >= self.maxTime then
         self:pushState(SCENES.END)
       end
