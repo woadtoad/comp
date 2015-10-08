@@ -140,10 +140,6 @@ end
 function PickupActive:update(dt)
   local x,y = self.collider.body:getPosition()
 
-  if x == lastx and y == lasty then return end
-
-  lastx,lasty = x,y
-
   local rot = math.deg(self.collider.body:getAngle())
 
   self.sprite:update(dt)
@@ -153,6 +149,10 @@ function PickupActive:update(dt)
   else
     self.activeScale = self.foodScale
   end
+
+  if x == lastx and y == lasty then return end
+
+  lastx,lasty = x,y
 
   self.frames[self.food]:changeLoc(x,y)
   self.frames[self.food]:changeRot(rot)
