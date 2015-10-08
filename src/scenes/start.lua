@@ -149,9 +149,11 @@ return function(StartScene)
         self.joinedPlayers[id] = not self.joinedPlayers[id]
         if self.joinedPlayers[id] then
           print('Player ' .. joystick:getID() .. ' joined')
+          Sounds.play(SOUNDS.MENU_SELECT)
           self.rocks[id]:join()
         else
           print('Player ' .. joystick:getID() .. ' left')
+          Sounds.play(SOUNDS.MENU_UNSELECT)
           self.rocks[id]:leave()
         end
       end
