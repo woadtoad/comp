@@ -19,27 +19,30 @@ return function(PauseScene)
 
   function PauseScene:enteredState()
     print('  PauseScene:enteredState')
+    Sounds.play(SOUNDS.POSITIVE)
     self:initialize()
     self:reset()
   end
 
   function PauseScene:exitedState()
     print('  PauseScene:exitedState')
+    Sounds.play(SOUNDS.NEGATIVE)
     self:destroy()
   end
 
   function PauseScene:pausedState()
     print('  PauseScene:pausedState')
+    Sounds.play(SOUNDS.NEGATIVE)
   end
 
   function PauseScene:continuedState()
     print('  PauseScene:continuedState')
+    Sounds.play(SOUNDS.POSITIVE)
     self:destroy()
     self:reset()
   end
 
   function PauseScene:reset()
-    Sounds.loop({SOUNDS.MENU_DRUMS})
   end
 
   function PauseScene:update(dt)

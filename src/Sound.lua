@@ -9,6 +9,7 @@ SOUNDS = {
   SPIT = 'assets/sounds/Spit.wav',
   SLIP = 'assets/sounds/Slip.wav',
   POSITIVE = 'assets/sounds/PositiveSound.wav',
+  NEGATIVE = 'assets/sounds/NegativeSound.wav',
   MENU_SELECT = 'assets/sounds/MenuNavigationForwards.wav',
   MENU_UNSELECT = 'assets/sounds/MenuNavigationBackWards.wav',
   MENU = 'assets/sounds/MenuMusicwithoutDrums.wav',
@@ -26,9 +27,21 @@ function Sounds.play(soundName, cb)
   TEsound.play(soundName, {}, 1, 1, cb)
 end
 
+function Sounds.stop()
+  TEsound.stop('loop')
+end
+
+function Sounds.pause()
+  TEsound.pause('loop')
+end
+
+function Sounds.resume()
+  TEsound.resume('loop')
+end
+
 function Sounds.loop(soundNames)
   TEsound.stop('loop')
-  TEsound.playLooping(soundNames, 'loop')
+  TEsound.playLooping(soundNames, {'loop'})
 end
 
 

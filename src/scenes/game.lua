@@ -46,19 +46,16 @@ return function(GameScene)
 
   function GameScene:continuedState()
     print('  GameScene:continuedState')
-    if self.hasStartClosingMusic then
-      Sounds.loop({SOUNDS.TIME})
-    else
-      Sounds.loop({SOUNDS.BATTLE})
-    end
     self:unpause()
   end
 
   function GameScene:pause()
+    Sounds.pause()
     self.paused = true
   end
 
   function GameScene:unpause()
+    Sounds.resume()
     self.paused = false
   end
 
