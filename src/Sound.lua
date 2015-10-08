@@ -22,9 +22,8 @@ SOUNDS = {
 
 local Sounds = class('Sounds')
 
-function Sounds.play(soundName, cb)
-  cb = cb or function() end
-  TEsound.play(soundName, {}, 1, 1, cb)
+function Sounds.play(soundName, ...)
+  TEsound.play(soundName, ...)
 end
 
 function Sounds.stop()

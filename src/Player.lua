@@ -3,6 +3,7 @@ local Vector = require('libs.hump.vector')
 local SCENES = require('src.config.SCENES')
 local SceneManager = require('src.SceneManager')
 local Input = require('src.Input')
+local Sounds = require('src.Sound')
 local Text = require('src.Text')
 local WorldManager = require('src.WorldManager')
 local Effects = require('src.Effects')
@@ -446,12 +447,14 @@ function EatingPlayer:enteredState()
 
 
   if self.fat == false then
+    Sounds.play(SOUNDS.SWALLOW, {}, 0.2)
     self.sprite:changeAnim('Eat')
     impulse = self.Vars.EAT_BOOST
     self.collider.body:setLinearDamping(self.Vars.EAT_FRICTION)
 
 
   else
+    Sounds.play(SOUNDS.SPIT)
     self.sprite:changeAnim('Spit')
       impulse = 0
       self.collider.body:setLinearDamping(self.Vars.SPIT_FRICTION)

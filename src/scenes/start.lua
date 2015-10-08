@@ -44,7 +44,7 @@ return function(StartScene)
 
   function StartScene:reset()
     Sounds.stop()
-    Sounds.play(SOUNDS.INTRO, function()
+    Sounds.play(SOUNDS.INTRO, {}, 1, 1, function()
       if self:current() == SCENES.START then
         Sounds.loop({SOUNDS.MENU_DRUMS})
       end
