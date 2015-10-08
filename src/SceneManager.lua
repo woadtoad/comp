@@ -30,6 +30,9 @@ function SceneManager:init()
       require('src.scenes.' .. sceneName)(self:getScene(sceneName))
     end
 
+    -- Set all of our drawables to be pixelly instead of blur scaled
+    love.graphics.setDefaultFilter('nearest', 'nearest')
+
     self:popAllStates()
 end
 

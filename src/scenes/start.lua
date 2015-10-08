@@ -77,6 +77,26 @@ return function(StartScene)
     end
 
     self.textScale = _.smooth(self.textScale, self.textScaleLimit, dt*9)
+
+    local activeControllers = {
+      [1] = false,
+      [2] = false,
+      [3] = false,
+      [4] = false,
+    }
+    for k,joystick in pairs(love.joystick.getJoysticks()) do
+      local id = joystick:getID()
+      activeControllers[id] = true
+      self.rocks[id]:activate()
+    end
+    for id,isActive in pairs(activeControllers) do
+      if isActive then
+        self.rocks[id]:activate()
+      else
+        self.rocks[id]:deactivate()
+      end
+    end
+
     for k,rock in pairs(self.rocks) do
       rock:update(dt)
     end

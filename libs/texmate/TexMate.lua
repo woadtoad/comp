@@ -142,17 +142,6 @@ function _M:update (dt)
 end
 
 function _M:draw(isFlipped, userScale)
-  if userScale ~= nil then
-    print('using default scale')
-  	userScale.x = userScale
-  	userScale.y = userScale
-    if isFlipped then
-      userScale.x = userScale.x *-1
-    end
-  else
-    userScale = self.scale
-  end
-
   local flipped = self.flip
   if isFlipped ~= nil then
     if isFlipped then
@@ -160,6 +149,15 @@ function _M:draw(isFlipped, userScale)
     else
       flipped = -1
     end
+  end
+
+  if userScale ~= nil then
+    local tempScale = {}
+  	tempScale.x = userScale
+  	tempScale.y = userScale
+    userScale = tempScale
+  else
+    userScale = self.scale
   end
 
 	--Reset graphics colour back to white
