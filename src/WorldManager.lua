@@ -1,4 +1,4 @@
-local hxdx = require("hxdx")
+local hxdx = require("libs.hxdx")
 
 local WorldManager = class('WorldManager')
 

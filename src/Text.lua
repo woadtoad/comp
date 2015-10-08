@@ -1,7 +1,7 @@
-local _ = require('lume')
+local _ = require('libs.lume')
 
 local Text = class('Text')
-Text:include(require('stateful'))
+Text:include(require('libs.stateful'))
 
 Text.static.FONT_FAMILIES = {
   main = 'assets/fonts/Snowstorm.otf'

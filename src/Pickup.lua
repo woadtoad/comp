@@ -1,11 +1,11 @@
 -- base class for pickup --
 local Pools = require("src.Pool")
-local TexMate = require("texmate.TexMate")
+local TexMate = require("libs.texmate.TexMate")
 local WorldManager = require('src.WorldManager')
 local Pickup = class('Pickup')
-local TexMateStatic = require("texmate.TexMateStatic")
-Pickup:include(require('stateful'))
-local Vector = require('hump.vector')
+local TexMateStatic = require("libs.texmate.TexMateStatic")
+Pickup:include(require('libs.stateful'))
+local Vector = require('libs.hump.vector')
 local Effects = require('src.Effects')
 
 local MAX_SPAWN_HEIGHT = 50

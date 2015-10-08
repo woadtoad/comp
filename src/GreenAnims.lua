@@ -1,4 +1,4 @@
-local TexMate = require("texmate.TexMate")
+local TexMate = require("libs.texmate.TexMate")
 
 
 

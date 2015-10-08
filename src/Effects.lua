@@ -1,7 +1,7 @@
 
 local Effects = class('Effects')
-Effects:include(require('stateful'))
-local TexMate = require("texmate.TexMate")
+Effects:include(require('libs.stateful'))
+local TexMate = require("libs.texmate.TexMate")
 local Pools = require("src.Pool")
 
 function  Effects:initialize()

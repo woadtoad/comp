@@ -1,4 +1,4 @@
-local tessound = require('TESound')
+local tessound = require('libs.TESound')
 
 -- GLOBALS
 SOUNDS = {

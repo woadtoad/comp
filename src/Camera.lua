@@ -1,5 +1,5 @@
 -- Setup the camera to user in love
-local Gamera = require('gamera.gamera')
+local Gamera = require('libs.gamera.gamera')
 
 local Camera = class('Camera')
 

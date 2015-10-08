@@ -1,7 +1,7 @@
-local Vector = require('hump.vector')
+local Vector = require('libs.hump.vector')
 
 local Arm = class('Arm')
-Arm:include(require('stateful'))
+Arm:include(require('libs.stateful'))
 
 function Arm:initialize(parentBody)
   self.parent = parentBody

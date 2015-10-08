@@ -1,13 +1,13 @@
 local Pools = require("src.Pool")
-local TexMate = require("texmate.TexMate")
+local TexMate = require("libs.texmate.TexMate")
 local WorldManager = require('src.WorldManager')
 local PLAYER_STATES = require('src.Player').static.STATES
 local Camera = require('src.Camera')
 local Text = require('src.Text')
-local TexMateStatic = require("texmate.TexMateStatic")
+local TexMateStatic = require("libs.texmate.TexMateStatic")
 
 local Tile = class('TileEntity')
-Tile:include(require('stateful'))
+Tile:include(require('libs.stateful'))
 
 Tile.static.PLAYER_DAMAGE_INTERVAL = 0.25
 Tile.static.TILE_TYPES = {

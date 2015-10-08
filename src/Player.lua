@@ -1,5 +1,5 @@
-local TexMate = require("texmate.TexMate")
-local Vector = require('hump.vector')
+local TexMate = require("libs.texmate.TexMate")
+local Vector = require('libs.hump.vector')
 local SCENES = require('src.config.SCENES')
 local SceneManager = require('src.SceneManager')
 local Input = require('src.Input')
@@ -8,7 +8,7 @@ local WorldManager = require('src.WorldManager')
 local Effects = require('src.Effects')
 
 local Player = class('Player')
-Player:include(require('stateful'))
+Player:include(require('libs.stateful'))
 
 Player.static.BASE_SPEED = 30
 Player.static.BASE_VEC = Vector(0, 0)

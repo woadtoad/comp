@@ -1,4 +1,4 @@
-local TexMate = require("texmate.TexMate")
+local TexMate = require("libs.texmate.TexMate")
 local SCENES = require('src.config.SCENES')
 local SceneManager = require('src.SceneManager')
 local Text = require('src.Text')
@@ -8,7 +8,7 @@ local OrangeAnims = require('src.OrangeAnims')
 local BlueAnims = require('src.BlueAnims')
 
 local JoiningRock = class('JoiningRock')
-JoiningRock:include(require('stateful'))
+JoiningRock:include(require('libs.stateful'))
 
 JoiningRock.static.WIDTH = 180 --px
 JoiningRock.static.HEIGHT = 230 --px

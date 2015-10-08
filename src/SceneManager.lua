@@ -7,7 +7,7 @@ print('\nSceneManager\n------------\n')
 -------------------------------
 
 local SceneManager = class('SceneManager')
-SceneManager:include(require('stateful'))
+SceneManager:include(require('libs.stateful'))
 
 -- Gets a state from SceneManager, which is essentially a Scene
 function SceneManager:getScene(sceneName)
