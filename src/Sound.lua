@@ -22,25 +22,35 @@ SOUNDS = {
 
 local Sounds = class('Sounds')
 
+Sounds.static.MAIN_TAG = 'loop'
+
 function Sounds.play(soundName, ...)
   TEsound.play(soundName, ...)
 end
 
 function Sounds.stop()
-  TEsound.stop('loop')
+  TEsound.stop(Sounds.static.MAIN_TAG)
 end
 
 function Sounds.pause()
-  TEsound.pause('loop')
+  TEsound.pause(Sounds.static.MAIN_TAG)
 end
 
 function Sounds.resume()
-  TEsound.resume('loop')
+  TEsound.resume(Sounds.static.MAIN_TAG)
+end
+
+function Sounds.mute()
+  TEsound.volume(Sounds.static.MAIN_TAG, 0)
+end
+
+function Sounds.unmute()
+  TEsound.volume(Sounds.static.MAIN_TAG, 1)
 end
 
 function Sounds.loop(soundNames)
-  TEsound.stop('loop')
-  TEsound.playLooping(soundNames, {'loop'})
+  TEsound.stop(Sounds.static.MAIN_TAG)
+  TEsound.playLooping(soundNames, {Sounds.static.MAIN_TAG})
 end
 
 

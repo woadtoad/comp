@@ -15,6 +15,7 @@ INPUTS = {
   START_GAME = 'startgame',
   NEW_GAME = 'newgame',
   RESTART = 'restart',
+  MUTE_TOGGLE = 'mutetoggle',
 
   -- Debugging
   ZOOM_OUT = 'zoomout',
@@ -46,6 +47,7 @@ return function(input)
   input:bind('fdown', INPUTS.START_GAME)
   input:bind('start', INPUTS.NEW_GAME)
   input:bind('start', INPUTS.JOIN_GAME)
+  input:bind('back', INPUTS.MUTE_TOGGLE)
 
   -- Debugging
   input:bind('dpdown', INPUTS.ZOOM_OUT)

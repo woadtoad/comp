@@ -35,7 +35,7 @@ function Text.print(family, size, text, x, y, ...)
 
   -- Print the undershadow text
   love.graphics.setColor(0, 0, 0, 50 * (a / 255))
-  love.graphics.printf(text, x + 3, y + 3, ...)
+  love.graphics.printf(text, x + 1 * (Text.static.FONT_SIZES[size] / 50 + 1), y + 1 * (Text.static.FONT_SIZES[size] / 50 + 1), ...)
 
   -- Print the actual text
   love.graphics.setColor(r, g, b, a)

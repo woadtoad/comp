@@ -60,15 +60,17 @@ return function(StartScene)
 
     for id=1, MAX_PLAYERS do
       self.joinedPlayers[id] = false
-
       -- Setup the position for the joining rocks
       local padding = (id - 1) * rockPadding
       local offset = id * rockW
       local rockX = rockStartX + padding + (rockW * (id - 1) + rockW/2)
       self.rocks[id] = JoiningRock:new(rockX, rockY, id)
     end
+
     self.textScale = 1
     self.textScaleLimit = 1.3
+
+    self.isMuted = false
   end
 
   function StartScene:update(dt)
@@ -122,6 +124,14 @@ return function(StartScene)
       Text.huge('A to start', w / 2 - (limit / 2) * self.textScale, yStart + 250, limit, 'center', 0, self.textScale)
     end
 
+    local muteText = 'MUTE'
+    love.graphics.setColor(69, 64, 74, 255)
+    if self.isMuted then
+      love.graphics.setColor(69, 64, 74, 120)
+      muteText = 'UNMUTE'
+    end
+    Text.normal('(back) ' .. muteText .. ' MUSIC', w - limit - 20, h - 40, limit, 'right')
+
     for k,rock in pairs(self.rocks) do
       rock:draw()
     end
@@ -158,6 +168,17 @@ return function(StartScene)
           self.rocks[id]:leave()
         end
       end
+
+      if input:pressed(INPUTS.MUTE_TOGGLE, id) then
+        print('toggled mute')
+        self.isMuted = not self.isMuted
+        if self.isMuted then
+          Sounds.mute()
+        else
+          Sounds.unmute()
+        end
+      end
+
     end
 
     -- Player 1 starts the game
