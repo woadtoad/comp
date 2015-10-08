@@ -218,36 +218,33 @@ function Player:update(dt)
 
   --STUN probably bad practice
   if self.fat == false then
+    if self.collider:enter('PlayerBody') then
+      local a, collider = self.collider:enter('PlayerBody')
 
-      if self.collider:enter('PlayerBody') then
-        local a, collider = self.collider:enter('PlayerBody')
+      local velx,vely = collider.body:getLinearVelocity()
+      local vec = Vector(velx,vely)
+      local vel = vec:len()
 
-        local velx,vely = collider.body:getLinearVelocity()
-        local vec = Vector(velx,vely)
-        local vel = vec:len()
-
-        if vel > self.Vars.FAT_STUN_AT_SPEED and collider.parent.fat then
-
-          self:gotoState(STATE.STUN)
-        elseif vel > self.Vars.SKINNY_STUN_AT_SPEED then
-          self:gotoState(STATE.STUN)
-        end
+      if vel > self.Vars.FAT_STUN_AT_SPEED and collider.parent.fat then
+        self:gotoState(STATE.STUN)
+      elseif vel > self.Vars.SKINNY_STUN_AT_SPEED then
+        self:gotoState(STATE.STUN)
       end
-
+    end
   end
 
   --function World:queryRectangleArea(x, y, w, h, collision_class_names)
-    local x,y = self.collider.body:getPosition()
-    local w,h = 10,10
+  local x,y = self.collider.body:getPosition()
+  local w,h = 10,10
 
-    local colliders = WorldManager.world:queryRectangleArea(x-w/2,20+y-h/2,w,h,{"Tile"})
+  local colliders = WorldManager.world:queryRectangleArea(x-w/2,20+y-h/2,w,h,{"Tile"})
 
-    --print(#colliders)
-    if #colliders == 0 then
-     if self:getStateStackDebugInfo()[1] ~= STATE.FALL and self:getStateStackDebugInfo()[1] ~= STATE.JUMP then
-        self:gotoState(STATE.FALL)
-     end
-    end
+  --print(#colliders)
+  if #colliders == 0 then
+   if self:getStateStackDebugInfo()[1] ~= STATE.FALL and self:getStateStackDebugInfo()[1] ~= STATE.JUMP then
+      self:gotoState(STATE.FALL)
+   end
+  end
 
 end
 
@@ -654,7 +651,19 @@ function FallingPlayer:enteredState()
     self.pickedUpFood  = nil
   end
 
-  self.collider.body:setLinearDamping(10)
+  -- Overzealous collider changes to make sure the players
+  -- body does not shift around after falling
+  self.collider.body:setAngularVelocity(0)
+  self.feet.body:setAngularVelocity(0)
+  self.tail.body:setAngularVelocity(0)
+  self.collider.body:setLinearVelocity(0, 0)
+  self.feet.body:setLinearVelocity(0, 0)
+  self.tail.body:setLinearVelocity(0, 0)
+  self.collider.body:setAngularVelocity(0)
+  self.collider.body:setActive(false)
+  self.feet.body:setActive(false)
+  self.tail.body:setActive(false)
+
   self.canControl = false
   self.hasFallen = true
   self.respawnTimer = self.Vars.RESPAWN_TIME -- ms
@@ -665,7 +674,14 @@ function FallingPlayer:updateStates(dt)
     self.respawnTimer = self.respawnTimer - dt
     if self.respawnTimer < 0 then
       self.hasFallen = false
+
       self.collider.body:setPosition(self.spawnX + self.radius, self.spawnY)
+      self.feet.body:setPosition(self.spawnX + self.radius, self.spawnY)
+      self.tail.body:setPosition(self.spawnX + self.radius, self.spawnY)
+      self.collider.body:setActive(true)
+      self.feet.body:setActive(true)
+      self.tail.body:setActive(true)
+
       self:gotoState(STATE.SPAWNING)
     end
   end
