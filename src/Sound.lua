@@ -3,7 +3,7 @@ local tessound = require('libs.TESound')
 -- GLOBALS
 SOUNDS = {
   HIT = 'assets/sounds/Hit.wav',
-  JUMP = 'assets/sounds/Jump.wav',
+  JUMP = 'assets/sounds/Jump2.wav',
   FALL = 'assets/sounds/FallInWater.wav',
   SWALLOW = 'assets/sounds/Swallow.wav',
   SPIT = 'assets/sounds/Spit.wav',

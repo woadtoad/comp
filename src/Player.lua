@@ -557,10 +557,12 @@ function JumpingPlayer:enteredState()
   self.collider:changeCollisionClass('PlayerBodyJump')
 
   if self.fat == false then
+    Sounds.play(SOUNDS.JUMP, {}, 1, 1.1)
     self.sprite:changeAnim('Jumping')
     self.timerj = 0.4
   else
     self.sprite:changeAnim('FatJump')
+    Sounds.play(SOUNDS.JUMP, {}, 1, 0.4)
     self.timerj = 0.45
   end
 
@@ -585,6 +587,12 @@ end
 --Stun state
 local StunState = Player:addState(STATE.STUN)
 function StunState:enteredState()
+  if self.fat then
+    Sounds.play(SOUNDS.HIT, {}, 1, 0.9)
+  else
+    Sounds.play(SOUNDS.HIT, {}, 1, 1)
+  end
+
   self.collider.body:setLinearDamping(0.3)
   if self.fat == false then
     self.sprite:changeAnim('Stun')
@@ -641,8 +649,10 @@ end
 local FallingPlayer = Player:addState(STATE.FALL)
 function FallingPlayer:enteredState()
   if self.fat == false then
+    Sounds.play(SOUNDS.FALL, {}, 1, 1)
     self.sprite:changeAnim('Fall')
   else
+    Sounds.play(SOUNDS.FALL, {}, 1, 0.9)
     self.sprite:changeAnim('FatFall')
   end
 
