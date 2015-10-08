@@ -159,18 +159,17 @@ return function(StartScene)
       if input:pressed(INPUTS.JOIN_GAME, id) then
         self.joinedPlayers[id] = not self.joinedPlayers[id]
         if self.joinedPlayers[id] then
-          print('Player ' .. joystick:getID() .. ' joined')
+          print('Player ' .. id .. ' joined')
           Sounds.play(SOUNDS.MENU_SELECT)
           self.rocks[id]:join()
         else
-          print('Player ' .. joystick:getID() .. ' left')
+          print('Player ' .. id .. ' left')
           Sounds.play(SOUNDS.MENU_UNSELECT)
           self.rocks[id]:leave()
         end
       end
 
       if input:pressed(INPUTS.MUTE_TOGGLE, id) then
-        print('toggled mute')
         self.isMuted = not self.isMuted
         if self.isMuted then
           Sounds.mute()
@@ -185,6 +184,7 @@ return function(StartScene)
     -- Start the game!
     if input:pressed(INPUTS.START_GAME) then
       if _.any(self.joinedPlayers) then
+        input:renew()
         self:pushState(SCENES.GAME)
       end
     end

@@ -58,6 +58,11 @@ function Input.new()
     return setmetatable(self, Input)
 end
 
+function Input:renew()
+  -- Gamepads... is a table containing all the joysticks
+  self.joysticks = love.joystick.getJoysticks()
+end
+
 function Input:bind(key, action)
     if type(action) == 'function' then self.functions[key] = action; return end
     if not self.binds[action] then self.binds[action] = {} end

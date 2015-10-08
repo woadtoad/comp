@@ -168,13 +168,11 @@ function JoiningRock:deactivate()
 end
 
 function JoiningRock:join()
-  print('Joining Rock')
   self.rockSprite:changeAnim('Joining')
   self.toadSprite:changeAnim(PLAYER_ANIMS.LANDING)
 end
 
 function JoiningRock:leave()
-  print('Leaving Rock')
   self.hasJoined = false
   self.toadSprite:changeAnim(PLAYER_ANIMS.JUMPING)
   self.rockSprite:changeAnim('Leaving')
